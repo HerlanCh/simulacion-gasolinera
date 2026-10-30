@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-10-28T20:51:51.844Z",
+        "reason": "user chose the 'Ticket del surtidor' direction: cream thermal-receipt paper is the committed material"
+      }
+    ]
+  }
+}

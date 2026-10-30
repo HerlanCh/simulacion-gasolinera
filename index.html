@@ -1,0 +1,1281 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gasolinera DES</title>
+<meta name="description" content="Simulación de eventos discretos de una gasolinera con 1 surtidor y 1 cola FIFO: análisis de datos, prueba chi-cuadrado, simulador en vivo, réplicas e inferencia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --counter:#E6E0D2;
+  --counter-2:#DCD5C5;
+  --paper:#FBF8F1;
+  --paper-2:#F3EEE3;
+  --paper-3:#ECE6D8;
+  --ink:#1B1D22;
+  --ink-2:#45474D;
+  --ink-3:#66676C;
+  --ghost:#C9C3B6;
+  --rule:#CFC8B8;
+  --signal:#C2410C;
+  --signal-ink:#A3360A;
+  --signal-wash:#F7E2D5;
+  --blue:#2B5BD7;
+  --blue-ink:#2148B0;
+  --blue-wash:#E2E9FA;
+  --go:#1E7A46;
+  --go-wash:#DCEEE2;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --ease-in-out:cubic-bezier(0.77,0,0.175,1);
+  --f-display:"Archivo", "Arial Narrow", sans-serif;
+  --f-body:"Atkinson Hyperlegible", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
+  --zig:18px;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--counter);color:var(--ink);
+  font-family:var(--f-body);font-size:18px;line-height:1.55;
+  background-image:radial-gradient(rgba(27,29,34,.035) 1px, transparent 1.2px);
+  background-size:5px 5px;
+}
+::selection{background:var(--signal);color:var(--paper)}
+:focus-visible{outline:2.5px solid var(--blue);outline-offset:3px;border-radius:4px}
+*{scrollbar-color:var(--rule) transparent;scrollbar-width:thin}
+a{color:var(--blue-ink);text-underline-offset:3px;text-decoration-thickness:1.5px}
+.num,.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-feature-settings:"zero" 1}
+sub{font-size:.68em;line-height:0}
+button{font:inherit;color:inherit}
+input,select{font:inherit;color:inherit}
+
+/* ===== masthead ===== */
+.mast{max-width:1280px;margin:0 auto;padding:28px 20px 0;display:grid;grid-template-columns:1fr auto;gap:12px 32px;align-items:end}
+.mast h1{font-family:var(--f-display);font-stretch:72%;font-weight:850;font-size:clamp(2.2rem,4.6vw,3.6rem);line-height:.95;letter-spacing:-.015em;margin:0;text-transform:uppercase}
+.mast h1 span{color:var(--signal-ink)}
+.mast p{margin:6px 0 0;color:var(--ink-2);max-width:60ch}
+@media (max-width:760px){.mast{grid-template-columns:minmax(0,1fr)}.pump-led{justify-self:start}}
+.pump-led{display:flex;gap:18px;align-items:stretch;background:var(--ink);color:var(--paper);border-radius:10px;padding:10px 16px;box-shadow:0 2px 0 rgba(0,0,0,.08),0 10px 24px -12px rgba(27,29,34,.5)}
+.pump-led div{display:flex;flex-direction:column}
+.pump-led small{font-family:var(--f-display);font-stretch:90%;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#B9B4A8}
+.pump-led b{font-family:var(--f-mono);font-size:1.5rem;font-weight:700;line-height:1.1;color:#FF8A4C}
+.pump-led b.ok{color:#8FD9AE}
+
+nav.tabs{max-width:1280px;margin:22px auto 0;padding:0 20px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto;border:0;background:var(--counter-2);cursor:pointer;
+  padding:10px 16px 12px;border-radius:10px 10px 0 0;text-align:left;
+  transition:background-color 160ms ease, transform 160ms var(--ease-out);
+  display:flex;flex-direction:column;gap:0;min-width:150px;
+}
+.tab .t-n{font-family:var(--f-mono);font-size:.72rem;color:var(--ink-2)}
+.tab .t-l{font-family:var(--f-display);font-stretch:85%;font-weight:700;font-size:1.02rem;letter-spacing:.01em}
+.tab .t-p{font-family:var(--f-mono);font-size:.7rem;color:var(--ink-2)}
+.tab:active{transform:scale(.97)}
+@media (hover:hover) and (pointer:fine){.tab:hover{background:var(--paper-3)}}
+.tab[aria-selected="true"]{background:var(--paper)}
+.tab[aria-selected="true"] .t-n{color:var(--signal-ink)}
+
+/* ===== sheet (ticket) ===== */
+main{max-width:1280px;margin:0 auto;padding:0 20px 80px}
+.sheet-wrap{filter:drop-shadow(0 1px 1px rgba(27,29,34,.08)) drop-shadow(0 14px 22px rgba(27,29,34,.12))}
+.sheet{
+  background:var(--paper);
+  padding:calc(var(--zig) + 18px) clamp(18px,4vw,56px) calc(var(--zig) + 28px);
+  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/calc(var(--zig)*2) 51% repeat-x,linear-gradient(#000 0 0) top/100% 51% no-repeat;
+          mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/calc(var(--zig)*2) 51% repeat-x,linear-gradient(#000 0 0) top/100% 51% no-repeat;
+  padding-top:28px;
+}
+.view{display:none}
+.view.on{display:block;animation:viewIn 220ms var(--ease-out)}
+@keyframes viewIn{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+.ticket-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 24px;font-family:var(--f-mono);font-size:.78rem;color:var(--ink-3);padding-bottom:12px;border-bottom:2px dotted var(--rule);margin-bottom:26px}
+.ticket-head b{color:var(--ink);font-weight:600}
+h2.vt{font-family:var(--f-display);font-stretch:75%;font-weight:850;text-transform:uppercase;font-size:clamp(2rem,4vw,3rem);line-height:1;letter-spacing:-.01em;margin:0 0 10px;text-wrap:balance}
+.lede{font-size:1.12rem;color:var(--ink-2);max-width:68ch;margin:0 0 8px}
+h3.st{font-family:var(--f-display);font-stretch:85%;font-weight:800;font-size:1.45rem;line-height:1.15;margin:52px 0 6px;text-wrap:balance}
+h3.st:first-child{margin-top:0}
+h4.ss,h3.ss{font-family:var(--f-display);font-stretch:95%;font-weight:700;font-size:1.08rem;margin:28px 0 8px}
+p.note{color:var(--ink-2);max-width:72ch;margin:6px 0 14px}
+.dots{border:0;border-top:2px dotted var(--rule);margin:40px 0}
+.lbl{font-family:var(--f-display);font-stretch:90%;font-weight:650;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.prose{max-width:72ch}
+.prose p{margin:0 0 12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 40px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+@media (max-width:900px){.grid2,.grid3{grid-template-columns:minmax(0,1fr)}}
+
+/* ===== tables ===== */
+.tw{overflow-x:auto;margin:10px 0 4px;-webkit-overflow-scrolling:touch}
+table.rt{border-collapse:collapse;width:100%;font-size:.95rem}
+table.rt th{font-family:var(--f-display);font-stretch:90%;font-weight:700;font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);text-align:right;padding:8px 10px;border-bottom:1.5px solid var(--ink);white-space:nowrap}
+table.rt th:first-child,table.rt td:first-child{text-align:left}
+table.rt td{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right;padding:7px 10px;border-bottom:1px dashed var(--rule);white-space:nowrap}
+table.rt tfoot td{border-bottom:0;border-top:1.5px solid var(--ink);font-weight:700}
+table.rt tr.grp td{background:var(--blue-wash)}
+table.rt tr.hl td{background:var(--signal-wash)}
+table.rt td.w{font-weight:700}
+table.rt td.w0{color:var(--ink-3)}
+table.rt tbody tr{transition:background-color 120ms ease}
+@media (hover:hover) and (pointer:fine){table.rt tbody tr:hover td{background:var(--paper-2)}}
+
+/* ===== key figures ===== */
+.figs{display:flex;flex-wrap:wrap;gap:0;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);margin:18px 0}
+.fig{flex:1 1 170px;padding:12px 16px;border-right:1px dashed var(--rule)}
+.fig:last-child{border-right:0}
+.fig .v{font-family:var(--f-mono);font-weight:700;font-size:1.3rem;white-space:nowrap;line-height:1.15;display:block;font-variant-numeric:tabular-nums}
+.fig .d{font-size:.88rem;color:var(--ink-2)}
+.fig.alert{background:var(--signal-wash)}
+.fig.alert .v{color:var(--signal-ink)}
+.fig.good .v{color:var(--go)}
+
+.rho{display:grid;grid-template-columns:auto 1fr;gap:24px 36px;align-items:center;background:var(--ink);color:var(--paper);border-radius:14px;padding:26px 30px;margin:22px 0}
+.rho .eq{font-family:var(--f-mono);font-size:clamp(1.3rem,2.6vw,2rem);line-height:1.35;white-space:nowrap}
+.rho .eq b{color:#FF8A4C;font-size:1.35em}
+.rho p{margin:0;color:#D9D4C8;max-width:60ch}
+.rho p strong{color:#fff}
+@media (max-width:760px){.rho{grid-template-columns:1fr}.rho .eq{white-space:normal}}
+
+/* ===== controls ===== */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--ink);background:var(--paper);
+  border-radius:999px;padding:8px 16px;cursor:pointer;font-family:var(--f-display);font-stretch:90%;font-weight:700;font-size:.95rem;letter-spacing:.01em;
+  transition:transform 140ms var(--ease-out), background-color 160ms ease, color 160ms ease;
+}
+.btn svg{width:18px;height:18px}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.signal{background:var(--signal);border-color:var(--signal);color:#fff}
+@media (hover:hover) and (pointer:fine){.btn:hover{background:var(--paper-3)}.btn.primary:hover{background:#33363d}.btn.signal:hover{background:var(--signal-ink)}}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;padding:3px;gap:2px;background:var(--paper)}
+.seg button{border:0;background:transparent;border-radius:999px;padding:6px 14px;cursor:pointer;font-family:var(--f-display);font-stretch:90%;font-weight:700;font-size:.92rem;transition:background-color 160ms ease,color 160ms ease,transform 140ms var(--ease-out);white-space:nowrap}
+.seg button:active{transform:scale(.97)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+@media (hover:hover) and (pointer:fine){.seg button:not([aria-pressed="true"]):hover{background:var(--paper-3)}}
+.bar{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;margin:14px 0}
+.bar .grp{display:flex;align-items:center;gap:10px}
+select.sel{border:1.5px solid var(--ink);border-radius:999px;background:var(--paper);padding:7px 14px;font-family:var(--f-display);font-stretch:90%;font-weight:700;font-size:.92rem;cursor:pointer}
+input[type=range]{accent-color:var(--signal)}
+
+/* ===== charts ===== */
+.chart{width:100%;display:block;overflow:visible}
+.chart text{font-family:var(--f-mono);font-size:12px;fill:var(--ink-2)}
+.chart .ax line,.chart .ax path{stroke:var(--rule)}
+.chart .grid line{stroke:var(--paper-3)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.88rem;color:var(--ink-2);margin:4px 0}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.figcap{font-size:.85rem;color:var(--ink-3);margin:6px 0 0}
+.figcap b{font-family:var(--f-mono);color:var(--ink-2)}
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--paper);font-family:var(--f-mono);font-size:.82rem;line-height:1.4;padding:7px 10px;border-radius:8px;opacity:0;transform:translateY(4px);transition:opacity 120ms ease,transform 120ms var(--ease-out);max-width:280px;box-shadow:0 8px 20px -8px rgba(0,0,0,.5)}
+#tip.on{opacity:1;transform:none}
+
+/* ===== chi ===== */
+.hyp{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:10px 0 6px;font-size:1rem}
+.hyp b{font-family:var(--f-mono)}
+.verdict{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:10px;margin:12px 0;background:var(--go-wash)}
+.verdict svg{flex:0 0 22px;width:22px;height:22px;color:var(--go);margin-top:2px}
+.verdict.bad{background:var(--signal-wash)}
+.verdict.bad svg{color:var(--signal-ink)}
+.verdict p{margin:0}
+.bracket{font-family:var(--f-mono);font-size:.78rem;color:var(--blue-ink);font-weight:600}
+
+/* ===== inverse transform ===== */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+.chip{border:1.5px solid var(--rule);background:var(--paper);border-radius:10px;padding:8px 12px;cursor:pointer;text-align:left;transition:border-color 160ms ease,background-color 160ms ease,transform 140ms var(--ease-out)}
+.chip:active{transform:scale(.97)}
+.chip .k{display:block;font-family:var(--f-mono);font-size:.72rem;color:var(--ink-3)}
+.chip .r{display:block;font-family:var(--f-mono);font-weight:700;font-size:1.15rem}
+.chip .w{display:block;font-size:.8rem;color:var(--ink-2)}
+.chip[aria-pressed="true"]{border-color:var(--signal);background:var(--signal-wash)}
+@media (hover:hover) and (pointer:fine){.chip:hover{border-color:var(--ink-3)}}
+.cdf{position:relative;margin:34px 0 46px}
+.cdf .track{display:flex;height:56px;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden}
+.cdf .seg-c{position:relative;display:flex;align-items:center;justify-content:center;border-right:1.5px dashed var(--ink-3);font-family:var(--f-mono);font-weight:700;font-size:1.3rem;color:var(--ink-3);transition:background-color 200ms ease,color 200ms ease}
+.cdf .seg-c:last-child{border-right:0}
+.cdf .seg-c.hit{background:var(--signal);color:#fff}
+.cdf .ticks{position:relative;height:22px;font-family:var(--f-mono);font-size:.78rem;color:var(--ink-3)}
+.cdf .ticks span{position:absolute;top:4px;transform:translateX(-50%)}
+.cdf .ticks span:first-child{transform:none}
+.cdf .ticks span:last-child{transform:translateX(-100%)}
+.cdf .marker{position:absolute;top:-30px;left:0;transform:translateX(-50%);transition:left 420ms var(--ease-in-out);display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.cdf .marker b{font-family:var(--f-mono);font-size:.85rem;background:var(--ink);color:var(--paper);padding:1px 7px;border-radius:5px}
+.cdf .marker i{width:2px;height:86px;background:var(--ink)}
+.steps{list-style:none;padding:0;margin:0;counter-reset:s}
+.steps li{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:baseline;padding:10px 0;border-bottom:1px dashed var(--rule)}
+.steps li:last-child{border-bottom:0}
+.steps li::before{counter-increment:s;content:counter(s);font-family:var(--f-display);font-stretch:70%;font-weight:900;font-size:2.4rem;line-height:.9;color:var(--signal)}
+.steps .mono{font-size:1rem}
+.ghostrow{display:flex;gap:14px;font-family:var(--f-mono);font-size:1.8rem;font-weight:700;margin-top:6px}
+.ghostrow span{color:var(--ghost);transition:color 200ms ease}
+.ghostrow span.on{color:var(--signal)}
+
+/* ===== simulator ===== */
+.sim{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;margin-top:14px}
+@media (max-width:1000px){.sim{grid-template-columns:minmax(0,1fr)}}
+.stage{position:relative;background:#2A2C31;border-radius:14px;height:300px;overflow:hidden;color:var(--paper)}
+.stage.two{height:360px}
+.road{position:absolute;left:0;right:0;background:#383A40;border-top:2px solid #4A4D54;border-bottom:2px solid #4A4D54}
+.road::after{content:"";position:absolute;left:0;right:0;top:50%;border-top:2px dashed #6D6F75;opacity:.6}
+.canopy{position:absolute;top:14px;bottom:14px;right:18px;width:150px;border:2px solid #4A4D54;border-radius:10px;background:repeating-linear-gradient(-45deg,transparent 0 10px,rgba(255,255,255,.025) 10px 20px)}
+.canopy .lbl{position:absolute;top:8px;left:10px;color:#A8A397}
+.pump{position:absolute;right:30px;width:42px;height:58px;border-radius:7px;background:#4A4D54;display:flex;align-items:center;justify-content:center;transition:background-color 200ms ease}
+.pump svg{width:26px;height:26px;color:#C9C3B6}
+.pump.busy{background:var(--signal)}
+.pump.busy svg{color:#fff}
+.pump-tag{position:absolute;right:82px;font-family:var(--f-mono);font-size:.78rem;text-align:right;line-height:1.3;color:#C9C3B6;white-space:nowrap}
+.pump-tag b{display:block;font-family:var(--f-display);font-stretch:85%;font-size:.95rem;letter-spacing:.05em;text-transform:uppercase}
+.pump-tag b.free{color:#8FD9AE}
+.pump-tag b.busy{color:#FF9D6B}
+.prog{position:absolute;right:30px;width:42px;height:4px;border-radius:2px;background:#4A4D54;overflow:hidden}
+.prog i{display:block;height:100%;background:#FF9D6B;transform-origin:left}
+.car{position:absolute;left:0;top:0;width:58px;height:30px;will-change:transform;transition:transform 520ms var(--ease-in-out),opacity 320ms ease}
+.car svg{width:58px;height:30px;display:block}
+.car .body{fill:#2A2C31;stroke:#E8E3D7;stroke-width:1.6;stroke-dasharray:4 3}
+.car.srv .body{fill:var(--signal);stroke:#FFD3BC;stroke-dasharray:none}
+.car .glass{fill:#4A4D54}
+.car.srv .glass{fill:#8A2E08}
+.car span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:.72rem;font-weight:700;color:#E8E3D7;padding-right:8px}
+.car.srv span{color:#fff}
+.overflow{position:absolute;left:12px;font-family:var(--f-mono);font-size:.85rem;font-weight:700;background:var(--paper);color:var(--ink);border-radius:999px;padding:4px 12px;transition:opacity 200ms ease}
+.entry{position:absolute;left:12px;bottom:10px;font-family:var(--f-mono);font-size:.72rem;color:#A8A397}
+.side{display:flex;flex-direction:column;gap:14px}
+.clock{background:var(--ink);color:var(--paper);border-radius:14px;padding:14px 18px}
+.clock .lbl{color:#A8A397}
+.clock .digits{position:relative;font-family:var(--f-mono);font-weight:700;font-size:2.8rem;line-height:1.05;font-variant-numeric:tabular-nums}
+.clock .digits .gh{position:absolute;inset:0;color:#34363C}
+.clock .digits .lt{position:relative;color:#FF8A4C}
+.clock .digits small{font-size:.4em;color:#A8A397;margin-left:6px}
+.counters{display:grid;grid-template-columns:1fr 1fr;border:1.5px solid var(--ink);border-radius:12px;overflow:hidden}
+.counters div{padding:10px 14px;border-right:1px dashed var(--rule);border-bottom:1px dashed var(--rule)}
+.counters div:nth-child(2n){border-right:0}
+.counters div:nth-last-child(-n+2){border-bottom:0}
+.counters b{display:block;font-family:var(--f-mono);font-size:1.5rem;line-height:1.15}
+.counters span{font-size:.82rem;color:var(--ink-2)}
+.now{background:var(--paper-2);border-radius:12px;padding:12px 14px;font-size:.95rem;min-height:84px}
+.log{list-style:none;margin:0;padding:0;font-family:var(--f-mono);font-size:.8rem;max-height:200px;overflow:auto}
+.log li{display:grid;grid-template-columns:62px 1fr;gap:8px;padding:5px 0;border-bottom:1px dashed var(--rule)}
+.log li b{color:var(--ink-3);font-weight:400}
+.log .ev-a{color:var(--blue-ink)}
+.log .ev-s{color:var(--signal-ink)}
+.log .ev-f{color:var(--go)}
+.transport{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0 6px}
+.transport input[type=range]{flex:1 1 220px}
+.icon-btn{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--ink);background:var(--paper);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 140ms var(--ease-out),background-color 160ms ease}
+.icon-btn svg{width:20px;height:20px}
+.icon-btn:active{transform:scale(.95)}
+.icon-btn.big{width:56px;height:56px;background:var(--signal);border-color:var(--signal);color:#fff}
+@media (hover:hover) and (pointer:fine){.icon-btn:hover{background:var(--paper-3)}.icon-btn.big:hover{background:var(--signal-ink)}}
+.kbd{font-family:var(--f-mono);font-size:.75rem;border:1px solid var(--rule);border-bottom-width:2px;border-radius:4px;padding:1px 7px;color:var(--ink-2)}
+
+/* ===== receipts (manual trace) ===== */
+.receipts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:16px}
+@media (max-width:1050px){.receipts{grid-template-columns:minmax(0,1fr)}}
+.rcp{background:var(--paper-2);padding:18px 18px 26px;position:relative;
+  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/16px 51% repeat-x,linear-gradient(#000 0 0) top/100% 51% no-repeat;
+          mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/16px 51% repeat-x,linear-gradient(#000 0 0) top/100% 51% no-repeat}
+.rcp header{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px dotted var(--rule);padding-bottom:8px;margin-bottom:6px}
+.rcp header b{font-family:var(--f-display);font-stretch:75%;font-weight:850;font-size:1.6rem;text-transform:uppercase}
+.rcp header span{font-family:var(--f-mono);font-size:.78rem;color:var(--ink-3)}
+.rcp .src{font-family:var(--f-mono);font-size:.8rem;color:var(--ink-2);padding:6px 0 4px;line-height:1.6}
+.rcp ol{list-style:none;margin:0;padding:0;counter-reset:s}
+.rcp li{display:grid;grid-template-columns:34px 1fr;gap:8px;padding:9px 0;border-top:1px dashed var(--rule)}
+.rcp li::before{counter-increment:s;content:counter(s);font-family:var(--f-display);font-stretch:70%;font-weight:900;font-size:1.8rem;line-height:1;color:var(--signal)}
+.rcp .f{font-size:.84rem;color:var(--ink-2)}
+.rcp .c{font-family:var(--f-mono);font-size:.95rem}
+.rcp .c b{font-size:1.1rem}
+.rcp .tot{display:flex;justify-content:space-between;border-top:1.5px solid var(--ink);margin-top:6px;padding-top:8px;font-family:var(--f-mono);font-weight:700}
+
+/* ===== tabs inner ===== */
+.subtabs{display:flex;gap:6px;border-bottom:1.5px solid var(--ink);margin:30px 0 18px;overflow-x:auto}
+.subtabs button{border:0;background:transparent;padding:10px 14px;cursor:pointer;font-family:var(--f-display);font-stretch:88%;font-weight:700;font-size:1rem;border-bottom:3px solid transparent;margin-bottom:-1.5px;color:var(--ink-2);white-space:nowrap;transition:color 160ms ease,border-color 160ms ease}
+.subtabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--signal)}
+.pane{display:none}
+.pane.on{display:block}
+pre.code{background:var(--ink);color:#E8E3D7;border-radius:12px;padding:20px 22px;overflow:auto;font-family:var(--f-mono);font-size:.84rem;line-height:1.6;max-height:620px;margin:10px 0}
+pre.code .cm{color:#9C978B}
+pre.code .kw{color:#FF9D6B}
+pre.code .nm{color:#8FD9AE}
+
+/* ===== replicas ===== */
+.seeds{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.seeds label{display:flex;flex-direction:column;font-family:var(--f-mono);font-size:.72rem;color:var(--ink-3);gap:2px}
+.seeds input{width:96px;border:1.5px solid var(--rule);border-radius:8px;background:var(--paper);padding:6px 8px;font-family:var(--f-mono);font-size:.95rem;transition:border-color 160ms ease,opacity 200ms ease}
+.seeds input:focus{border-color:var(--ink);outline:none}
+.seeds label.off input{opacity:.45;border-style:dashed}
+.formula{display:grid;grid-template-columns:minmax(150px,auto) 1fr auto;gap:0;border-top:1.5px solid var(--ink);margin:14px 0}
+.formula > div{padding:10px 12px;border-bottom:1px dashed var(--rule);display:flex;align-items:center}
+.formula .n{font-family:var(--f-display);font-stretch:90%;font-weight:700}
+.formula .e{font-family:var(--f-mono);font-size:.92rem;color:var(--ink-2);overflow-x:auto}
+.formula .r{font-family:var(--f-mono);font-weight:700;font-size:1.15rem;justify-content:flex-end;white-space:nowrap}
+.formula .r.alert{color:var(--signal-ink)}
+.formula .r.good{color:var(--go)}
+@media (max-width:700px){.formula{grid-template-columns:1fr auto}.formula .e{grid-column:1/-1;order:3;padding-top:0}}
+.flash{animation:flash 700ms ease}
+@keyframes flash{0%{background:var(--signal-wash)}100%{background:transparent}}
+
+/* ===== questions ===== */
+.qs{border-top:1.5px solid var(--ink)}
+details.q{border-bottom:1px dashed var(--rule)}
+details.q summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:64px 1fr 28px;gap:14px;align-items:start;padding:18px 0}
+details.q summary::-webkit-details-marker{display:none}
+details.q .qn{font-family:var(--f-display);font-stretch:70%;font-weight:900;font-size:2.4rem;line-height:.85;color:var(--ghost);transition:color 200ms ease}
+details.q[open] .qn{color:var(--signal)}
+details.q .qt{font-family:var(--f-display);font-stretch:92%;font-weight:700;font-size:1.18rem;line-height:1.3;text-wrap:balance}
+details.q .chev{width:24px;height:24px;transition:transform 220ms var(--ease-out);color:var(--ink-2);margin-top:4px}
+details.q[open] .chev{transform:rotate(180deg)}
+@media (hover:hover) and (pointer:fine){details.q summary:hover .qn{color:var(--ink-3)}details.q[open] summary:hover .qn{color:var(--signal)}}
+.qa{padding:0 0 24px 78px;max-width:calc(78px + 76ch)}
+.qa p{margin:0 0 12px}
+.qa ul{margin:0 0 12px;padding-left:20px}
+.qa li{margin:4px 0}
+.qa .ev{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-display);font-stretch:90%;font-weight:700;font-size:.92rem;cursor:pointer;border:0;background:none;color:var(--blue-ink);padding:0;text-decoration:underline;text-underline-offset:3px}
+.qa .figs{margin:12px 0}
+.qa .figs .v{font-size:1.25rem}
+@media (max-width:640px){details.q summary{grid-template-columns:44px 1fr 24px}.qa{padding-left:0}}
+.hl-num{font-family:var(--f-mono);font-weight:700;background:var(--signal-wash);padding:0 4px;border-radius:4px;white-space:nowrap}
+.hl-blue{font-family:var(--f-mono);font-weight:700;background:var(--blue-wash);padding:0 4px;border-radius:4px;white-space:nowrap}
+
+/* ===== intro ===== */
+.params{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);margin:24px 0}
+.params div{padding:12px 14px;border-right:1px dashed var(--rule)}
+.params div:nth-child(4n){border-right:0}
+.params div:nth-child(n+5){border-top:1px dashed var(--rule)}
+.params b{display:block;font-family:var(--f-mono);font-size:1.15rem}
+.params span{font-size:.85rem;color:var(--ink-2)}
+@media (max-width:760px){.params{grid-template-columns:1fr 1fr}.params div:nth-child(2n){border-right:0}.params div:nth-child(n+3){border-top:1px dashed var(--rule)}}
+.route{list-style:none;padding:0;margin:16px 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-top:1.5px solid var(--ink)}
+.route li{border-right:1px dashed var(--rule);padding:14px 16px 16px}
+.route li:last-child{border-right:0}
+.route button{all:unset;cursor:pointer;display:block}
+.route .rn{font-family:var(--f-mono);font-size:.78rem;color:var(--signal-ink)}
+.route .rt{display:block;font-family:var(--f-display);font-stretch:85%;font-weight:800;font-size:1.25rem;line-height:1.15;margin:2px 0 6px;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px;transition:text-decoration-color 160ms ease}
+.route .rd{font-size:.9rem;color:var(--ink-2)}
+@media (hover:hover) and (pointer:fine){.route li:hover .rt{text-decoration-color:var(--signal)}}
+@media (max-width:900px){.route{grid-template-columns:1fr 1fr}.route li:nth-child(2n){border-right:0}}
+.verdict-big{font-family:var(--f-display);font-stretch:80%;font-weight:800;font-size:clamp(1.5rem,2.8vw,2.1rem);line-height:1.15;max-width:30ch;margin:14px 0;text-wrap:balance}
+.verdict-big em{font-style:normal;color:var(--signal)}
+.barcode{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:40px;color:var(--ink-3);font-family:var(--f-mono);font-size:.78rem}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:2px dotted var(--rule);margin-top:56px;padding-top:16px;font-family:var(--f-mono);font-size:.82rem;color:var(--ink-3)}
+.foot button{border:0;background:none;cursor:pointer;font-family:var(--f-display);font-stretch:90%;font-weight:700;font-size:1rem;color:var(--ink);display:inline-flex;gap:8px;align-items:center;padding:0}
+.foot button svg{width:18px;height:18px;transition:transform 160ms var(--ease-out)}
+@media (hover:hover) and (pointer:fine){.foot button:hover svg{transform:translateX(3px)}}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:1ms!important;scroll-behavior:auto!important}
+  .car,.cdf .marker{transition:opacity 200ms ease!important}
+  .view.on{animation:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4.5" width="4" height="15" rx="1" fill="currentColor"/><rect x="14" y="4.5" width="4" height="15" rx="1" fill="currentColor"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M5 5v14l10-7z" fill="currentColor"/><rect x="16" y="5" width="3" height="14" rx="1" fill="currentColor"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path d="M19 5v14L9 12z" fill="currentColor"/><rect x="5" y="5" width="3" height="14" rx="1" fill="currentColor"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-pump" viewBox="0 0 24 24"><path d="M5 20V5a1.5 1.5 0 0 1 1.5-1.5h6A1.5 1.5 0 0 1 14 5v15M3.5 20h12M7 7h5v4H7zM14 9h2.2a1.3 1.3 0 0 1 1.3 1.3V16a1.5 1.5 0 0 0 3 0V8.5L18 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m7.5 12.3 3 3 6-6.3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5 2.8 19.5h18.4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-dice" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="9" r="1.4" fill="currentColor"/><circle cx="15" cy="15" r="1.4" fill="currentColor"/><circle cx="15" cy="9" r="1.4" fill="currentColor"/><circle cx="9" cy="15" r="1.4" fill="currentColor"/></symbol>
+    <symbol id="i-double" viewBox="0 0 24 24"><rect x="3.5" y="7" width="11" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 4h9a2 2 0 0 1 2 2v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="mast">
+  <div>
+    <h1>Gasolinera · <span>1 surtidor</span>, 1 cola</h1>
+    <p>Simulación de eventos discretos (DES) con 100 vehículos por réplica, disciplina FIFO y unidades en minutos. Cada número de esta app se calcula en vivo a partir de los datos oficiales.</p>
+  </div>
+  <div class="pump-led" aria-label="Indicadores globales">
+    <div><small>ρ = λ/μ</small><b id="led-rho">1.5625</b></div>
+    <div><small>W̄q global</small><b id="led-wq">—</b></div>
+    <div><small>Réplicas</small><b id="led-n" class="ok">5</b></div>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Módulos">
+  <button class="tab" role="tab" data-v="inicio"><span class="t-n">00</span><span class="t-l">Planteamiento</span><span class="t-p">problema y ruta</span></button>
+  <button class="tab" role="tab" data-v="datos"><span class="t-n">Módulo 1</span><span class="t-l">Datos, χ² y transformada</span><span class="t-p">8 pts</span></button>
+  <button class="tab" role="tab" data-v="sim"><span class="t-n">Módulo 2</span><span class="t-l">Simulador en vivo</span><span class="t-p">10 pts</span></button>
+  <button class="tab" role="tab" data-v="rep"><span class="t-n">Módulo 3</span><span class="t-l">Réplicas e inferencia</span><span class="t-p">6 pts</span></button>
+  <button class="tab" role="tab" data-v="preg"><span class="t-n">Módulo 4</span><span class="t-l">Preguntas</span><span class="t-p">6 pts</span></button>
+</nav>
+
+<main>
+<div class="sheet-wrap"><div class="sheet">
+
+<!-- ================= INICIO ================= -->
+<section class="view" id="v-inicio" aria-labelledby="h-inicio">
+  <div class="ticket-head"><span><b>Escenario 2</b> · Gasolinera</span><span>1 servidor · 1 cola · FIFO</span><span>Semilla réplica 1: <b id="i-seed">—</b></span></div>
+  <h2 class="vt" id="h-inicio">Llegan más autos de los que el surtidor puede atender</h2>
+  <p class="lede">En promedio llega un vehículo cada <b class="num">2.56</b> min, pero atender a cada uno toma <b class="num">4.00</b> min. Esta app demuestra, con datos y con simulación, qué le pasa a la cola y qué conviene hacer.</p>
+
+  <div class="params">
+    <div><b>1</b><span>estación de atención (servidor)</span></div>
+    <div><b>FIFO</b><span>primero en llegar, primero en ser atendido</span></div>
+    <div><b>100</b><span>vehículos por réplica</span></div>
+    <div><b>t = 0</b><span>servidor libre y cola vacía</span></div>
+    <div><b id="i-reps">5 → 10</b><span>réplicas con semillas reproducibles</span></div>
+    <div><b>95 %</b><span>nivel de confianza (α = 0.05)</span></div>
+    <div><b>W̄<sub>q</sub></b><span>indicador: espera media en cola</span></div>
+    <div><b>≤ 10 %</b><span>error relativo máximo deseado</span></div>
+  </div>
+
+  <p class="verdict-big" id="i-verdict">—</p>
+  <p class="note" id="i-verdict-sub"></p>
+
+  <h3 class="st">Ruta de la exposición</h3>
+  <ol class="route">
+    <li><button data-go="datos"><span class="rn">Módulo 1 · 8 pts</span><span class="rt">Datos, χ² y transformada inversa</span><span class="rd">Tablas de frecuencias, medias, ρ, prueba de bondad de ajuste y cómo un número R se convierte en minutos.</span></button></li>
+    <li><button data-go="sim"><span class="rn">Módulo 2 · 10 pts</span><span class="rt">Simulador en vivo</span><span class="rd">Reproductor de los 100 vehículos, traza manual de 3 clientes, tabla completa y código del motor.</span></button></li>
+    <li><button data-go="rep"><span class="rn">Módulo 3 · 6 pts</span><span class="rt">Réplicas e inferencia</span><span class="rd">5 y 10 réplicas, intervalo de confianza al 95 %, error relativo, n* y escenarios ¿qué pasa si?</span></button></li>
+    <li><button data-go="preg"><span class="rn">Módulo 4 · 6 pts</span><span class="rt">Preguntas</span><span class="rd">5 técnicas, 5 de pensamiento crítico y 3 del escenario, respondidas con las cifras simuladas.</span></button></li>
+  </ol>
+  <p class="note">Atajos: teclas <span class="kbd">0</span>–<span class="kbd">4</span> cambian de módulo; en el simulador <span class="kbd">Espacio</span> reproduce o pausa y <span class="kbd">→</span> avanza un evento.</p>
+
+  <div class="barcode" aria-hidden="true"><svg id="barcode" width="260" height="46"></svg><span id="barcode-txt"></span></div>
+  <div class="foot"><span>Fin del planteamiento</span><button data-go="datos">Módulo 1: Datos y χ² <svg><use href="#i-arrow"/></svg></button></div>
+</section>
+
+<!-- ================= MÓDULO 1 ================= -->
+<section class="view" id="v-datos" aria-labelledby="h-datos">
+  <div class="ticket-head"><span><b>Módulo 1</b> · Análisis de datos</span><span>N = 50 observaciones por variable</span><span>8 pts</span></div>
+  <h2 class="vt" id="h-datos">De las frecuencias observadas a los números aleatorios</h2>
+  <p class="lede">Primero resumimos los datos, luego comprobamos con χ² si siguen una distribución teórica, y al final mostramos cómo cada número uniforme R se convierte en un tiempo.</p>
+
+  <h3 class="st">Tablas de frecuencias e intervalos de asignación</h3>
+  <p class="note">f<sub>i</sub> = O<sub>i</sub>/N es la probabilidad de cada valor; F<sub>i</sub> es la acumulada. El intervalo [F<sub>i−1</sub>, F<sub>i</sub>) indica qué números R ∈ [0, 1) producen ese valor.</p>
+  <div class="grid2">
+    <div><h4 class="ss">A · Tiempo entre llegadas T<sub>ll</sub> (min)</h4><div class="tw" id="t-tll"></div></div>
+    <div><h4 class="ss">B · Tiempo de servicio T<sub>s</sub> (min)</h4><div class="tw" id="t-ts"></div></div>
+  </div>
+  <div class="figs" id="m1-figs"></div>
+  <div class="rho">
+    <div class="eq">λ = 1/2.56 = 0.3906<br>μ = 1/4.00 = 0.2500<br>ρ = λ/μ = <b>1.5625</b></div>
+    <p><strong>ρ &gt; 1: la demanda supera la capacidad.</strong> El surtidor solo puede atender 0.25 vehículos por minuto, pero llegan 0.39. Cada minuto la cola crece en promedio λ − μ = <span class="num">0.1406</span> vehículos, así que el sistema no alcanza un estado estable y la espera aumenta con cada cliente.</p>
+  </div>
+
+  <h3 class="st">Prueba de bondad de ajuste χ²</h3>
+  <p class="note">Las barras comparan lo observado (O<sub>i</sub>) con lo que esperaríamos (E<sub>i</sub>) si los datos siguieran la distribución teórica. Las categorías con E<sub>i</sub> &lt; 5 se agrupan con su vecina antes de calcular χ².</p>
+  <div class="legend"><span><i style="background:var(--signal)"></i>Observado O<sub>i</sub></span><span><i style="background:var(--blue)"></i>Esperado E<sub>i</sub></span></div>
+  <div class="grid2" id="chi-blocks"></div>
+
+  <h4 class="ss">¿Por qué simulamos con la distribución empírica discreta?</h4>
+  <div class="prose">
+    <p>Ambas pruebas aceptan H<sub>0</sub>, así que las distribuciones teóricas son razonables. Aun así el simulador usa la <b>distribución empírica</b> mediante transformada inversa, por tres razones:</p>
+    <ul>
+      <li><b>Sin truncamiento.</b> La Poisson desplazada asigna probabilidad a valores mayores que 5 min (<span class="num" id="p-tail">—</span>) que nunca se observaron. Usarla obligaría a truncar o a generar tiempos irreales.</li>
+      <li><b>Fidelidad exacta.</b> La empírica reproduce exactamente las medias observadas (2.56 y 4.00), por lo que ρ = 1.5625 se respeta sin aproximaciones.</li>
+      <li><b>Trazabilidad.</b> Cada R cae en un intervalo de la tabla de arriba, y eso permite verificar a mano cualquier cliente, como exige la rúbrica.</li>
+    </ul>
+  </div>
+
+  <h3 class="st">Verificador de transformada inversa</h3>
+  <p class="note">Estos son los 5 primeros números aleatorios de la Réplica 1 (semilla <b class="num" id="ti-seed">—</b>). El orden de consumo es T<sub>ll</sub> y luego T<sub>s</sub> para cada cliente. Toca uno para ver dónde cae en la barra acumulada F(x).</p>
+  <div class="chips" id="ti-chips"></div>
+  <div class="bar"><div class="grp"><span class="lbl">O prueba tu propio R</span><input type="range" id="ti-slider" min="0" max="0.9999" step="0.0001" value="0.5" style="width:220px" aria-label="Valor de R"><span class="num" id="ti-sval">0.5000</span></div>
+    <div class="seg" id="ti-dist"><button data-d="tll" aria-pressed="true">T<sub>ll</sub></button><button data-d="ts" aria-pressed="false">T<sub>s</sub></button></div></div>
+  <div class="grid2">
+    <div>
+      <div class="cdf" id="cdf"></div>
+      <div class="lbl">Valores posibles</div>
+      <div class="ghostrow" id="ghost"></div>
+    </div>
+    <ol class="steps" id="ti-steps"></ol>
+  </div>
+  <div class="foot"><span>Fin del módulo 1</span><button data-go="sim">Módulo 2: Simulador <svg><use href="#i-arrow"/></svg></button></div>
+</section>
+
+<!-- ================= MÓDULO 2 ================= -->
+<section class="view" id="v-sim" aria-labelledby="h-sim">
+  <div class="ticket-head"><span><b>Módulo 2</b> · Simulador DES</span><span>1 cola FIFO → surtidor</span><span>10 pts</span></div>
+  <h2 class="vt" id="h-sim">Mira cómo crece la cola, evento por evento</h2>
+  <p class="lede">Cada auto es un cliente. Con borde punteado está esperando en la cola; relleno naranja significa que lo están atendiendo. El reloj salta de un evento al siguiente: llegada, inicio o fin de servicio.</p>
+
+  <div class="bar">
+    <div class="grp"><span class="lbl">Réplica</span><select class="sel" id="sv-rep" aria-label="Réplica"></select></div>
+    <div class="grp"><span class="lbl">Surtidores</span><div class="seg" id="sv-c"><button data-c="1" aria-pressed="true">1 (actual)</button><button data-c="2" aria-pressed="false">2 (propuesta)</button></div></div>
+    <div class="grp"><span class="lbl">Velocidad</span><div class="seg" id="sv-speed"><button data-s="2" aria-pressed="false">2×</button><button data-s="5" aria-pressed="true">5×</button><button data-s="12" aria-pressed="false">12×</button><button data-s="30" aria-pressed="false">30×</button></div></div>
+  </div>
+
+  <div class="sim">
+    <div>
+      <div class="stage" id="stage" aria-label="Animación de la cola y el surtidor">
+        <div class="road" id="road"></div>
+        <div class="canopy"><span class="lbl">Estación</span></div>
+        <div id="pumps"></div>
+        <div id="cars"></div>
+        <div class="overflow" id="ovf" style="opacity:0"></div>
+        <span class="entry">entrada →</span>
+      </div>
+      <div class="transport">
+        <button class="icon-btn" id="b-reset" aria-label="Reiniciar"><svg><use href="#i-reset"/></svg></button>
+        <button class="icon-btn" id="b-prev" aria-label="Evento anterior"><svg><use href="#i-prev"/></svg></button>
+        <button class="icon-btn big" id="b-play" aria-label="Reproducir"><svg><use href="#i-play"/></svg></button>
+        <button class="icon-btn" id="b-next" aria-label="Siguiente evento"><svg><use href="#i-next"/></svg></button>
+        <input type="range" id="scrub" min="0" max="100" step="0.01" value="0" aria-label="Línea de tiempo">
+      </div>
+      <h3 class="ss">Longitud de la cola en el tiempo</h3>
+      <svg class="chart" id="qchart" height="190" role="img" aria-label="Longitud de la cola en función del tiempo"></svg>
+      <p class="figcap" id="qcap"></p>
+    </div>
+    <aside class="side">
+      <div class="clock"><span class="lbl">Reloj de simulación</span><div class="digits"><span class="gh" aria-hidden="true">888.00</span><span class="lt" id="clk">000.00</span><small>min</small></div></div>
+      <div class="counters">
+        <div><b class="num" id="c-arr">0</b><span>han llegado</span></div>
+        <div><b class="num" id="c-q">0</b><span>en cola ahora</span></div>
+        <div><b class="num" id="c-done">0</b><span>ya atendidos</span></div>
+        <div><b class="num" id="c-wq">0.00</b><span>espera media hasta ahora</span></div>
+      </div>
+      <div class="now" id="now">Presiona reproducir o avanza paso a paso.</div>
+      <div><span class="lbl">Bitácora de eventos</span><ul class="log" id="log"></ul></div>
+    </aside>
+  </div>
+
+  <div class="subtabs" role="tablist">
+    <button role="tab" data-p="traza" aria-selected="true">Traza manual de 3 clientes</button>
+    <button role="tab" data-p="tabla" aria-selected="false">Tabla completa (100 clientes)</button>
+    <button role="tab" data-p="codigo" aria-selected="false">Código del motor</button>
+  </div>
+  <div class="pane on" data-pane="traza">
+    <div class="bar">
+      <div class="grp"><span class="lbl">Réplica</span><select class="sel" id="tr-rep" aria-label="Réplica de la traza"></select></div>
+      <div class="grp"><span class="lbl">Desde el cliente</span><input type="range" id="tr-i" min="1" max="98" value="1" style="width:200px" aria-label="Cliente inicial"><b class="num" id="tr-iv">1</b></div>
+    </div>
+    <p class="note">Cada comprobante reconstruye a mano un cliente con las cuatro ecuaciones del modelo. Compara los resultados con la fila correspondiente de la tabla completa: deben coincidir.</p>
+    <div class="receipts" id="receipts"></div>
+  </div>
+  <div class="pane" data-pane="tabla">
+    <div class="bar"><div class="grp"><span class="lbl">Réplica</span><select class="sel" id="tb-rep" aria-label="Réplica de la tabla"></select></div><div class="grp"><span class="lbl">Surtidores</span><div class="seg" id="tb-c"><button data-c="1" aria-pressed="true">1</button><button data-c="2" aria-pressed="false">2</button></div></div></div>
+    <p class="note">Las filas resaltadas son los clientes de la traza manual. "Cola al llegar" cuenta los vehículos que ya esperaban cuando llegó ese cliente.</p>
+    <div class="tw" style="max-height:560px;overflow:auto" id="full-table"></div>
+  </div>
+  <div class="pane" data-pane="codigo">
+    <p class="note">Este es el código real que ejecuta la app; se muestra directamente desde el motor, así que lo que ves es lo que corre.</p>
+    <pre class="code" id="code"></pre>
+  </div>
+  <div class="foot"><span>Fin del módulo 2</span><button data-go="rep">Módulo 3: Réplicas e inferencia <svg><use href="#i-arrow"/></svg></button></div>
+</section>
+
+<!-- ================= MÓDULO 3 ================= -->
+<section class="view" id="v-rep" aria-labelledby="h-rep">
+  <div class="ticket-head"><span><b>Módulo 3</b> · Réplicas e inferencia</span><span>Mulberry32 · semillas deterministas</span><span>6 pts</span></div>
+  <h2 class="vt" id="h-rep">Una corrida no basta: repetimos y medimos la incertidumbre</h2>
+  <p class="lede">Cada réplica usa una semilla distinta y produce su propio W̄<sub>q,j</sub>. Con esos valores construimos un intervalo de confianza al 95 % para la espera media.</p>
+
+  <h3 class="st">Panel de control</h3>
+  <div class="bar">
+    <div class="grp"><span class="lbl">Réplicas</span><div class="seg" id="rp-n"><button data-n="5" aria-pressed="true">n = 5</button><button data-n="10" aria-pressed="false">n = 10</button></div></div>
+    <button class="btn signal" id="rp-double"><svg><use href="#i-double"/></svg>Duplicar réplicas (5 → 10)</button>
+    <div class="grp"><span class="lbl">Escenario</span><div class="seg" id="rp-sc"><button data-sc="base" aria-pressed="true">1 surtidor</button><button data-sc="dos" aria-pressed="false">2 surtidores</button><button data-sc="rapido" aria-pressed="false">Servicio −20 %</button></div></div>
+  </div>
+  <div class="lbl" style="margin-top:12px">Semillas (edítalas y presiona Enter)</div>
+  <div class="seeds" id="seeds"></div>
+  <div class="bar"><button class="btn" id="rp-reset"><svg><use href="#i-reset"/></svg>Semillas originales</button><button class="btn" id="rp-rand"><svg><use href="#i-dice"/></svg>Semillas nuevas al azar</button></div>
+
+  <h3 class="st" id="rp-title">Resultados por réplica</h3>
+  <div class="tw" id="rp-table"></div>
+
+  <h3 class="st">Inferencia estadística</h3>
+  <div class="formula" id="rp-formula"></div>
+  <div id="rp-verdict"></div>
+
+  <h4 class="ss">Efecto de duplicar las réplicas en el intervalo</h4>
+  <p class="note">Cada punto es el W̄<sub>q</sub> de una réplica; la barra es el IC al 95 %. Con más réplicas, h se reduce aproximadamente en proporción a 1/√n (y además baja el valor t).</p>
+  <svg class="chart" id="ci-chart" height="220" role="img" aria-label="Comparación de intervalos de confianza con 5 y 10 réplicas"></svg>
+  <p class="figcap" id="ci-cap"></p>
+
+  <h3 class="st">Simulador de sensibilidad: ¿qué pasa si…?</h3>
+  <p class="note">Las mismas semillas, aplicadas a tres configuraciones. Así la comparación es justa: la diferencia se debe al cambio en el sistema, no al azar (números aleatorios comunes).</p>
+  <div class="tw" id="sc-table"></div>
+  <svg class="chart" id="sc-chart" height="170" role="img" aria-label="Espera media por escenario"></svg>
+  <p class="figcap">Espera media en cola por escenario con su IC 95 %. Barra naranja: escenario seleccionado arriba.</p>
+  <div class="foot"><span>Fin del módulo 3</span><button data-go="preg">Módulo 4: Preguntas <svg><use href="#i-arrow"/></svg></button></div>
+</section>
+
+<!-- ================= MÓDULO 4 ================= -->
+<section class="view" id="v-preg" aria-labelledby="h-preg">
+  <div class="ticket-head"><span><b>Módulo 4</b> · Preguntas y escenario</span><span>respuestas con cifras en vivo</span><span>6 pts</span></div>
+  <h2 class="vt" id="h-preg">Lo que la simulación nos permite afirmar</h2>
+  <p class="lede">Cada respuesta usa los resultados actuales del simulador (semillas y número de réplicas del Módulo 3). Si cambias las semillas, las cifras de aquí también cambian.</p>
+  <div class="subtabs" role="tablist" id="q-tabs">
+    <button role="tab" data-p="tec" aria-selected="true">5 preguntas técnicas</button>
+    <button role="tab" data-p="cri" aria-selected="false">5 de pensamiento crítico</button>
+    <button role="tab" data-p="esc" aria-selected="false">3 del escenario 2</button>
+  </div>
+  <div class="pane on qs" data-pane="tec" id="q-tec"></div>
+  <div class="pane qs" data-pane="cri" id="q-cri"></div>
+  <div class="pane qs" data-pane="esc" id="q-esc"></div>
+  <div class="foot"><span>Fin del comprobante · gracias por su visita</span><button data-go="inicio">Volver al planteamiento <svg><use href="#i-arrow"/></svg></button></div>
+</section>
+
+</div></div>
+</main>
+<div id="tip" role="tooltip"></div>
+
+<!-- ================= MOTOR DE SIMULACIÓN ================= -->
+<script id="engine">
+// Datos observados (N = 50)
+const DATA = {
+  tll: { values: [1, 2, 3, 4, 5], freq: [10, 15, 15, 7, 3] },
+  ts:  { values: [2, 3, 4, 5, 6], freq: [5, 10, 20, 10, 5] }
+};
+
+// Generador pseudoaleatorio reproducible: misma semilla → misma secuencia
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296; // R ∈ [0, 1)
+  };
+}
+
+// Distribución empírica: f_i = O_i / N, F_i acumulada
+function buildDist({ values, freq }) {
+  const N = freq.reduce((s, x) => s + x, 0);
+  let acc = 0;
+  const rows = values.map((x, i) => {
+    const lo = acc / N;
+    acc += freq[i];
+    return { x, O: freq[i], f: freq[i] / N, lo, F: acc / N };
+  });
+  const mean = rows.reduce((s, r) => s + r.x * r.f, 0);
+  const varPop = rows.reduce((s, r) => s + r.f * (r.x - mean) ** 2, 0);
+  return { N, rows, mean, varPop, varS: varPop * N / (N - 1) };
+}
+
+// Transformada inversa: devuelve x_i tal que F_{i-1} <= R < F_i
+function inverse(dist, R) {
+  for (const r of dist.rows) if (R < r.F) return r.x;
+  return dist.rows[dist.rows.length - 1].x;
+}
+
+const TLL = buildDist(DATA.tll);
+const TS = buildDist(DATA.ts);
+
+// Simulación de eventos discretos: c servidores, una cola FIFO
+function simulate(seed, { servers = 1, serviceFactor = 1, N = 100 } = {}) {
+  const rand = mulberry32(seed);
+  const freeAt = new Array(servers).fill(0);   // momento en que cada surtidor queda libre
+  const rows = [];
+  let clock = 0;                               // t = 0: sistema vacío
+
+  for (let i = 1; i <= N; i++) {
+    const rLl = rand(), tll = inverse(TLL, rLl);
+    const rS = rand(), ts = inverse(TS, rS) * serviceFactor;
+
+    const arrival = clock + tll;               // Llegada_i = Llegada_{i-1} + T_ll,i
+    clock = arrival;
+    let k = 0;                                 // surtidor que se libera primero
+    for (let j = 1; j < servers; j++) if (freeAt[j] < freeAt[k]) k = j;
+    const start = Math.max(arrival, freeAt[k]); // Inicio_i = max(Llegada_i, Fin_{i-1})
+    const wait = start - arrival;              // Espera_i = Inicio_i - Llegada_i
+    const end = start + ts;                    // Fin_i = Inicio_i + T_s,i
+    freeAt[k] = end;
+
+    rows.push({ i, rLl, tll, arrival, rS, ts, start, wait, end, server: k + 1, system: end - arrival });
+  }
+
+  // Vehículos esperando en la cola en el instante en que llega cada cliente
+  for (const r of rows) {
+    r.queueOnArrival = rows.filter(o => o.i < r.i && o.start > r.arrival).length;
+  }
+  return { seed, servers, serviceFactor, rows, metrics: summarize(rows, servers) };
+}
+
+function summarize(rows, servers) {
+  const n = rows.length, last = rows[n - 1];
+  const waits = rows.map(r => r.wait).sort((a, b) => a - b);
+  const makespan = Math.max(...rows.map(r => r.end));
+  const busy = rows.reduce((s, r) => s + r.ts, 0);
+  return {
+    meanWq: waits.reduce((s, w) => s + w, 0) / n,
+    maxWq: waits[n - 1],
+    p90Wq: waits[Math.ceil(0.9 * n) - 1],
+    pctWait: rows.filter(r => r.wait > 0).length / n,
+    meanW: rows.reduce((s, r) => s + r.system, 0) / n,
+    util: busy / (servers * makespan),
+    finalQueue: last.queueOnArrival + (last.wait > 0 ? 1 : 0),
+    makespan,
+    lastArrival: last.arrival,
+    meanTll: rows.reduce((s, r) => s + r.tll, 0) / n,
+    meanTs: rows.reduce((s, r) => s + r.ts, 0) / n
+  };
+}
+
+// Valores críticos t de Student, t_{0.025, gl}
+const T_TABLE = [12.706, 4.303, 3.182, 2.776, 2.571, 2.447, 2.365, 2.306, 2.262, 2.228,
+  2.201, 2.179, 2.160, 2.145, 2.131, 2.120, 2.110, 2.101, 2.093, 2.086,
+  2.080, 2.074, 2.069, 2.064, 2.060, 2.056, 2.052, 2.048, 2.045, 2.042];
+const tCrit = gl => gl <= 30 ? T_TABLE[gl - 1] : gl <= 60 ? 2.000 : 1.980;
+
+// Intervalo de confianza al 95 % y réplicas necesarias para error relativo ≤ 10 %
+function confidence(values, maxRelErr = 0.10) {
+  const n = values.length;
+  const mean = values.reduce((s, x) => s + x, 0) / n;
+  const S = Math.sqrt(values.reduce((s, x) => s + (x - mean) ** 2, 0) / (n - 1));
+  const t = tCrit(n - 1);
+  const h = t * S / Math.sqrt(n);
+  const nStar = Math.ceil((t * S / (maxRelErr * mean)) ** 2);
+  return { n, mean, S, t, h, lo: mean - h, hi: mean + h, relErr: h / mean, nStar };
+}
+</script>
+
+<!-- ================= χ² ================= -->
+<script>
+const CHI_CRIT = [3.841, 5.991, 7.815, 9.488, 11.070, 12.592, 14.067, 15.507, 16.919, 18.307];
+function lnGamma(z){const g=7,c=[0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];if(z<0.5)return Math.log(Math.PI/Math.sin(Math.PI*z))-lnGamma(1-z);z-=1;let x=c[0];for(let i=1;i<g+2;i++)x+=c[i]/(z+i);const t=z+g+0.5;return 0.5*Math.log(2*Math.PI)+(z+0.5)*Math.log(t)-t+Math.log(x);}
+function lowerGammaP(s,x){if(x<=0)return 0;let sum=1/s,term=1/s;for(let n=1;n<200;n++){term*=x/(s+n);sum+=term;if(term<sum*1e-12)break;}return Math.exp(-x+s*Math.log(x)-lnGamma(s))*sum;}
+const chiPValue=(x,gl)=>1-lowerGammaP(gl/2,x/2);
+const fact=n=>n<=1?1:n*fact(n-1);
+const comb=(n,k)=>fact(n)/(fact(k)*fact(n-k));
+
+function chiTest(dist, kind){
+  const N=dist.N, vals=dist.rows.map(r=>r.x);
+  let probs, desc, m=1, param;
+  if(kind==='poisson'){
+    const a=vals[0], lam=dist.mean-a; param=lam;
+    probs=vals.map((x,i)=>{const k=x-a;const p=Math.exp(-lam)*lam**k/fact(k);return p;});
+    const sumButLast=probs.slice(0,-1).reduce((s,p)=>s+p,0);
+    probs[probs.length-1]=1-sumButLast; // última categoría absorbe la cola (≥ 5)
+    desc={name:'Poisson desplazada',h0:`T<sub>ll</sub> − 1 ~ Poisson(m = ${lam.toFixed(2)})`,est:`m = x̄ − 1 = 2.56 − 1 = ${lam.toFixed(2)}`,labels:vals.map((x,i)=>i===vals.length-1?`≥ ${x}`:`${x}`)};
+  } else {
+    const a=vals[0], nT=vals.length-1, p=(dist.mean-a)/nT; param=p;
+    probs=vals.map(x=>comb(nT,x-a)*p**(x-a)*(1-p)**(nT-(x-a)));
+    desc={name:'Binomial simétrica',h0:`T<sub>s</sub> − 2 ~ Binomial(n = 4, p = ${p.toFixed(2)})`,est:`p = (ȳ − 2)/4 = (4.00 − 2)/4 = ${p.toFixed(2)}`,labels:vals.map(String)};
+  }
+  const cats=vals.map((x,i)=>({labels:[desc.labels[i]],O:dist.rows[i].O,E:N*probs[i],p:probs[i]}));
+  // Agrupar categorías adyacentes mientras alguna tenga E < 5
+  let groups=cats.map(c=>({...c,labels:[...c.labels]}));
+  while(groups.length>1){
+    const idx=groups.findIndex(g=>g.E<5); if(idx<0)break;
+    const j = idx===groups.length-1 ? idx-1 : (idx===0 ? 1 : (groups[idx-1].E<groups[idx+1].E?idx-1:idx+1));
+    const a=Math.min(idx,j), b=Math.max(idx,j);
+    const merged={labels:[...groups[a].labels,...groups[b].labels],O:groups[a].O+groups[b].O,E:groups[a].E+groups[b].E,p:groups[a].p+groups[b].p,merged:true};
+    groups.splice(a,2,merged);
+  }
+  groups.forEach(g=>g.chi=(g.O-g.E)**2/g.E);
+  const chi=groups.reduce((s,g)=>s+g.chi,0), k=groups.length, gl=k-1-m;
+  const crit=CHI_CRIT[gl-1], pv=chiPValue(chi,gl);
+  return {kind,desc,cats,groups,chi,k,m,gl,crit,pv,accept:chi<crit,param,tail:kind==='poisson'?1-cats.slice(0,-1).reduce((s,c)=>s+c.p,0)-0:0};
+}
+</script>
+
+<!-- ================= APP ================= -->
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const f2=x=>Number.isFinite(x)?x.toFixed(2):'—';
+const f4=x=>x.toFixed(4);
+const fx=x=>Math.abs(x-Math.round(x))<1e-9?String(Math.round(x)):x.toFixed(2);
+const pct=x=>(x*100).toFixed(1)+' %';
+
+const DEFAULT_SEEDS=[12345,67890,24680,13579,98765,31415,27182,16180,44444,77777];
+const SCEN={base:{label:'1 surtidor (actual)',servers:1,serviceFactor:1},dos:{label:'2 surtidores (propuesta)',servers:2,serviceFactor:1},rapido:{label:'1 surtidor, servicio −20 %',servers:1,serviceFactor:0.8}};
+const S={seeds:[...DEFAULT_SEEDS],n:5,sc:'base',runs:{},chi:{}};
+
+function recompute(){
+  S.runs={};
+  for(const k in SCEN) S.runs[k]=S.seeds.map(sd=>simulate(sd,SCEN[k]));
+}
+const active=(sc=S.sc,n=S.n)=>S.runs[sc].slice(0,n);
+const ciOf=(sc=S.sc,n=S.n)=>confidence(active(sc,n).map(r=>r.metrics.meanWq));
+
+/* ---------- tooltip ---------- */
+const tip=$('#tip');
+function showTip(e,html){tip.innerHTML=html;tip.classList.add('on');moveTip(e);}
+function moveTip(e){const x=Math.min(e.clientX+14,innerWidth-tip.offsetWidth-10),y=Math.max(10,e.clientY-tip.offsetHeight-12);tip.style.left=x+'px';tip.style.top=y+'px';}
+function hideTip(){tip.classList.remove('on');}
+function bindTips(root){root.querySelectorAll('[data-tip]').forEach(el=>{el.addEventListener('pointerenter',e=>showTip(e,el.dataset.tip));el.addEventListener('pointermove',moveTip);el.addEventListener('pointerleave',hideTip);});}
+
+/* ---------- navigation ---------- */
+const VIEWS=['inicio','datos','sim','rep','preg'];
+function go(v,push=true){
+  if(!VIEWS.includes(v))v='inicio';
+  $$('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));
+  $$('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.v===v));
+  if(push&&location.hash!=='#'+v)history.replaceState(null,'','#'+v);
+  if(v==='sim')requestAnimationFrame(()=>{layoutStage();renderViz();});
+  if(v!=='sim'&&viz.playing)togglePlay(false);
+  window.scrollTo({top:0,behavior:'instant'});
+}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>go(t.dataset.v)));
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go);});
+
+/* ---------- MÓDULO 1 ---------- */
+function freqTable(dist,sym){
+  return `<table class="rt"><thead><tr><th>${sym}</th><th>O<sub>i</sub></th><th>f<sub>i</sub></th><th>F<sub>i</sub></th><th>Intervalo de R</th></tr></thead><tbody>${
+    dist.rows.map(r=>`<tr><td class="w">${r.x}</td><td>${r.O}</td><td>${r.f.toFixed(2)}</td><td>${r.F.toFixed(2)}</td><td>[${r.lo.toFixed(2)}, ${r.F.toFixed(2)})</td></tr>`).join('')
+  }</tbody><tfoot><tr><td>Total</td><td>${dist.N}</td><td>1.00</td><td></td><td></td></tr></tfoot></table>`;
+}
+function renderM1(){
+  $('#t-tll').innerHTML=freqTable(TLL,'T<sub>ll</sub>');
+  $('#t-ts').innerHTML=freqTable(TS,'T<sub>s</sub>');
+  $('#m1-figs').innerHTML=[
+    ['x̄<sub>ll</sub> = '+TLL.mean.toFixed(2),'media entre llegadas (min)'],
+    ['s²<sub>ll</sub> = '+TLL.varS.toFixed(4),'varianza muestral (σ² pobl. '+TLL.varPop.toFixed(4)+')'],
+    ['ȳ<sub>s</sub> = '+TS.mean.toFixed(2),'media de servicio (min)'],
+    ['s²<sub>s</sub> = '+TS.varS.toFixed(4),'varianza muestral (σ² pobl. '+TS.varPop.toFixed(4)+')'],
+    ['λ = '+(1/TLL.mean).toFixed(4),'llegadas por minuto'],
+    ['μ = '+(1/TS.mean).toFixed(4),'servicios por minuto']
+  ].map(([v,d])=>`<div class="fig"><span class="v">${v}</span><span class="d">${d}</span></div>`).join('');
+
+  S.chi.tll=chiTest(TLL,'poisson'); S.chi.ts=chiTest(TS,'binomial');
+  $('#p-tail').textContent='P(T ≥ 6) ≈ '+(1-[0,1,2,3,4].reduce((s,k)=>s+Math.exp(-1.56)*1.56**k/fact(k),0)).toFixed(4);
+  $('#chi-blocks').innerHTML=[['tll','A · Llegadas','T<sub>ll</sub>'],['ts','B · Servicio','T<sub>s</sub>']].map(([k,t,sym])=>{
+    const c=S.chi[k];
+    return `<div>
+      <h4 class="ss">${t}: ${c.desc.name}</h4>
+      <div class="hyp"><b>H₀</b><span>${c.desc.h0}</span><b>H₁</b><span>${sym} no sigue esa distribución</span></div>
+      <p class="note" style="margin:2px 0 8px">Parámetro estimado de los datos: <span class="num">${c.desc.est}</span>, por eso m = 1.</p>
+      <svg class="chart" id="chi-ch-${k}" height="170" role="img" aria-label="Observado contra esperado"></svg>
+      <div class="tw"><table class="rt"><thead><tr><th>Categoría</th><th>O<sub>i</sub></th><th>E<sub>i</sub></th><th>(O−E)²/E</th></tr></thead><tbody>${
+        c.groups.map(g=>`<tr class="${g.merged?'grp':''}"><td>${g.labels.join(' + ')}${g.merged?` <span class="bracket">agrupada</span>`:''}</td><td>${g.O}</td><td>${g.E.toFixed(3)}</td><td>${g.chi.toFixed(4)}</td></tr>`).join('')
+      }</tbody><tfoot><tr><td>χ² calculado</td><td>50</td><td>50.000</td><td>${c.chi.toFixed(4)}</td></tr></tfoot></table></div>
+      <div class="formula" style="grid-template-columns:1fr auto">
+        <div class="n">Categorías tras agrupar (k)</div><div class="r">${c.k}</div>
+        <div class="n">Grados de libertad gl = k − 1 − m</div><div class="r">${c.k} − 1 − ${c.m} = ${c.gl}</div>
+        <div class="n">Valor crítico χ²<sub>0.05, ${c.gl}</sub></div><div class="r">${c.crit.toFixed(3)}</div>
+        <div class="n">Valor p</div><div class="r">${c.pv.toFixed(4)}</div>
+      </div>
+      <div class="verdict ${c.accept?'':'bad'}"><svg><use href="#i-${c.accept?'check':'alert'}"/></svg><p><b>${c.accept?'No se rechaza H₀':'Se rechaza H₀'}.</b> χ² = ${c.chi.toFixed(3)} ${c.accept?'&lt;':'≥'} ${c.crit.toFixed(3)}: ${c.accept?'la diferencia entre O y E se explica por el azar.':'los datos no se ajustan.'}</p></div>
+    </div>`;}).join('');
+  ['tll','ts'].forEach(k=>chiChart('#chi-ch-'+k,S.chi[k]));
+  bindTips($('#chi-blocks'));
+}
+function chiChart(sel,c){
+  const svg=$(sel), W=svg.clientWidth||460, H=170, m={l:34,r:8,t:14,b:26};
+  const max=Math.max(...c.cats.flatMap(x=>[x.O,x.E])), yMax=Math.ceil(max/5)*5;
+  const iw=W-m.l-m.r, ih=H-m.t-m.b, gw=iw/c.cats.length, bw=Math.min(26,gw/2-6);
+  const y=v=>m.t+ih-(v/yMax)*ih;
+  let s=`<g class="grid">${[0,5,10,15,20].filter(v=>v<=yMax).map(v=>`<line x1="${m.l}" x2="${W-m.r}" y1="${y(v)}" y2="${y(v)}"/><text x="${m.l-8}" y="${y(v)+4}" text-anchor="end">${v}</text>`).join('')}</g>`;
+  c.cats.forEach((cat,i)=>{
+    const cx=m.l+gw*i+gw/2;
+    const bar=(v,x,col,lab)=>{const h=Math.max(0,y(0)-y(v));return `<path d="M${x},${y(0)} v${-Math.max(0,h-4)} q0,-4 4,-4 h${bw-8} q4,0 4,4 v${Math.max(0,h-4)} z" fill="${col}" data-tip="${lab}"/>`;};
+    s+=bar(cat.O,cx-bw-1,'var(--signal)',`Valor ${cat.labels[0]}<br>Observado O = ${cat.O}`);
+    s+=bar(cat.E,cx+1,'var(--blue)',`Valor ${cat.labels[0]}<br>Esperado E = ${cat.E.toFixed(3)}${cat.E<5?'<br>E &lt; 5 → se agrupa':''}`);
+    if(cat.E<5)s+=`<text x="${cx+1+bw/2}" y="${y(cat.E)-5}" text-anchor="middle" style="fill:var(--blue-ink);font-weight:700">&lt;5</text>`;
+    s+=`<text x="${cx}" y="${H-8}" text-anchor="middle">${cat.labels[0]}</text>`;
+  });
+  s+=`<line x1="${m.l}" x2="${W-m.r}" y1="${y(0)}" y2="${y(0)}" stroke="var(--ink)" stroke-width="1.2"/>`;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.innerHTML=s;
+}
+
+/* inverse transform verifier */
+const ti={dist:'tll',R:null,sel:0};
+function firstRs(){const r=active('base',1)[0].rows;return [{R:r[0].rLl,d:'tll',who:'T<sub>ll</sub> · cliente 1',val:r[0].tll},{R:r[0].rS,d:'ts',who:'T<sub>s</sub> · cliente 1',val:r[0].ts},{R:r[1].rLl,d:'tll',who:'T<sub>ll</sub> · cliente 2',val:r[1].tll},{R:r[1].rS,d:'ts',who:'T<sub>s</sub> · cliente 2',val:r[1].ts},{R:r[2].rLl,d:'tll',who:'T<sub>ll</sub> · cliente 3',val:r[2].tll}];}
+function renderTIChips(){
+  const rs=firstRs(); $('#ti-seed').textContent=S.seeds[0];
+  $('#ti-chips').innerHTML=rs.map((x,i)=>`<button class="chip" data-i="${i}" aria-pressed="${ti.sel===i}"><span class="k">R${i+1}</span><span class="r">${f4(x.R)}</span><span class="w">${x.who} → <b>${x.val} min</b></span></button>`).join('');
+  $$('#ti-chips .chip').forEach(b=>b.addEventListener('click',()=>{ti.sel=+b.dataset.i;const x=rs[ti.sel];ti.dist=x.d;ti.R=x.R;$('#ti-slider').value=x.R;renderTI();renderTIChips();}));
+  if(ti.R===null){ti.R=rs[0].R;ti.dist='tll';$('#ti-slider').value=ti.R;}
+}
+function renderTI(){
+  const D=ti.dist==='tll'?TLL:TS, R=ti.R, x=inverse(D,R), row=D.rows.find(r=>r.x===x);
+  $$('#ti-dist button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.d===ti.dist));
+  $('#ti-sval').textContent=f4(R);
+  const cdf=$('#cdf');
+  if(!cdf.dataset.d||cdf.dataset.d!==ti.dist){
+    cdf.dataset.d=ti.dist;
+    cdf.innerHTML=`<div class="marker"><b></b><i></i></div><div class="track">${D.rows.map(r=>`<div class="seg-c" data-x="${r.x}" style="width:${r.f*100}%">${r.x}</div>`).join('')}</div><div class="ticks">${['0',...D.rows.map(r=>r.F.toFixed(2))].map((t,i)=>`<span style="left:${i===0?0:D.rows[i-1].F*100}%">${t}</span>`).join('')}</div>`;
+    $('#ghost').innerHTML=D.rows.map(r=>`<span data-x="${r.x}">${r.x}</span>`).join('');
+  }
+  cdf.querySelector('.marker').style.left=(R*100)+'%';
+  cdf.querySelector('.marker b').textContent='R = '+f4(R);
+  cdf.querySelectorAll('.seg-c').forEach(s=>s.classList.toggle('hit',+s.dataset.x===x));
+  $$('#ghost span').forEach(s=>s.classList.toggle('on',+s.dataset.x===x));
+  const sym=ti.dist==='tll'?'T<sub>ll</sub>':'T<sub>s</sub>';
+  $('#ti-steps').innerHTML=`
+    <li><div>Se genera un número uniforme<br><span class="mono"><b>R = ${f4(R)}</b></span></div></li>
+    <li><div>Se busca el intervalo acumulado que lo contiene<br><span class="mono">F(${row.x-1===D.rows[0].x-1?'—':row.x-1}) = ${row.lo.toFixed(2)} ≤ ${f4(R)} &lt; ${row.F.toFixed(2)} = F(${row.x})</span></div></li>
+    <li><div>El valor de ese intervalo es el tiempo simulado<br><span class="mono"><b>${sym} = ${x} min</b></span> <span class="note">(probabilidad f = ${row.f.toFixed(2)})</span></div></li>`;
+}
+$('#ti-slider').addEventListener('input',e=>{ti.R=+e.target.value;ti.sel=-1;renderTI();$$('#ti-chips .chip').forEach(c=>c.setAttribute('aria-pressed','false'));});
+$$('#ti-dist button').forEach(b=>b.addEventListener('click',()=>{ti.dist=b.dataset.d;ti.sel=-1;$$('#ti-chips .chip').forEach(c=>c.setAttribute('aria-pressed','false'));renderTI();}));
+
+/* ---------- MÓDULO 2: visualizer ---------- */
+const viz={rep:0,c:1,t:0,playing:false,speed:5,run:null,events:[],qSteps:[],last:0,cars:new Map(),geom:null};
+function vizRun(){return simulate(S.seeds[viz.rep],{servers:viz.c,serviceFactor:1});}
+function prepViz(){
+  viz.run=vizRun();
+  const ev=[];
+  viz.run.rows.forEach(r=>{ev.push({t:r.arrival,type:'a',r});ev.push({t:r.start,type:'s',r});ev.push({t:r.end,type:'f',r});});
+  const pr={f:0,a:1,s:2};
+  ev.sort((a,b)=>a.t-b.t||pr[a.type]-pr[b.type]||a.r.i-b.r.i);
+  viz.events=ev;
+  // step function of queue length
+  let q=0; const steps=[{t:0,q:0}];
+  ev.forEach(e=>{if(e.type==='a')q++;if(e.type==='s')q--;const l=steps[steps.length-1];if(l.t===e.t)l.q=q;else steps.push({t:e.t,q});});
+  viz.qSteps=steps;
+  viz.T=viz.run.metrics.makespan;
+  $('#scrub').max=viz.T; viz.t=Math.min(viz.t,viz.T);
+  $('#stage').classList.toggle('two',viz.c===2);
+  viz.cars.forEach(el=>el.remove()); viz.cars.clear();
+  layoutStage(); drawQChart();
+}
+function layoutStage(){
+  const st=$('#stage'); const W=st.clientWidth, H=st.clientHeight; if(!W)return;
+  const two=viz.c===2;
+  const roadTop=two?70:110, roadH=two?220:80;
+  const road=$('#road'); road.style.top=roadTop+'px'; road.style.height=roadH+'px';
+  const pumpYs=two?[roadTop+18,roadTop+roadH-18-58]:[roadTop+11];
+  $('#pumps').innerHTML=pumpYs.map((y,k)=>`<div class="pump" id="pump${k}" style="top:${y}px"><svg><use href="#i-pump"/></svg></div><div class="prog" style="top:${y+64}px"><i id="prog${k}" style="transform:scaleX(0)"></i></div><div class="pump-tag" id="ptag${k}" style="top:${k===1?y+74:y-46}px;right:18px"><b class="free">Libre</b><span>surtidor ${k+1}</span></div>`).join('');
+  const qY=two?roadTop+roadH/2-15:roadTop+25;
+  const headX=W-170-90-58; const slot=66;
+  viz.geom={W,qY,headX,slot,pumpYs,maxSlots:Math.max(1,Math.floor((headX-150)/slot)+1),srvX:W-30-42-66};
+  $('#ovf').style.top=(qY+3)+'px';
+}
+function carEl(r){
+  let el=viz.cars.get(r.i);
+  if(!el){el=document.createElement('div');el.className='car';el.innerHTML=`<svg viewBox="0 0 58 30"><rect class="body" x="1" y="2" width="56" height="26" rx="9"/><rect class="glass" x="36" y="6" width="10" height="18" rx="3"/></svg><span>${r.i}</span>`;
+    el.style.transform=`translate(-70px,${viz.geom.qY}px)`;el.style.opacity='0';$('#cars').appendChild(el);viz.cars.set(r.i,el);el.getBoundingClientRect();}
+  return el;
+}
+function stateAt(t){
+  const rows=viz.run.rows,eps=1e-9;
+  const queue=rows.filter(r=>r.arrival<=t+eps&&r.start>t+eps);
+  const serving=rows.filter(r=>r.start<=t+eps&&r.end>t+eps);
+  const done=rows.filter(r=>r.end<=t+eps);
+  const arrived=rows.filter(r=>r.arrival<=t+eps);
+  return {queue,serving,done,arrived};
+}
+function renderViz(){
+  if(!viz.run||!viz.geom)return;
+  const t=viz.t,g=viz.geom,st=stateAt(t);
+  const keep=new Set();
+  st.queue.forEach((r,k)=>{
+    if(k>=g.maxSlots)return; keep.add(r.i);
+    const el=carEl(r); el.classList.remove('srv'); el.style.opacity='1';
+    el.style.transform=`translate(${g.headX-k*g.slot}px,${g.qY}px)`;
+  });
+  st.serving.forEach(r=>{keep.add(r.i);const el=carEl(r);el.classList.add('srv');el.style.opacity='1';el.style.transform=`translate(${g.srvX}px,${g.pumpYs[r.server-1]+14}px)`;});
+  st.done.filter(r=>t-r.end<2.5).forEach(r=>{keep.add(r.i);const el=viz.cars.get(r.i);if(el){el.classList.add('srv');el.style.opacity='0';el.style.transform=`translate(${g.W+20}px,${g.pumpYs[r.server-1]+14}px)`;}});
+  viz.cars.forEach((el,i)=>{if(!keep.has(i)){el.remove();viz.cars.delete(i);}});
+  const extra=st.queue.length-g.maxSlots; const ov=$('#ovf');
+  ov.style.opacity=extra>0?'1':'0'; if(extra>0)ov.textContent='+'+extra+' más en cola';
+  for(let k=0;k<viz.c;k++){
+    const r=st.serving.find(x=>x.server===k+1),p=$('#pump'+k),tag=$('#ptag'+k),pg=$('#prog'+k);
+    if(!p)continue; p.classList.toggle('busy',!!r);
+    tag.innerHTML=r?`<b class="busy">Ocupado</b><span>cliente ${r.i} · termina en ${f2(r.end)}</span>`:`<b class="free">Libre</b><span>surtidor ${k+1}</span>`;
+    pg.style.transform=`scaleX(${r?Math.min(1,(t-r.start)/r.ts):0})`;
+  }
+  const clk=t.toFixed(2).padStart(6,'0'); $('#clk').textContent=clk;
+  $('#c-arr').textContent=st.arrived.length; $('#c-q').textContent=st.queue.length; $('#c-done').textContent=st.done.length;
+  const started=viz.run.rows.filter(r=>r.start<=t+1e-9);
+  $('#c-wq').textContent=f2(started.length?started.reduce((s,r)=>s+r.wait,0)/started.length:0);
+  $('#scrub').value=t;
+  const past=viz.events.filter(e=>e.t<=t+1e-9);
+  const lastE=past[past.length-1];
+  $('#now').innerHTML=lastE?describe(lastE):'Sistema vacío en t = 0. Presiona reproducir o avanza al primer evento.';
+  $('#log').innerHTML=past.slice(-7).reverse().map(e=>`<li><b>${f2(e.t)}</b><span class="ev-${e.type}">${e.type==='a'?'Llega':e.type==='s'?'Inicia servicio':'Termina'} #${e.r.i}${e.type==='s'&&e.r.wait>0?` (esperó ${fx(e.r.wait)})`:''}</span></li>`).join('');
+  const ph=$('#qchart .ph'); if(ph&&viz.x){const x=viz.x(t);ph.setAttribute('x1',x);ph.setAttribute('x2',x);}
+}
+function describe(e){
+  const r=e.r;
+  if(e.type==='a') return r.wait>0?`<b>t = ${f2(e.t)}:</b> llega el cliente ${r.i} (T<sub>ll</sub> = ${r.tll}). El surtidor está ocupado, así que entra a la cola y esperará <b>${fx(r.wait)} min</b>.`:`<b>t = ${f2(e.t)}:</b> llega el cliente ${r.i} (T<sub>ll</sub> = ${r.tll}) y encuentra un surtidor libre: pasa directo.`;
+  if(e.type==='s') return `<b>t = ${f2(e.t)}:</b> el cliente ${r.i} empieza a cargar en el surtidor ${r.server}. Su servicio dura T<sub>s</sub> = ${fx(r.ts)} min${r.wait>0?` después de esperar ${fx(r.wait)} min`:''}.`;
+  return `<b>t = ${f2(e.t)}:</b> el cliente ${r.i} termina y se va tras ${fx(r.system)} min en el sistema. El surtidor ${r.server} queda libre para el siguiente.`;
+}
+function drawQChart(){
+  const svg=$('#qchart'),W=svg.clientWidth||800,H=190,m={l:36,r:10,t:12,b:26};
+  const T=viz.T,maxQ=Math.max(4,...viz.qSteps.map(s=>s.q)),yMax=Math.ceil(maxQ/5)*5;
+  const x=v=>m.l+(v/T)*(W-m.l-m.r),y=v=>m.t+(H-m.t-m.b)*(1-v/yMax); viz.x=x;
+  let d=`M${x(0)},${y(0)}`; viz.qSteps.forEach(s=>{d+=` H${x(s.t)} V${y(s.q)}`;}); d+=` H${x(T)}`;
+  const yt=[0,yMax/2,yMax].map(Math.round), xt=[];for(let v=0;v<=T;v+=T>300?100:50)xt.push(v);
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.innerHTML=`<g class="grid">${yt.map(v=>`<line x1="${m.l}" x2="${W-m.r}" y1="${y(v)}" y2="${y(v)}"/><text x="${m.l-8}" y="${y(v)+4}" text-anchor="end">${v}</text>`).join('')}</g>
+  ${xt.map(v=>`<text x="${x(v)}" y="${H-6}" text-anchor="middle">${v}</text>`).join('')}
+  <line x1="${m.l}" x2="${W-m.r}" y1="${y(0)}" y2="${y(0)}" stroke="var(--ink)" stroke-width="1.2"/>
+  <path d="${d} V${y(0)} H${x(0)}Z" fill="var(--signal-wash)"/>
+  <path d="${d}" fill="none" stroke="var(--signal)" stroke-width="2" stroke-linejoin="round"/>
+  <line class="ph" x1="${x(viz.t)}" x2="${x(viz.t)}" y1="${m.t}" y2="${y(0)}" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <line class="hx" y1="${m.t}" y2="${y(0)}" stroke="var(--ink-3)" stroke-width="1" opacity="0"/>
+  <rect x="${m.l}" y="${m.t}" width="${W-m.l-m.r}" height="${H-m.t-m.b}" fill="transparent" class="hit" style="cursor:crosshair"/>`;
+  const hit=svg.querySelector('.hit'),hx=svg.querySelector('.hx');
+  const tAt=e=>{const b=svg.getBoundingClientRect();return Math.max(0,Math.min(T,((e.clientX-b.left)*(W/b.width)-m.l)/(W-m.l-m.r)*T));};
+  const qAt=t=>{let q=0;for(const s of viz.qSteps){if(s.t<=t)q=s.q;else break;}return q;};
+  hit.addEventListener('pointermove',e=>{const t=tAt(e);hx.setAttribute('x1',x(t));hx.setAttribute('x2',x(t));hx.setAttribute('opacity',1);showTip(e,`t = ${t.toFixed(1)} min<br>En cola: ${qAt(t)} vehículos<br><span style="opacity:.7">clic para saltar aquí</span>`);});
+  hit.addEventListener('pointerleave',()=>{hx.setAttribute('opacity',0);hideTip();});
+  hit.addEventListener('click',e=>{viz.t=tAt(e);renderViz();});
+  const M=viz.run.metrics;
+  $('#qcap').innerHTML=`Réplica ${viz.rep+1} (semilla <b>${S.seeds[viz.rep]}</b>), ${viz.c} surtidor${viz.c>1?'es':''}: cola máxima <b>${maxQ}</b> vehículos, espera media <b>${f2(M.meanWq)}</b> min, último cliente sale en t = <b>${f2(M.makespan)}</b>.${viz.c===1?' La cola sube casi en línea recta mientras siguen llegando autos: es la huella de ρ &gt; 1. Solo baja al final porque después del cliente 100 ya no llegan más vehículos y el surtidor vacía la fila.':' Con dos surtidores la cola sube y baja, pero no se acumula.'}`;
+}
+let rafId=null,lastTs=0;
+function tick(ts){
+  if(!viz.playing)return;
+  const dt=lastTs?(ts-lastTs)/1000:0; lastTs=ts;
+  viz.t=Math.min(viz.T,viz.t+dt*viz.speed);
+  renderViz();
+  if(viz.t>=viz.T){togglePlay(false);return;}
+  rafId=requestAnimationFrame(tick);
+}
+function togglePlay(on=!viz.playing){
+  viz.playing=on; const b=$('#b-play');
+  b.innerHTML=`<svg><use href="#i-${on?'pause':'play'}"/></svg>`; b.setAttribute('aria-label',on?'Pausar':'Reproducir');
+  if(on){if(viz.t>=viz.T)viz.t=0;lastTs=0;rafId=requestAnimationFrame(tick);}else cancelAnimationFrame(rafId);
+}
+function stepEvent(dir){
+  togglePlay(false);
+  const times=[...new Set(viz.events.map(e=>e.t))];
+  if(dir>0){const n=times.find(x=>x>viz.t+1e-9);if(n!==undefined)viz.t=n;}
+  else{const p=times.filter(x=>x<viz.t-1e-9);viz.t=p.length?p[p.length-1]:0;}
+  renderViz();
+}
+$('#b-play').addEventListener('click',()=>togglePlay());
+$('#b-next').addEventListener('click',()=>stepEvent(1));
+$('#b-prev').addEventListener('click',()=>stepEvent(-1));
+$('#b-reset').addEventListener('click',()=>{togglePlay(false);viz.t=0;renderViz();});
+$('#scrub').addEventListener('input',e=>{viz.t=+e.target.value;renderViz();});
+$$('#sv-speed button').forEach(b=>b.addEventListener('click',()=>{viz.speed=+b.dataset.s;$$('#sv-speed button').forEach(x=>x.setAttribute('aria-pressed',x===b));}));
+$$('#sv-c button').forEach(b=>b.addEventListener('click',()=>{viz.c=+b.dataset.c;$$('#sv-c button').forEach(x=>x.setAttribute('aria-pressed',x===b));prepViz();renderViz();}));
+$('#sv-rep').addEventListener('change',e=>{viz.rep=+e.target.value;prepViz();renderViz();});
+document.addEventListener('keydown',e=>{
+  if(e.target.matches('input,select,textarea'))return;
+  if(/^[0-4]$/.test(e.key)){go(VIEWS[+e.key]);return;}
+  if(!$('#v-sim').classList.contains('on'))return;
+  if(e.key===' '){e.preventDefault();togglePlay();}
+  if(e.key==='ArrowRight'){e.preventDefault();stepEvent(1);}
+  if(e.key==='ArrowLeft'){e.preventDefault();stepEvent(-1);}
+});
+new ResizeObserver(()=>{if($('#v-sim').classList.contains('on')&&viz.run){layoutStage();viz.cars.forEach(el=>el.remove());viz.cars.clear();renderViz();drawQChart();}}).observe($('#stage'));
+
+/* manual trace */
+const tr={rep:0,i:1}, tb={rep:0,c:1};
+function renderTrace(){
+  const rows=active('base',10)[tr.rep].rows, seed=S.seeds[tr.rep];
+  const cs=[tr.i,tr.i+1,tr.i+2].map(i=>rows[i-1]);
+  $('#tr-iv').textContent=tr.i;
+  const intv=(D,R)=>{const r=D.rows.find(x=>R<x.F)||D.rows[D.rows.length-1];return `[${r.lo.toFixed(2)}, ${r.F.toFixed(2)})`;};
+  $('#receipts').innerHTML=cs.map(r=>{
+    const prev=rows[r.i-2];
+    const aPrev=prev?prev.arrival:0, fPrev=prev?prev.end:0;
+    return `<article class="rcp"><header><b>Cliente ${r.i}</b><span>réplica ${tr.rep+1} · semilla ${seed}</span></header>
+    <div class="src">R<sub>ll</sub> = ${f4(r.rLl)} ∈ ${intv(TLL,r.rLl)} → T<sub>ll</sub> = <b>${r.tll}</b><br>R<sub>s</sub> = ${f4(r.rS)} ∈ ${intv(TS,r.rS)} → T<sub>s</sub> = <b>${r.ts}</b></div>
+    <ol>
+      <li><div><div class="f">Llegada<sub>${r.i}</sub> = Llegada<sub>${r.i-1}</sub> + T<sub>ll,${r.i}</sub></div><div class="c">= ${fx(aPrev)} + ${r.tll} = <b>${fx(r.arrival)}</b></div></div></li>
+      <li><div><div class="f">Inicio<sub>${r.i}</sub> = max(Llegada<sub>${r.i}</sub>, Fin<sub>${r.i-1}</sub>)</div><div class="c">= max(${fx(r.arrival)}, ${fx(fPrev)}) = <b>${fx(r.start)}</b></div></div></li>
+      <li><div><div class="f">Espera<sub>${r.i}</sub> = Inicio<sub>${r.i}</sub> − Llegada<sub>${r.i}</sub></div><div class="c">= ${fx(r.start)} − ${fx(r.arrival)} = <b>${fx(r.wait)}</b></div></div></li>
+      <li><div><div class="f">Fin<sub>${r.i}</sub> = Inicio<sub>${r.i}</sub> + T<sub>s,${r.i}</sub></div><div class="c">= ${fx(r.start)} + ${r.ts} = <b>${fx(r.end)}</b></div></div></li>
+    </ol>
+    <div class="tot"><span>Espera en cola</span><span>${fx(r.wait)} min</span></div>
+    <div class="f" style="margin-top:6px">${r.i===1?'Primer cliente: Llegada₀ = 0 y Fin₀ = 0 porque el sistema inicia vacío.':r.wait>0?`Llegó antes de que terminara el cliente ${r.i-1}, por eso esperó.`:`Llegó con el surtidor libre: no esperó.`}</div></article>`;}).join('');
+}
+$('#tr-i').addEventListener('input',e=>{tr.i=+e.target.value;renderTrace();renderFull();});
+$('#tr-rep').addEventListener('change',e=>{tr.rep=+e.target.value;renderTrace();});
+function renderFull(){
+  const run=simulate(S.seeds[tb.rep],{servers:tb.c,serviceFactor:1});
+  const hl=new Set(tb.rep===tr.rep&&tb.c===1?[tr.i,tr.i+1,tr.i+2]:[]);
+  $('#full-table').innerHTML=`<table class="rt"><thead><tr><th>Cliente</th><th>R<sub>ll</sub></th><th>T<sub>ll</sub></th><th>Llegada</th><th>R<sub>s</sub></th><th>T<sub>s</sub></th>${tb.c>1?'<th>Surtidor</th>':''}<th>Inicio</th><th>Espera</th><th>Fin</th><th>En sistema</th><th>Cola al llegar</th></tr></thead><tbody>${
+    run.rows.map(r=>`<tr class="${hl.has(r.i)?'hl':''}"><td class="w">${r.i}</td><td>${f4(r.rLl)}</td><td>${r.tll}</td><td>${fx(r.arrival)}</td><td>${f4(r.rS)}</td><td>${fx(r.ts)}</td>${tb.c>1?`<td>${r.server}</td>`:''}<td>${fx(r.start)}</td><td class="${r.wait>0?'w':'w0'}">${fx(r.wait)}</td><td>${fx(r.end)}</td><td>${fx(r.system)}</td><td>${r.queueOnArrival}</td></tr>`).join('')
+  }</tbody><tfoot><tr><td>Promedio</td><td></td><td>${f2(run.metrics.meanTll)}</td><td></td><td></td><td>${f2(run.metrics.meanTs)}</td>${tb.c>1?'<td></td>':''}<td></td><td>${f2(run.metrics.meanWq)}</td><td></td><td>${f2(run.metrics.meanW)}</td><td></td></tr></tfoot></table>`;
+}
+$('#tb-rep').addEventListener('change',e=>{tb.rep=+e.target.value;renderFull();});
+$$('#tb-c button').forEach(b=>b.addEventListener('click',()=>{tb.c=+b.dataset.c;$$('#tb-c button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderFull();}));
+function subtabs(root){root.querySelectorAll('.subtabs').forEach(bar=>{const btns=bar.querySelectorAll('button');btns.forEach(b=>b.addEventListener('click',()=>{btns.forEach(x=>x.setAttribute('aria-selected',x===b));let p=bar.nextElementSibling;while(p&&!p.classList.contains('foot')){if(p.classList.contains('pane'))p.classList.toggle('on',p.dataset.pane===b.dataset.p);p=p.nextElementSibling;}}));});}
+subtabs(document);
+function highlightCode(src){
+  const esc=src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return esc.split('\n').map(line=>{
+    const ci=line.indexOf('//'); let code=ci>=0?line.slice(0,ci):line, cm=ci>=0?line.slice(ci):'';
+    code=code.replace(/\b(function|const|let|for|return|if|of|new)\b/g,'<span class="kw">$1</span>').replace(/\b(\d+(?:\.\d+)?)\b/g,'<span class="nm">$1</span>');
+    return code+(cm?`<span class="cm">${cm}</span>`:'');
+  }).join('\n');
+}
+$('#code').innerHTML=highlightCode(document.getElementById('engine').textContent.trim());
+
+/* ---------- MÓDULO 3 ---------- */
+function renderSeeds(){
+  $('#seeds').innerHTML=S.seeds.map((s,i)=>`<label class="${i<S.n?'':'off'}">R${i+1}<input type="number" min="1" max="4294967295" value="${s}" data-i="${i}" aria-label="Semilla réplica ${i+1}"></label>`).join('');
+  $$('#seeds input').forEach(inp=>{
+    const commit=()=>{const v=Math.floor(Math.abs(+inp.value));if(v>0&&v!==S.seeds[+inp.dataset.i]){S.seeds[+inp.dataset.i]=v;refreshAll();}};
+    inp.addEventListener('change',commit);inp.addEventListener('keydown',e=>{if(e.key==='Enter')commit();});
+  });
+}
+function renderRep(){
+  const runs=active(),c=ciOf();
+  $('#rp-title').textContent=`Resultados por réplica · ${SCEN[S.sc].label}`;
+  $('#rp-table').innerHTML=`<table class="rt"><thead><tr><th>Réplica</th><th>Semilla</th><th>W̄<sub>q,j</sub> (min)</th><th>W<sub>q</sub> máx.</th><th>P90 W<sub>q</sub></th><th>% que esperó</th><th>Utilización</th><th>Cola final</th><th>Fin (min)</th></tr></thead><tbody>${
+    runs.map((r,j)=>{const M=r.metrics;return `<tr><td class="w">${j+1}</td><td>${r.seed}</td><td class="w">${f2(M.meanWq)}</td><td>${f2(M.maxWq)}</td><td>${f2(M.p90Wq)}</td><td>${pct(M.pctWait)}</td><td>${pct(M.util)}</td><td>${M.finalQueue}</td><td>${f2(M.makespan)}</td></tr>`;}).join('')
+  }</tbody><tfoot><tr><td>Promedio</td><td></td><td>${f2(c.mean)}</td><td>${f2(avg(runs,'maxWq'))}</td><td>${f2(avg(runs,'p90Wq'))}</td><td>${pct(avg(runs,'pctWait'))}</td><td>${pct(avg(runs,'util'))}</td><td>${avg(runs,'finalQueue').toFixed(1)}</td><td>${f2(avg(runs,'makespan'))}</td></tr></tfoot></table>`;
+  const ok=c.relErr<=0.10;
+  $('#rp-formula').innerHTML=`
+    <div class="n">Media global</div><div class="e">W̿<sub>q</sub> = (1/n) Σ W̄<sub>q,j</sub> = (${runs.map(r=>f2(r.metrics.meanWq)).join(' + ')}) / ${c.n}</div><div class="r">${f2(c.mean)} min</div>
+    <div class="n">Desviación estándar</div><div class="e">S = √[ Σ (W̄<sub>q,j</sub> − W̿<sub>q</sub>)² / (n − 1) ]</div><div class="r">${f2(c.S)} min</div>
+    <div class="n">Valor crítico</div><div class="e">t<sub>0.025, n−1</sub> = t<sub>0.025, ${c.n-1}</sub></div><div class="r">${c.t.toFixed(3)}</div>
+    <div class="n">Semi-amplitud</div><div class="e">h = t · S / √n = ${c.t.toFixed(3)} · ${f2(c.S)} / √${c.n}</div><div class="r">${f2(c.h)} min</div>
+    <div class="n">IC 95 %</div><div class="e">[W̿<sub>q</sub> − h, W̿<sub>q</sub> + h]</div><div class="r">[${f2(c.lo)}, ${f2(c.hi)}]</div>
+    <div class="n">Error relativo</div><div class="e">ε<sub>r</sub> = h / W̿<sub>q</sub> = ${f2(c.h)} / ${f2(c.mean)}</div><div class="r ${ok?'good':'alert'}">${pct(c.relErr)}</div>
+    <div class="n">Réplicas requeridas</div><div class="e">n* = ⌈ (t · S / (0.10 · W̿<sub>q</sub>))² ⌉ = ⌈ (${c.t.toFixed(3)} · ${f2(c.S)} / ${f2(0.1*c.mean)})² ⌉</div><div class="r">${c.nStar}</div>`;
+  $('#rp-verdict').innerHTML=`<div class="verdict ${ok?'':'bad'}"><svg><use href="#i-${ok?'check':'alert'}"/></svg><p>${ok?`<b>Se cumple la precisión.</b> Con n = ${c.n} el error relativo es ${pct(c.relErr)} ≤ 10 %.`:`<b>Todavía no se cumple la precisión.</b> Con n = ${c.n} el error relativo es ${pct(c.relErr)} &gt; 10 %. Se necesitan al menos <b>${c.nStar}</b> réplicas (estimación con t de n − 1 = ${c.n-1} gl; al aumentar n, t baja y n* puede reducirse ligeramente).`}</p></div>`;
+  ciChart(); scTable();
+  $$('#rp-n button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.n===S.n));
+  $$('#rp-sc button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.sc===S.sc));
+  $('#rp-double').disabled=S.n===10;
+}
+const avg=(runs,k)=>runs.reduce((s,r)=>s+r.metrics[k],0)/runs.length;
+function ciChart(){
+  const svg=$('#ci-chart'),W=svg.clientWidth||900,H=220,m={l:70,r:150,t:20,b:30};
+  const rowsN=[5,10].map(n=>({n,c:ciOf(S.sc,n),vals:active(S.sc,n).map(r=>r.metrics.meanWq)}));
+  const all=rowsN.flatMap(r=>[...r.vals,r.c.lo,r.c.hi]); let lo=Math.min(...all),hi=Math.max(...all); const pad=(hi-lo)*0.08||1; lo-=pad;hi+=pad;
+  const x=v=>m.l+(v-lo)/(hi-lo)*(W-m.l-m.r);
+  const ys=[m.t+50,m.t+130];
+  const ticks=niceTicks(lo,hi,5);
+  let s=`<g class="grid">${ticks.map(v=>`<line x1="${x(v)}" x2="${x(v)}" y1="${m.t}" y2="${H-m.b}"/><text x="${x(v)}" y="${H-10}" text-anchor="middle">${v}</text>`).join('')}</g>`;
+  rowsN.forEach((r,k)=>{
+    const y=ys[k],cur=r.n===S.n,col=cur?'var(--signal)':'var(--ink-3)';
+    s+=`<text x="${m.l-14}" y="${y+4}" text-anchor="end" style="font-weight:700;fill:var(--ink)">n = ${r.n}</text>`;
+    s+=`<line x1="${x(r.c.lo)}" x2="${x(r.c.hi)}" y1="${y}" y2="${y}" stroke="${col}" stroke-width="6" stroke-linecap="round" opacity="${cur?1:.55}" data-tip="n = ${r.n}<br>IC 95 %: [${f2(r.c.lo)}, ${f2(r.c.hi)}]<br>h = ${f2(r.c.h)} · ε<sub>r</sub> = ${pct(r.c.relErr)}"/>`;
+    s+=`<line x1="${x(r.c.mean)}" x2="${x(r.c.mean)}" y1="${y-14}" y2="${y+14}" stroke="var(--ink)" stroke-width="2"/>`;
+    r.vals.forEach((v,j)=>{s+=`<circle cx="${x(v)}" cy="${y-26}" r="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.6" data-tip="Réplica ${j+1} (semilla ${S.seeds[j]})<br>W̄q = ${f2(v)} min"/>`;});
+    s+=`<text x="${W-m.r+16}" y="${y-2}" style="font-weight:700;fill:var(--ink)">h = ${f2(r.c.h)}</text><text x="${W-m.r+16}" y="${y+16}">ε<tspan font-size="9" dy="2">r</tspan><tspan dy="-2"> = ${pct(r.c.relErr)}</tspan></text>`;
+  });
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.innerHTML=s;bindTips(svg);
+  const a=rowsN[0].c,b=rowsN[1].c;
+  $('#ci-cap').innerHTML=`Al pasar de 5 a 10 réplicas, h cambia de <b>${f2(a.h)}</b> a <b>${f2(b.h)}</b> min (${b.h<a.h?'−':'+'}${pct(Math.abs(1-b.h/a.h))}). La teoría h ∝ t/√n predice un factor de ${(2.262/2.776/Math.SQRT2).toFixed(3)} si S no cambiara; el valor real depende también de la nueva S (${f2(a.S)} → ${f2(b.S)}).`;
+}
+function niceTicks(lo,hi,n){const step0=(hi-lo)/n,mag=10**Math.floor(Math.log10(step0)),st=[1,2,5,10].map(k=>k*mag).find(k=>k>=step0);const out=[];for(let v=Math.ceil(lo/st)*st;v<=hi;v+=st)out.push(+v.toFixed(6));return out;}
+function scTable(){
+  const keys=['base','dos','rapido'];
+  const data=keys.map(k=>{const runs=active(k);return {k,runs,c:ciOf(k),rho:(1/TLL.mean)/(SCEN[k].servers/(TS.mean*SCEN[k].serviceFactor))};});
+  $('#sc-table').innerHTML=`<table class="rt"><thead><tr><th>Escenario</th><th>ρ por servidor</th><th>W̿<sub>q</sub> (min)</th><th>IC 95 %</th><th>W<sub>q</sub> máx. prom.</th><th>Utilización</th><th>Cola final prom.</th></tr></thead><tbody>${
+    data.map(d=>`<tr class="${d.k===S.sc?'hl':''}"><td class="w" style="font-family:var(--f-body)">${SCEN[d.k].label}</td><td>${d.rho.toFixed(4)}</td><td class="w">${f2(d.c.mean)}</td><td>[${f2(d.c.lo)}, ${f2(d.c.hi)}]</td><td>${f2(avg(d.runs,'maxWq'))}</td><td>${pct(avg(d.runs,'util'))}</td><td>${avg(d.runs,'finalQueue').toFixed(1)}</td></tr>`).join('')
+  }</tbody></table>`;
+  const svg=$('#sc-chart'),W=svg.clientWidth||900,H=170,m={l:210,r:90,t:10,b:26},bh=26;
+  const max=Math.max(...data.map(d=>d.c.hi))*1.05;const x=v=>m.l+(v/max)*(W-m.l-m.r);
+  let s=niceTicks(0,max,5).map(v=>`<g class="grid"><line x1="${x(v)}" x2="${x(v)}" y1="${m.t}" y2="${H-m.b}"/></g><text x="${x(v)}" y="${H-8}" text-anchor="middle">${v}</text>`).join('');
+  data.forEach((d,i)=>{const y=m.t+8+i*44,w=Math.max(4,x(d.c.mean)-m.l),col=d.k===S.sc?'var(--signal)':'var(--ink-2)';
+    s+=`<text x="${m.l-12}" y="${y+bh/2+4}" text-anchor="end" style="fill:var(--ink);font-family:var(--f-body);font-size:14px">${SCEN[d.k].label}</text>`;
+    s+=`<path d="M${m.l},${y} h${w-4} q4,0 4,4 v${bh-8} q0,4 -4,4 h${-(w-4)} z" fill="${col}" data-tip="${SCEN[d.k].label}<br>W̿q = ${f2(d.c.mean)} min<br>IC [${f2(d.c.lo)}, ${f2(d.c.hi)}]"/>`;
+    s+=`<line x1="${x(Math.max(0,d.c.lo))}" x2="${x(d.c.hi)}" y1="${y+bh/2}" y2="${y+bh/2}" stroke="var(--ink)" stroke-width="1.5"/><line x1="${x(d.c.hi)}" x2="${x(d.c.hi)}" y1="${y+6}" y2="${y+bh-6}" stroke="var(--ink)" stroke-width="1.5"/>`;
+    s+=`<text x="${x(d.c.hi)+8}" y="${y+bh/2+4}" style="font-weight:700;fill:var(--ink)">${f2(d.c.mean)} min</text>`;});
+  s+=`<line x1="${m.l}" x2="${m.l}" y1="${m.t}" y2="${H-m.b}" stroke="var(--ink)" stroke-width="1.2"/>`;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.innerHTML=s;bindTips(svg);
+}
+$$('#rp-n button').forEach(b=>b.addEventListener('click',()=>{S.n=+b.dataset.n;refreshAll(true);}));
+$('#rp-double').addEventListener('click',()=>{S.n=10;refreshAll(true);$('#rp-formula').classList.remove('flash');void $('#rp-formula').offsetWidth;$('#rp-formula').classList.add('flash');});
+$$('#rp-sc button').forEach(b=>b.addEventListener('click',()=>{S.sc=b.dataset.sc;refreshAll(true);}));
+$('#rp-reset').addEventListener('click',()=>{S.seeds=[...DEFAULT_SEEDS];refreshAll();});
+$('#rp-rand').addEventListener('click',()=>{S.seeds=S.seeds.map(()=>1+Math.floor(Math.random()*999999));refreshAll();});
+
+/* ---------- MÓDULO 4 ---------- */
+function q(n,title,body){return `<details class="q"${n===1?' open':''}><summary><span class="qn">${n}</span><span class="qt">${title}</span><svg class="chev"><use href="#i-chev"/></svg></summary><div class="qa">${body}</div></details>`;}
+const ev=(v,txt)=>`<button class="ev" data-go="${v}">${txt} <svg width="16" height="16"><use href="#i-arrow"/></svg></button>`;
+const hn=x=>`<span class="hl-num">${x}</span>`, hb=x=>`<span class="hl-blue">${x}</span>`;
+function renderQ(){
+  const base=active('base'),c=ciOf('base'),c5=ciOf('base',5),c10=ciOf('base',10),two=ciOf('dos'),fast=ciOf('rapido');
+  const r1=base[0].rows, rs=firstRs();
+  const wqs=base.map(r=>r.metrics.meanWq), mn=Math.min(...wqs), mx=Math.max(...wqs);
+  const tllS=base.map(r=>r.metrics.meanTll), tsS=base.map(r=>r.metrics.meanTs);
+  const growth=1/TLL.mean-1/TS.mean, lastA=avg(base,'lastArrival'), predQ=growth*lastA, simQ=avg(base,'finalQueue');
+  const approxWq=(100-1)/2*(TS.mean-TLL.mean);
+  const runs2=active('dos'), runsF=active('rapido');
+  const max1=avg(base,'maxWq'),max2=avg(runs2,'maxWq'),maxF=avg(runsF,'maxWq');
+  const n=S.n;
+
+  $('#q-tec').innerHTML=[
+    q(1,'¿Cuáles son los primeros 5 números aleatorios y cómo se transforman al menos 2 de ellos en T<sub>ll</sub> y T<sub>s</sub>?',
+      `<p>Réplica 1, semilla ${hn(S.seeds[0])}. El generador Mulberry32 entrega R ∈ [0, 1) y se consumen en orden T<sub>ll</sub>, T<sub>s</sub> por cliente:</p>
+      <div class="tw"><table class="rt"><thead><tr><th>R</th><th>Valor</th><th>Uso</th><th>Intervalo</th><th>Resultado</th></tr></thead><tbody>${rs.map((x,i)=>{const D=x.d==='tll'?TLL:TS,row=D.rows.find(r=>x.R<r.F);return `<tr><td>R${i+1}</td><td>${f4(x.R)}</td><td style="font-family:var(--f-body)">${x.who}</td><td>[${row.lo.toFixed(2)}, ${row.F.toFixed(2)})</td><td class="w">${x.val} min</td></tr>`;}).join('')}</tbody></table></div>
+      <p>Ejemplo 1: R1 = ${f4(rs[0].R)} cae en el intervalo de T<sub>ll</sub> = ${rs[0].val}, así que el primer vehículo llega en t = ${rs[0].val}. Ejemplo 2: R2 = ${f4(rs[1].R)} cae en el intervalo de T<sub>s</sub> = ${rs[1].val}, así que su servicio dura ${rs[1].val} min.</p>${ev('datos','Ver el verificador visual de la transformada')}`),
+    q(2,'Reconstrucción manual de 3 clientes consecutivos',
+      `<p>Para la réplica 1 (clientes 1 a 3):</p><ul>${r1.slice(0,3).map((r,k)=>{const p=k?r1[k-1]:{arrival:0,end:0};return `<li><b>Cliente ${r.i}:</b> llegada = ${fx(p.arrival)} + ${r.tll} = ${fx(r.arrival)}; inicio = max(${fx(r.arrival)}, ${fx(p.end)}) = ${fx(r.start)}; espera = ${hn(fx(r.wait))}; fin = ${fx(r.start)} + ${r.ts} = ${fx(r.end)}.</li>`;}).join('')}</ul>
+      <p>Los valores coinciden con la tabla generada por el motor, lo que valida la implementación.</p>${ev('sim','Ver los comprobantes y la tabla completa')}`),
+    q(3,'¿Qué resultados cambian al cambiar la semilla y cuáles permanecen estables?',
+      `<p><b>Cambian</b> (dependen del azar): la secuencia de R, los tiempos individuales, la espera de cada cliente y los indicadores de cada réplica. Con las ${n} semillas actuales, W̄<sub>q,j</sub> va de ${hn(f2(mn))} a ${hn(f2(mx))} min.</p>
+      <p><b>Permanecen estables</b> (dependen del sistema): las distribuciones de entrada, ρ = 1.5625, las medias muestrales cercanas a las teóricas (T<sub>ll</sub> simulado ≈ ${f2(Math.min(...tllS))}–${f2(Math.max(...tllS))} vs 2.56; T<sub>s</sub> ≈ ${f2(Math.min(...tsS))}–${f2(Math.max(...tsS))} vs 4.00) y el comportamiento cualitativo: en todas las réplicas la cola crece y la utilización ronda ${pct(avg(base,'util'))}.</p>
+      <p>Por eso no se reporta una réplica aislada, sino la media de varias con su intervalo de confianza.</p>${ev('rep','Cambiar semillas en el Módulo 3')}`),
+    q(4,'¿Cómo se obtuvo el IC del 95 % y qué significa para el tiempo medio de espera?',
+      `<p>Con n = ${c.n} réplicas: W̿<sub>q</sub> = ${f2(c.mean)}, S = ${f2(c.S)}, t<sub>0.025,${c.n-1}</sub> = ${c.t.toFixed(3)}, h = t·S/√n = ${f2(c.h)}. El intervalo es ${hn(`[${f2(c.lo)}, ${f2(c.hi)}] min`)}.</p>
+      <p><b>Significado:</b> si repitiéramos este procedimiento muchas veces, el 95 % de los intervalos construidos contendría la espera media verdadera de los primeros 100 clientes en este sistema. No significa que el 95 % de los clientes espere dentro de ese rango: habla del promedio, no de cada auto. El error relativo es ${pct(c.relErr)}, ${c.relErr<=0.1?'dentro':'por encima'} del 10 % deseado${c.relErr>0.1?`; harían falta unas ${c.nStar} réplicas`:''}.</p>${ev('rep','Ver el cálculo paso a paso')}`),
+    q(5,'¿Qué efecto tiene duplicar el número de réplicas sobre la amplitud del intervalo?',
+      `<div class="figs"><div class="fig"><span class="v">${f2(c5.h)}</span><span class="d">h con n = 5</span></div><div class="fig"><span class="v">${f2(c10.h)}</span><span class="d">h con n = 10</span></div><div class="fig"><span class="v">${pct(c5.relErr)} → ${pct(c10.relErr)}</span><span class="d">error relativo</span></div></div>
+      <p>h = t·S/√n. Duplicar n divide √n entre √2 y además baja t de 2.776 a 2.262, así que, si S se mantiene, h se reduce a ≈ ${(2.262/2.776/Math.SQRT2*100).toFixed(0)} % de su valor. En nuestros datos pasó de ${f2(c5.h)} a ${f2(c10.h)} min (S cambió de ${f2(c5.S)} a ${f2(c10.S)}). Más réplicas dan <b>más precisión</b>, pero no cambian el valor que se estima ni corrigen un modelo mal planteado.</p>${ev('rep','Probar el botón Duplicar réplicas')}`)
+  ].join('');
+
+  $('#q-cri').innerHTML=[
+    q(1,'Cuando la cola crece, ¿cómo distinguir un error de programación de una demanda superior a la capacidad (ρ &gt; 1)?',
+      `<p>Se contrasta la simulación con lo que la teoría predice. Si coinciden, el crecimiento se debe al sistema y no a un error:</p>
+      <ul><li><b>Entradas correctas:</b> las medias simuladas de T<sub>ll</sub> y T<sub>s</sub> coinciden con 2.56 y 4.00 (pregunta técnica 3).</li>
+      <li><b>Tasa de crecimiento:</b> la cola debería crecer λ − μ = ${growth.toFixed(4)} veh/min. Al llegar el último cliente (t ≈ ${f2(lastA)}) se esperan ≈ ${hb(predQ.toFixed(1))} en cola; la simulación da ${hn(simQ.toFixed(1))}.</li>
+      <li><b>Espera aproximada:</b> cada cliente acumula ≈ 4.00 − 2.56 = 1.44 min más que el anterior, así que W̄<sub>q</sub> ≈ 49.5 · 1.44 = ${hb(f2(approxWq))} min; la simulación da ${hn(f2(c.mean))}.</li>
+      <li><b>Prueba de control:</b> con 2 surtidores (ρ = 0.78) el mismo código produce una cola estable (W̄<sub>q</sub> = ${f2(two.mean)} min). Un error de programación no desaparecería solo por cambiar un parámetro.</li>
+      <li><b>Traza manual:</b> 3 clientes reconstruidos a mano coinciden con la tabla.</li></ul>`),
+    q(2,'¿Puede un modelo tener un IC muy estrecho y aun así representar mal la realidad?',
+      `<p>Sí. El IC mide <b>precisión</b> (cuánto varía el estimador entre réplicas), no <b>validez</b> (si el modelo representa el sistema real). Con 1000 réplicas el intervalo sería diminuto, pero seguiría heredando todos los supuestos:</p>
+      <ul><li><b>Sesgo de entrada:</b> solo 50 observaciones, discretizadas en minutos enteros; quizá no capturan horas pico ni días distintos.</li>
+      <li><b>Omisiones de comportamiento:</b> el modelo supone que nadie se va. En la realidad hay <i>balking</i> (conductores que ven una cola de ${Math.round(simQ)} autos y no entran) y <i>reneging</i> (abandonan tras esperar). Con ρ &gt; 1 eso es casi seguro.</li>
+      <li><b>Horizonte:</b> se simulan solo 100 clientes desde un sistema vacío; el resultado depende de ese corte.</li></ul>
+      <p>Para validar se compara con datos reales (por ejemplo, esperas medidas en la estación), no con más réplicas.</p>`),
+    q(3,'Si una réplica da un resultado favorable y otra desfavorable, ¿cuál presentar a la gerencia?',
+      `<p>Ninguna de las dos por separado. Una réplica es una sola muestra del azar; elegir la más conveniente sería sesgar la decisión. Con las semillas actuales la mejor réplica da ${hn(f2(mn))} min y la peor ${hn(f2(mx))} min: presentar solo una exagera o minimiza el problema.</p>
+      <p>Lo correcto es presentar la <b>media de todas las réplicas con su IC 95 %</b>, ${hn(`${f2(c.mean)} min [${f2(c.lo)}, ${f2(c.hi)}]`)}, y mostrar el rango para comunicar la variabilidad. Si la gerencia necesita prepararse para el peor caso, se reporta además un percentil alto (P90 promedio: ${f2(avg(base,'p90Wq'))} min) o el máximo, siempre identificados como tales.</p>`),
+    q(4,'¿Qué cambiar primero: tiempo de servicio, política de atención o número de servidores? ¿Qué evidencia se necesita?',
+      `<ul><li><b>Política de atención</b> (por ejemplo, prioridades): reordena quién espera, pero no cambia la capacidad. Con ρ &gt; 1 la cola seguiría creciendo igual en promedio.</li>
+      <li><b>Agilizar el servicio un 20 %:</b> T<sub>s</sub> medio pasa a 3.20 min, ρ = ${hn('1.25')}, todavía &gt; 1. W̿<sub>q</sub> baja a ${f2(fast.mean)} min, pero la cola sigue creciendo.</li>
+      <li><b>Segundo surtidor:</b> ρ por servidor = ${hb('0.78')} &lt; 1. W̿<sub>q</sub> baja a ${hb(f2(two.mean)+' min')}.</li></ul>
+      <p>Primero hay que actuar sobre la <b>capacidad</b> (servidores o velocidad) hasta lograr ρ &lt; 1; la política es secundaria. La evidencia necesaria: costo por hora de cada alternativa, cuánto se puede reducir realmente T<sub>s</sub> (estudio de tiempos), espacio físico para otra estación y datos de demanda por franja horaria.</p>${ev('rep','Comparar escenarios')}`),
+    q(5,'Si la espera media disminuye pero aumenta el tiempo máximo de espera, ¿la modificación fue exitosa?',
+      `<p>No necesariamente. La media mejora la experiencia típica, pero un máximo mayor indica que algunos clientes quedaron mucho peor; eso suele pasar con políticas que priorizan servicios cortos y dejan esperando a los largos. Esos clientes son los que se quejan o no vuelven.</p>
+      <p>Para decidir se miran varios indicadores juntos: media, P90 o P95, máximo y porcentaje de clientes que superan un umbral aceptable (por ejemplo 10 min). En nuestros escenarios, con 2 surtidores bajan a la vez la media (${f2(c.mean)} → ${f2(two.mean)}) y el máximo promedio (${f2(max1)} → ${f2(max2)}), así que esa mejora no tiene ese dilema. Agilizar el servicio también baja ambos (máx. ${f2(maxF)}). El éxito se define antes de probar, según la meta de la gerencia.</p>`)
+  ].join('');
+
+  $('#q-esc').innerHTML=[
+    q(1,'¿Qué evidencias analíticas y de simulación muestran que la demanda supera la capacidad?',
+      `<div class="figs"><div class="fig alert"><span class="v">ρ = 1.5625</span><span class="d">λ = 0.3906 &gt; μ = 0.25</span></div><div class="fig alert"><span class="v">${pct(avg(base,'util'))}</span><span class="d">utilización del surtidor</span></div><div class="fig alert"><span class="v">${simQ.toFixed(1)}</span><span class="d">vehículos en cola al final</span></div></div>
+      <p><b>Analíticas:</b> ρ = λ/μ = 1.5625 &gt; 1. La capacidad máxima es de 15 vehículos por hora (60/4) y llegan en promedio 23.4 (60/2.56).</p>
+      <p><b>Simulación:</b> en todas las réplicas el surtidor está ocupado casi siempre (${pct(avg(base,'util'))}), ${pct(avg(base,'pctWait'))} de los clientes espera, la espera promedio es ${hn(f2(c.mean)+' min')} y el último cliente espera en promedio ${f2(max1)} min. La gráfica de la cola sube casi en línea recta, sin estabilizarse.</p>${ev('sim','Ver la cola crecer en el simulador')}`),
+    q(2,'Si la cola crece durante la simulación, ¿significa necesariamente que el modelo está mal construido?',
+      `<p>No. Con ρ &gt; 1 lo correcto es que la cola crezca: es exactamente lo que predice la teoría de colas. Un modelo que mostrara una cola estable con estos datos sí estaría mal.</p>
+      <p>La prueba es la coherencia: el crecimiento simulado (${simQ.toFixed(1)} vehículos) se parece al teórico (${predQ.toFixed(1)}), la traza manual coincide con el motor y, con 2 surtidores, el mismo código produce una cola estable. Lo que sí cabe revisar es si el sistema real tiene comportamientos que el modelo omite, como conductores que se van al ver la fila.</p>`),
+    q(3,'Recomendación: ¿ampliar horario, agilizar el servicio o habilitar otra estación?',
+      `<div class="tw"><table class="rt"><thead><tr><th>Alternativa</th><th>ρ</th><th>W̿<sub>q</sub> (min)</th><th>¿Se estabiliza?</th></tr></thead><tbody>
+      <tr><td style="font-family:var(--f-body)">Situación actual</td><td>1.5625</td><td>${f2(c.mean)}</td><td>No</td></tr>
+      <tr><td style="font-family:var(--f-body)">Ampliar horario</td><td>1.5625</td><td>igual o peor</td><td>No</td></tr>
+      <tr><td style="font-family:var(--f-body)">Servicio −20 %</td><td>1.25</td><td>${f2(fast.mean)}</td><td>No</td></tr>
+      <tr class="hl"><td style="font-family:var(--f-body)"><b>Segunda estación</b></td><td>0.78</td><td>${f2(two.mean)}</td><td>Sí</td></tr></tbody></table></div>
+      <p><b>Recomendación: habilitar una segunda estación.</b> Es la única alternativa que lleva ρ por debajo de 1. Reduce la espera media de ${hn(f2(c.mean)+' min')} a ${hb(f2(two.mean)+' min')} (−${pct(1-two.mean/c.mean)}), con IC [${f2(two.lo)}, ${f2(two.hi)}].</p>
+      <p><b>Ampliar el horario</b> no cambia λ ni μ: atiende más clientes en total, pero con la misma tasa de saturación la cola crece igual o más mientras dure la jornada. <b>Agilizar el servicio</b> ayuda (−${pct(1-fast.mean/c.mean)}) y conviene como complemento de bajo costo, pero solo no basta. Antes de invertir, conviene validar con datos reales de demanda por franja horaria y registrar cuántos conductores se van al ver la fila.</p>${ev('rep','Ver la comparación de escenarios')}`)
+  ].join('');
+}
+
+/* ---------- inicio ---------- */
+function renderInicio(){
+  const c=ciOf('base'),two=ciOf('dos');
+  $('#i-seed').textContent=S.seeds[0];
+  $('#i-verdict').innerHTML=`Con 1 surtidor cada auto espera en promedio <em>${f2(c.mean)} min</em>; con 2 surtidores la espera baja a ${f2(two.mean)} min.`;
+  $('#i-verdict-sub').innerHTML=`Resultado de ${c.n} réplicas de 100 vehículos, IC 95 % [${f2(c.lo)}, ${f2(c.hi)}] min. Cambia las semillas o el número de réplicas en el Módulo 3 y esta frase se actualiza.`;
+  const digits=String(S.seeds[0]).padStart(8,'0'); let x=0,s='';
+  for(const ch of (digits+digits.split('').reverse().join(''))){const d=+ch;const w1=1+d%3,w2=1+(d>>1)%2;s+=`<rect x="${x}" y="0" width="${w1*2}" height="46" fill="var(--ink)"/>`;x+=w1*2+w2*2+1;}
+  const bc=$('#barcode');bc.setAttribute('viewBox',`0 0 ${x} 46`);bc.innerHTML=s;
+  $('#barcode-txt').textContent=`SEMILLA ${S.seeds[0]} · ${c.n} RÉPLICAS · ρ 1.5625`;
+}
+
+/* ---------- global ---------- */
+function fillSelects(){
+  const opts=S.seeds.map((s,i)=>`<option value="${i}">Réplica ${i+1} · semilla ${s}</option>`).join('');
+  ['#sv-rep','#tr-rep','#tb-rep'].forEach(id=>{const el=$(id),v=el.value;el.innerHTML=opts;el.value=v||0;});
+}
+function refreshAll(light=false){
+  if(!light)recompute();
+  const c=ciOf('base');
+  $('#led-wq').textContent=f2(c.mean); $('#led-n').textContent=S.n;
+  fillSelects(); renderSeeds(); renderRep(); renderQ(); renderInicio();
+  if(!light){ti.R=null;ti.sel=0;renderTIChips();renderTI();prepViz();renderViz();renderTrace();renderFull();}
+}
+recompute(); renderM1(); refreshAll();
+go(location.hash.slice(1)||'inicio',false);
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{['tll','ts'].forEach(k=>chiChart('#chi-ch-'+k,S.chi[k]));bindTips($('#chi-blocks'));ciChart();scTable();if(viz.run)drawQChart();},150);});
+</script>
+</body>
+</html>

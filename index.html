@@ -172,7 +172,9 @@ input[type=range]{accent-color:var(--signal)}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
 .figcap{font-size:.85rem;color:var(--ink-3);margin:6px 0 0}
 .figcap b{font-family:var(--f-mono);color:var(--ink-2)}
-#tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--paper);font-family:var(--f-mono);font-size:.82rem;line-height:1.4;padding:7px 10px;border-radius:8px;opacity:0;transform:translateY(4px);transition:opacity 120ms ease,transform 120ms var(--ease-out);max-width:280px;box-shadow:0 8px 20px -8px rgba(0,0,0,.5)}
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--paper);font-family:var(--f-mono);font-size:.82rem;line-height:1.4;padding:7px 10px;border-radius:8px;opacity:0;transform:translateY(4px);transition:opacity 120ms ease,transform 120ms var(--ease-out);max-width:320px;box-shadow:0 8px 20px -8px rgba(0,0,0,.5)}
+#tip .td{font-family:var(--f-body);font-size:.92rem;line-height:1.45}
+#tip .td b{display:block;font-family:var(--f-display);font-stretch:90%;font-size:1rem;margin-bottom:2px}
 #tip.on{opacity:1;transform:none}
 
 /* ===== chi ===== */
@@ -366,6 +368,46 @@ details.q[open] .chev{transform:rotate(180deg)}
 .foot button svg{width:18px;height:18px;transition:transform 160ms var(--ease-out)}
 @media (hover:hover) and (pointer:fine){.foot button:hover svg{transform:translateX(3px)}}
 
+/* ===== plain-language layer ===== */
+.term{border-bottom:2px dotted var(--blue);cursor:help;border-radius:2px;transition:background-color 160ms ease}
+@media (hover:hover) and (pointer:fine){.term:hover{background:var(--blue-wash)}}
+.simple{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;align-items:start;background:var(--paper-2);border-radius:16px;padding:20px 22px;margin:24px 0 8px;max-width:900px}
+.simple .ic{width:44px;height:44px;border-radius:50%;background:var(--ink);color:#FFB48C;display:flex;align-items:center;justify-content:center}
+.simple .ic svg{width:24px;height:24px}
+.simple p{margin:0 0 8px;font-size:1.06rem}
+.simple p:last-child{margin-bottom:0}
+.simple .lead{display:block;font-family:var(--f-display);font-stretch:88%;font-weight:800;font-size:1.15rem;margin:8px 0 6px}
+.plain{font-size:1.02rem;color:var(--ink);background:var(--blue-wash);border-radius:12px;padding:12px 16px;margin:12px 0;max-width:900px}
+.plain:empty{display:none}
+.hour{margin:30px 0 10px;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink)}
+.hour-row{display:grid;grid-template-columns:230px minmax(0,1fr) 96px;gap:18px;align-items:center;padding:14px 0}
+.hour-row + .hour-row{border-top:1px dashed var(--rule)}
+.hour-row .hl{font-family:var(--f-display);font-stretch:88%;font-weight:750;font-size:1.08rem;line-height:1.3}
+.hour-row .hl span{display:block;font-family:var(--f-body);font-weight:400;font-size:.88rem;color:var(--ink-2)}
+.cars{display:flex;flex-wrap:wrap;gap:5px 4px}
+.cars svg{width:26px;height:16px}
+.cars .a{color:var(--ink)}
+.cars .s{color:var(--go)}
+.cars .x{color:var(--signal)}
+.view.on .cars .x{animation:carIn 340ms var(--ease-out) both;animation-delay:calc(var(--i) * 60ms + 250ms)}
+@keyframes carIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+.hour-row .n{font-family:var(--f-mono);font-weight:700;font-size:1.6rem;text-align:right;line-height:1}
+.hour-row .n small{display:block;font-size:.72rem;font-weight:400;color:var(--ink-3);margin-top:4px}
+.hour-row.left{background:var(--signal-wash);margin:0 -14px;padding:14px;border-radius:12px;border-top:0}
+.hour-row.left .n{color:var(--signal-ink)}
+@media (max-width:760px){.hour-row{grid-template-columns:minmax(0,1fr) auto}.hour-row .cars{grid-column:1/-1;order:3}}
+.gloss{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 44px;margin:14px 0 0}
+.gloss div{padding:12px 0;border-bottom:1px dashed var(--rule)}
+.gloss dt{font-family:var(--f-display);font-stretch:90%;font-weight:800;font-size:1.05rem}
+.gloss dd{margin:3px 0 0;color:var(--ink-2);font-size:.96rem}
+@media (max-width:760px){.gloss{grid-template-columns:minmax(0,1fr)}}
+.stage-legend{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;font-size:.9rem;color:var(--ink-2);margin:12px 0 2px}
+.stage-legend span{display:inline-flex;align-items:center;gap:8px}
+.stage-legend svg{flex:0 0 auto}
+.rcp .qp{font-family:var(--f-display);font-stretch:90%;font-weight:750;font-size:1rem;color:var(--ink);margin-bottom:2px}
+.qa .short{font-size:1.12rem;line-height:1.45;font-weight:700;background:var(--paper-2);border-radius:12px;padding:14px 18px;margin:0 0 4px}
+.qa .more{display:block;margin:16px 0 8px}
+
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:1ms!important;scroll-behavior:auto!important}
   .car,.cdf .marker{transition:opacity 200ms ease!important}
@@ -387,6 +429,8 @@ details.q[open] .chev{transform:rotate(180deg)}
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-dice" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="9" r="1.4" fill="currentColor"/><circle cx="15" cy="15" r="1.4" fill="currentColor"/><circle cx="15" cy="9" r="1.4" fill="currentColor"/><circle cx="9" cy="15" r="1.4" fill="currentColor"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-car" viewBox="0 0 28 17"><path d="M2.5 12.5V9c0-.8.5-1.5 1.2-1.8l3-1.2L9.8 2.2h8.6l3.8 3.9 2.6.8c.7.2 1.2.9 1.2 1.6v4z" fill="currentColor"/><circle cx="7.8" cy="13.2" r="2.6" fill="currentColor" stroke="#FBF8F1" stroke-width="1.6"/><circle cx="20" cy="13.2" r="2.6" fill="currentColor" stroke="#FBF8F1" stroke-width="1.6"/></symbol>
     <symbol id="i-double" viewBox="0 0 24 24"><rect x="3.5" y="7" width="11" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 4h9a2 2 0 0 1 2 2v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   </defs>
 </svg>
@@ -394,7 +438,7 @@ details.q[open] .chev{transform:rotate(180deg)}
 <header class="mast">
   <div>
     <h1>Gasolinera · <span>1 surtidor</span>, 1 cola</h1>
-    <p>Simulación de eventos discretos (DES) con 100 vehículos por réplica, disciplina FIFO y unidades en minutos. Cada número de esta app se calcula en vivo a partir de los datos oficiales.</p>
+    <p>Una gasolinera con un solo surtidor recibe más autos de los que puede atender. Aquí lo demostramos con una <span class="term" tabindex="0" data-term="des">simulación por computadora</span> de 100 autos. Todos los números se calculan en vivo.</p>
   </div>
   <div class="pump-led" aria-label="Indicadores globales">
     <div><small>ρ = λ/μ</small><b id="led-rho">1.5625</b></div>
@@ -404,7 +448,7 @@ details.q[open] .chev{transform:rotate(180deg)}
 </header>
 
 <nav class="tabs" role="tablist" aria-label="Módulos">
-  <button class="tab" role="tab" data-v="inicio"><span class="t-n">00</span><span class="t-l">Planteamiento</span><span class="t-p">problema y ruta</span></button>
+  <button class="tab" role="tab" data-v="inicio"><span class="t-n">00</span><span class="t-l">Planteamiento</span><span class="t-p">de qué se trata</span></button>
   <button class="tab" role="tab" data-v="datos"><span class="t-n">Módulo 1</span><span class="t-l">Datos, χ² y transformada</span><span class="t-p">8 pts</span></button>
   <button class="tab" role="tab" data-v="sim"><span class="t-n">Módulo 2</span><span class="t-l">Simulador en vivo</span><span class="t-p">10 pts</span></button>
   <button class="tab" role="tab" data-v="rep"><span class="t-n">Módulo 3</span><span class="t-l">Réplicas e inferencia</span><span class="t-p">6 pts</span></button>
@@ -418,30 +462,41 @@ details.q[open] .chev{transform:rotate(180deg)}
 <section class="view" id="v-inicio" aria-labelledby="h-inicio">
   <div class="ticket-head"><span><b>Escenario 2</b> · Gasolinera</span><span>1 servidor · 1 cola · FIFO</span><span>Semilla réplica 1: <b id="i-seed">—</b></span></div>
   <h2 class="vt" id="h-inicio">Llegan más autos de los que el surtidor puede atender</h2>
-  <p class="lede">En promedio llega un vehículo cada <b class="num">2.56</b> min, pero atender a cada uno toma <b class="num">4.00</b> min. Esta app demuestra, con datos y con simulación, qué le pasa a la cola y qué conviene hacer.</p>
+  <p class="lede">En promedio llega un auto cada <b class="num">2.56</b> minutos, pero cargar combustible a cada uno toma <b class="num">4.00</b> minutos. Es como una caja de supermercado donde la gente llega más rápido de lo que la cajera puede cobrar: la fila solo puede crecer.</p>
+
+  <div class="hour" aria-label="Una hora en la gasolinera">
+    <div class="hour-row"><div class="hl">Llegan en una hora<span>un auto cada 2.56 min</span></div><div class="cars" id="h-arr"></div><div class="n">23.4<small>autos</small></div></div>
+    <div class="hour-row"><div class="hl">El surtidor atiende en una hora<span>cada carga dura 4 min</span></div><div class="cars" id="h-srv"></div><div class="n">15<small>autos</small></div></div>
+    <div class="hour-row left"><div class="hl">Se quedan esperando<span>cada hora, y se van sumando</span></div><div class="cars" id="h-left"></div><div class="n">+8.4<small>autos</small></div></div>
+  </div>
+  <p class="figcap">Cada dibujo es un auto. La relación entre lo que llega y lo que se atiende se llama <span class="term" tabindex="0" data-term="rho">ρ</span> = 23.4 / 15 = 1.56. Si es mayor que 1, la fila nunca se vacía.</p>
 
   <div class="params">
     <div><b>1</b><span>estación de atención (servidor)</span></div>
-    <div><b>FIFO</b><span>primero en llegar, primero en ser atendido</span></div>
+    <div><b><span class="term" tabindex="0" data-term="fifo">FIFO</span></b><span>primero en llegar, primero en ser atendido</span></div>
     <div><b>100</b><span>vehículos por réplica</span></div>
     <div><b>t = 0</b><span>servidor libre y cola vacía</span></div>
-    <div><b id="i-reps">5 → 10</b><span>réplicas con semillas reproducibles</span></div>
-    <div><b>95 %</b><span>nivel de confianza (α = 0.05)</span></div>
-    <div><b>W̄<sub>q</sub></b><span>indicador: espera media en cola</span></div>
-    <div><b>≤ 10 %</b><span>error relativo máximo deseado</span></div>
+    <div><b id="i-reps">5 → 10</b><span><span class="term" tabindex="0" data-term="replica">réplicas</span> con <span class="term" tabindex="0" data-term="semilla">semillas</span> reproducibles</span></div>
+    <div><b>95 %</b><span>nivel de <span class="term" tabindex="0" data-term="ic">confianza</span> (α = 0.05)</span></div>
+    <div><b><span class="term" tabindex="0" data-term="wq">W̄<sub>q</sub></span></b><span>lo que medimos: espera promedio en la fila</span></div>
+    <div><b>≤ 10 %</b><span><span class="term" tabindex="0" data-term="er">error relativo</span> máximo deseado</span></div>
   </div>
 
   <p class="verdict-big" id="i-verdict">—</p>
   <p class="note" id="i-verdict-sub"></p>
 
-  <h3 class="st">Ruta de la exposición</h3>
+  <h3 class="st">Cómo lo resolvimos, en 4 pasos</h3>
   <ol class="route">
-    <li><button data-go="datos"><span class="rn">Módulo 1 · 8 pts</span><span class="rt">Datos, χ² y transformada inversa</span><span class="rd">Tablas de frecuencias, medias, ρ, prueba de bondad de ajuste y cómo un número R se convierte en minutos.</span></button></li>
-    <li><button data-go="sim"><span class="rn">Módulo 2 · 10 pts</span><span class="rt">Simulador en vivo</span><span class="rd">Reproductor de los 100 vehículos, traza manual de 3 clientes, tabla completa y código del motor.</span></button></li>
-    <li><button data-go="rep"><span class="rn">Módulo 3 · 6 pts</span><span class="rt">Réplicas e inferencia</span><span class="rd">5 y 10 réplicas, intervalo de confianza al 95 %, error relativo, n* y escenarios ¿qué pasa si?</span></button></li>
-    <li><button data-go="preg"><span class="rn">Módulo 4 · 6 pts</span><span class="rt">Preguntas</span><span class="rd">5 técnicas, 5 de pensamiento crítico y 3 del escenario, respondidas con las cifras simuladas.</span></button></li>
+    <li><button data-go="datos"><span class="rn">Paso 1 · Módulo 1 · 8 pts</span><span class="rt">Medir la realidad</span><span class="rd">Con 50 autos observados vemos cada cuánto llegan y cuánto tardan en cargar, y comprobamos que siguen un patrón conocido.</span></button></li>
+    <li><button data-go="sim"><span class="rn">Paso 2 · Módulo 2 · 10 pts</span><span class="rt">Simular 100 autos</span><span class="rd">La computadora inventa autos con números al azar que respetan esos patrones, y anota cuándo llega, espera y se va cada uno.</span></button></li>
+    <li><button data-go="rep"><span class="rn">Paso 3 · Módulo 3 · 6 pts</span><span class="rt">Repetir para estar seguros</span><span class="rd">Repetimos la simulación 5 y 10 veces con distinto azar y calculamos un rango confiable para la espera promedio.</span></button></li>
+    <li><button data-go="preg"><span class="rn">Paso 4 · Módulo 4 · 6 pts</span><span class="rt">Responder y recomendar</span><span class="rd">Contestamos las preguntas del trabajo con las cifras obtenidas y recomendamos qué hacer.</span></button></li>
   </ol>
   <p class="note">Atajos: teclas <span class="kbd">0</span>–<span class="kbd">4</span> cambian de módulo; en el simulador <span class="kbd">Espacio</span> reproduce o pausa y <span class="kbd">→</span> avanza un evento.</p>
+
+  <h3 class="st">Glosario: las palabras técnicas, en simple</h3>
+  <p class="note">En toda la app, las palabras con <span class="term" tabindex="0" data-term="rho">subrayado de puntos</span> tienen una explicación: pasa el cursor encima o tócalas.</p>
+  <dl class="gloss" id="gloss"></dl>
 
   <div class="barcode" aria-hidden="true"><svg id="barcode" width="260" height="46"></svg><span id="barcode-txt"></span></div>
   <div class="foot"><span>Fin del planteamiento</span><button data-go="datos">Módulo 1: Datos y χ² <svg><use href="#i-arrow"/></svg></button></div>
@@ -452,9 +507,14 @@ details.q[open] .chev{transform:rotate(180deg)}
   <div class="ticket-head"><span><b>Módulo 1</b> · Análisis de datos</span><span>N = 50 observaciones por variable</span><span>8 pts</span></div>
   <h2 class="vt" id="h-datos">De las frecuencias observadas a los números aleatorios</h2>
   <p class="lede">Primero resumimos los datos, luego comprobamos con χ² si siguen una distribución teórica, y al final mostramos cómo cada número uniforme R se convierte en un tiempo.</p>
+  <div class="simple"><span class="ic"><svg><use href="#i-bulb"/></svg></span><div>
+    <span class="lead">En palabras simples</span>
+    <p>Antes de simular hay que conocer la realidad. Alguien anotó 50 autos: cada cuánto llegaba uno nuevo y cuánto tardaba cada carga.</p>
+    <p>Con esas anotaciones armamos una especie de <b>ruleta</b> para cada tiempo: los valores que se repitieron más ocupan más espacio. Después la computadora “gira” esa ruleta para inventar autos que se comportan como los reales.</p>
+  </div></div>
 
   <h3 class="st">Tablas de frecuencias e intervalos de asignación</h3>
-  <p class="note">f<sub>i</sub> = O<sub>i</sub>/N es la probabilidad de cada valor; F<sub>i</sub> es la acumulada. El intervalo [F<sub>i−1</sub>, F<sub>i</sub>) indica qué números R ∈ [0, 1) producen ese valor.</p>
+  <p class="note">Cada fila es un valor posible. O<sub>i</sub> es cuántas veces se observó; f<sub>i</sub> = O<sub>i</sub>/50 es su probabilidad; <span class="term" tabindex="0" data-term="fi">F<sub>i</sub></span> es la probabilidad acumulada. El intervalo [F<sub>i−1</sub>, F<sub>i</sub>) es su tramo en la ruleta: los números al azar R que caen ahí producen ese valor.</p>
   <div class="grid2">
     <div><h4 class="ss">A · Tiempo entre llegadas T<sub>ll</sub> (min)</h4><div class="tw" id="t-tll"></div></div>
     <div><h4 class="ss">B · Tiempo de servicio T<sub>s</sub> (min)</h4><div class="tw" id="t-ts"></div></div>
@@ -462,11 +522,11 @@ details.q[open] .chev{transform:rotate(180deg)}
   <div class="figs" id="m1-figs"></div>
   <div class="rho">
     <div class="eq">λ = 1/2.56 = 0.3906<br>μ = 1/4.00 = 0.2500<br>ρ = λ/μ = <b>1.5625</b></div>
-    <p><strong>ρ &gt; 1: la demanda supera la capacidad.</strong> El surtidor solo puede atender 0.25 vehículos por minuto, pero llegan 0.39. Cada minuto la cola crece en promedio λ − μ = <span class="num">0.1406</span> vehículos, así que el sistema no alcanza un estado estable y la espera aumenta con cada cliente.</p>
+    <p><strong>ρ &gt; 1: llegan más autos de los que se pueden atender.</strong> λ es cuántos autos llegan por minuto (0.39) y μ cuántos puede atender el surtidor (0.25). Como llegan más de los que salen, cada minuto la fila crece en promedio λ − μ = <span class="num">0.1406</span> autos, y cada nuevo cliente espera más que el anterior.</p>
   </div>
 
   <h3 class="st">Prueba de bondad de ajuste χ²</h3>
-  <p class="note">Las barras comparan lo observado (O<sub>i</sub>) con lo que esperaríamos (E<sub>i</sub>) si los datos siguieran la distribución teórica. Las categorías con E<sub>i</sub> &lt; 5 se agrupan con su vecina antes de calcular χ².</p>
+  <p class="note"><b>La pregunta:</b> ¿los tiempos observados siguen un patrón matemático conocido? Las barras naranjas son lo que pasó (O<sub>i</sub>) y las azules lo que diría la fórmula (E<sub>i</sub>). Si se parecen, el número <span class="term" tabindex="0" data-term="chi">χ²</span> sale pequeño y aceptamos la fórmula. Las categorías con E<sub>i</sub> &lt; 5 se juntan con su vecina, porque con tan pocos casos la prueba no es confiable.</p>
   <div class="legend"><span><i style="background:var(--signal)"></i>Observado O<sub>i</sub></span><span><i style="background:var(--blue)"></i>Esperado E<sub>i</sub></span></div>
   <div class="grid2" id="chi-blocks"></div>
 
@@ -481,7 +541,7 @@ details.q[open] .chev{transform:rotate(180deg)}
   </div>
 
   <h3 class="st">Verificador de transformada inversa</h3>
-  <p class="note">Estos son los 5 primeros números aleatorios de la Réplica 1 (semilla <b class="num" id="ti-seed">—</b>). El orden de consumo es T<sub>ll</sub> y luego T<sub>s</sub> para cada cliente. Toca uno para ver dónde cae en la barra acumulada F(x).</p>
+  <p class="note">Es la ruleta de la que hablamos (<span class="term" tabindex="0" data-term="ti">transformada inversa</span>): la barra de 0 a 1 está repartida según la probabilidad de cada valor. La computadora saca un número al azar R, mira en qué tramo cae y ese tramo dice el tiempo. Abajo están los 5 primeros números de la Réplica 1 (<span class="term" tabindex="0" data-term="semilla">semilla</span> <b class="num" id="ti-seed">—</b>); se usan en orden: primero el tiempo entre llegadas y luego el de servicio de cada cliente. Toca uno.</p>
   <div class="chips" id="ti-chips"></div>
   <div class="bar"><div class="grp"><span class="lbl">O prueba tu propio R</span><input type="range" id="ti-slider" min="0" max="0.9999" step="0.0001" value="0.5" style="width:220px" aria-label="Valor de R"><span class="num" id="ti-sval">0.5000</span></div>
     <div class="seg" id="ti-dist"><button data-d="tll" aria-pressed="true">T<sub>ll</sub></button><button data-d="ts" aria-pressed="false">T<sub>s</sub></button></div></div>
@@ -500,7 +560,12 @@ details.q[open] .chev{transform:rotate(180deg)}
 <section class="view" id="v-sim" aria-labelledby="h-sim">
   <div class="ticket-head"><span><b>Módulo 2</b> · Simulador DES</span><span>1 cola FIFO → surtidor</span><span>10 pts</span></div>
   <h2 class="vt" id="h-sim">Mira cómo crece la cola, evento por evento</h2>
-  <p class="lede">Cada auto es un cliente. Con borde punteado está esperando en la cola; relleno naranja significa que lo están atendiendo. El reloj salta de un evento al siguiente: llegada, inicio o fin de servicio.</p>
+  <p class="lede">Presiona reproducir y mira llegar los 100 autos. El reloj salta de un suceso al siguiente: una llegada, el inicio de una carga o una salida.</p>
+  <div class="simple"><span class="ic"><svg><use href="#i-bulb"/></svg></span><div>
+    <span class="lead">En palabras simples</span>
+    <p>La computadora “juega” a ser la gasolinera. Cada vez que pasa algo (llega un auto, empieza a cargar o se va) lo anota y adelanta el reloj hasta el siguiente suceso. Por eso se llama <span class="term" tabindex="0" data-term="des">simulación de eventos discretos</span>.</p>
+    <p>Fíjate en el contador <b>en cola ahora</b>: casi nunca baja, porque los autos llegan más rápido de lo que se van.</p>
+  </div></div>
 
   <div class="bar">
     <div class="grp"><span class="lbl">Réplica</span><select class="sel" id="sv-rep" aria-label="Réplica"></select></div>
@@ -524,6 +589,11 @@ details.q[open] .chev{transform:rotate(180deg)}
         <button class="icon-btn big" id="b-play" aria-label="Reproducir"><svg><use href="#i-play"/></svg></button>
         <button class="icon-btn" id="b-next" aria-label="Siguiente evento"><svg><use href="#i-next"/></svg></button>
         <input type="range" id="scrub" min="0" max="100" step="0.01" value="0" aria-label="Línea de tiempo">
+      </div>
+      <div class="stage-legend">
+        <span><svg width="36" height="19" viewBox="0 0 58 30" aria-hidden="true"><rect x="2" y="3" width="54" height="24" rx="9" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5" stroke-dasharray="6 4"/></svg>Esperando en la fila</span>
+        <span><svg width="36" height="19" viewBox="0 0 58 30" aria-hidden="true"><rect x="2" y="3" width="54" height="24" rx="9" fill="var(--signal)"/></svg>Cargando combustible</span>
+        <span><svg width="22" height="22" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-pump"/></svg>Surtidor gris = libre, naranja = ocupado</span>
       </div>
       <h3 class="ss">Longitud de la cola en el tiempo</h3>
       <svg class="chart" id="qchart" height="190" role="img" aria-label="Longitud de la cola en función del tiempo"></svg>
@@ -552,7 +622,7 @@ details.q[open] .chev{transform:rotate(180deg)}
       <div class="grp"><span class="lbl">Réplica</span><select class="sel" id="tr-rep" aria-label="Réplica de la traza"></select></div>
       <div class="grp"><span class="lbl">Desde el cliente</span><input type="range" id="tr-i" min="1" max="98" value="1" style="width:200px" aria-label="Cliente inicial"><b class="num" id="tr-iv">1</b></div>
     </div>
-    <p class="note">Cada comprobante reconstruye a mano un cliente con las cuatro ecuaciones del modelo. Compara los resultados con la fila correspondiente de la tabla completa: deben coincidir.</p>
+    <p class="note">Aquí hacemos a mano lo mismo que hace la computadora, para comprobar que no se equivoca. Cada comprobante responde 4 preguntas sobre un auto usando las ecuaciones del modelo. Los resultados deben coincidir con la tabla completa.</p>
     <div class="receipts" id="receipts"></div>
   </div>
   <div class="pane" data-pane="tabla">
@@ -572,6 +642,11 @@ details.q[open] .chev{transform:rotate(180deg)}
   <div class="ticket-head"><span><b>Módulo 3</b> · Réplicas e inferencia</span><span>Mulberry32 · semillas deterministas</span><span>6 pts</span></div>
   <h2 class="vt" id="h-rep">Una corrida no basta: repetimos y medimos la incertidumbre</h2>
   <p class="lede">Cada réplica usa una semilla distinta y produce su propio W̄<sub>q,j</sub>. Con esos valores construimos un intervalo de confianza al 95 % para la espera media.</p>
+  <div class="simple"><span class="ic"><svg><use href="#i-bulb"/></svg></span><div>
+    <span class="lead">En palabras simples</span>
+    <p>Una sola simulación puede salir “con suerte” o “sin suerte”, igual que lanzar una moneda una sola vez. Por eso la repetimos varias veces, cada una con un azar distinto (eso es la <span class="term" tabindex="0" data-term="semilla">semilla</span>), y promediamos.</p>
+    <p>El <span class="term" tabindex="0" data-term="ic">intervalo de confianza</span> responde: ¿entre qué valores está, casi con seguridad, la espera promedio real? Mientras más angosto, más precisa es la respuesta.</p>
+  </div></div>
 
   <h3 class="st">Panel de control</h3>
   <div class="bar">
@@ -600,6 +675,7 @@ details.q[open] .chev{transform:rotate(180deg)}
   <div class="tw" id="sc-table"></div>
   <svg class="chart" id="sc-chart" height="170" role="img" aria-label="Espera media por escenario"></svg>
   <p class="figcap">Espera media en cola por escenario con su IC 95 %. Barra naranja: escenario seleccionado arriba.</p>
+  <p class="plain" id="sc-plain"></p>
   <div class="foot"><span>Fin del módulo 3</span><button data-go="preg">Módulo 4: Preguntas <svg><use href="#i-arrow"/></svg></button></div>
 </section>
 
@@ -799,6 +875,46 @@ function moveTip(e){const x=Math.min(e.clientX+14,innerWidth-tip.offsetWidth-10)
 function hideTip(){tip.classList.remove('on');}
 function bindTips(root){root.querySelectorAll('[data-tip]').forEach(el=>{el.addEventListener('pointerenter',e=>showTip(e,el.dataset.tip));el.addEventListener('pointermove',moveTip);el.addEventListener('pointerleave',hideTip);});}
 
+/* ---------- glosario ---------- */
+const TERMS={
+  des:['Simulación de eventos discretos','Una simulación que avanza de un suceso a otro (llega un auto, empieza a cargar, se va) en lugar de minuto a minuto.'],
+  fifo:['FIFO','Del inglés “First In, First Out”: el primero que llega es el primero en ser atendido, como en cualquier fila normal.'],
+  lambda:['λ (lambda) · tasa de llegadas','Cuántos autos llegan por minuto en promedio. Aquí 1 / 2.56 = 0.39 autos por minuto.'],
+  mu:['μ (mu) · tasa de servicio','Cuántos autos puede atender el surtidor por minuto. Aquí 1 / 4 = 0.25 autos por minuto.'],
+  rho:['ρ (rho) · intensidad de tráfico','λ / μ: compara lo que llega con lo que se puede atender. Si es mayor que 1, la fila crece sin parar. Aquí vale 1.56.'],
+  wq:['W̄q · espera promedio en la fila','Minutos que un auto pasa, en promedio, esperando antes de empezar a cargar. Es el resultado principal del trabajo.'],
+  replica:['Réplica','Una corrida completa de la simulación con 100 autos. Repetirla con otro azar muestra cuánto cambia el resultado por suerte.'],
+  semilla:['Semilla','El número con el que arranca el generador de números al azar. La misma semilla siempre da los mismos números, así cualquiera puede repetir el resultado.'],
+  chi:['Prueba χ² (chi-cuadrado)','Compara lo que se observó con lo que predice una fórmula. Si la diferencia es pequeña, la fórmula describe bien los datos.'],
+  ti:['Transformada inversa','La “ruleta”: convierte un número al azar entre 0 y 1 en un tiempo, buscando en qué tramo de la probabilidad acumulada cae.'],
+  fi:['Probabilidad acumulada F','La suma de las probabilidades hasta ese valor. Reparte la barra de 0 a 1 en tramos, uno por cada valor posible.'],
+  ic:['Intervalo de confianza (IC 95 %)','El rango donde, con 95 % de seguridad, está la verdadera espera promedio. Más angosto significa más preciso.'],
+  S:['Desviación estándar S','Cuánto se separan los resultados de cada réplica respecto del promedio. Si es grande, el azar influye mucho.'],
+  t:['Valor t de Student','Un factor que agranda el margen de error cuando hay pocas réplicas. Con muchas réplicas se acerca a 1.96.'],
+  h:['Semi-amplitud h','La mitad del ancho del intervalo: cuánto puede equivocarse el promedio hacia arriba o hacia abajo.'],
+  er:['Error relativo εr','h dividido entre el promedio: qué tan grande es el margen de error comparado con el resultado. La meta es 10 % o menos.'],
+  nstar:['n* · réplicas necesarias','Cuántas réplicas harían falta para que el error relativo baje al 10 %.'],
+  util:['Utilización','Porcentaje del tiempo en que el surtidor está ocupado. Cerca de 100 % significa que nunca descansa.']
+};
+const term=(k,txt)=>`<span class="term" tabindex="0" data-term="${k}">${txt}</span>`;
+const termTip=el=>{const d=TERMS[el.dataset.term];return d?`<div class="td"><b>${d[0]}</b>${d[1]}</div>`:'';};
+const tipAt=el=>{const b=el.getBoundingClientRect();return {clientX:b.left,clientY:b.top};};
+document.addEventListener('pointerover',e=>{const t=e.target.closest('.term');if(t)showTip(e,termTip(t));});
+document.addEventListener('pointermove',e=>{if(e.target.closest('.term'))moveTip(e);});
+document.addEventListener('pointerout',e=>{if(e.pointerType==='mouse'&&e.target.closest('.term'))hideTip();});
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('.term,[data-tip]'))hideTip();});
+document.addEventListener('click',e=>{const t=e.target.closest('.term');if(t)showTip(tipAt(t),termTip(t));});
+document.addEventListener('focusin',e=>{const t=e.target.closest&&e.target.closest('.term');if(t)showTip(tipAt(t),termTip(t));});
+document.addEventListener('focusout',e=>{if(e.target.closest&&e.target.closest('.term'))hideTip();});
+addEventListener('scroll',()=>{if(tip.classList.contains('on'))hideTip();},{passive:true});
+function renderGloss(){
+  $('#gloss').innerHTML=Object.values(TERMS).map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+  const car=(cls,i)=>`<svg class="${cls}" style="--i:${i}" aria-hidden="true"><use href="#i-car"/></svg>`;
+  $('#h-arr').innerHTML=Array.from({length:23},(_,i)=>car('a',i)).join('');
+  $('#h-srv').innerHTML=Array.from({length:15},(_,i)=>car('s',i)).join('');
+  $('#h-left').innerHTML=Array.from({length:8},(_,i)=>car('x',i)).join('');
+}
+
 /* ---------- navigation ---------- */
 const VIEWS=['inicio','datos','sim','rep','preg'];
 function go(v,push=true){
@@ -849,7 +965,7 @@ function renderM1(){
         <div class="n">Valor crítico χ²<sub>0.05, ${c.gl}</sub></div><div class="r">${c.crit.toFixed(3)}</div>
         <div class="n">Valor p</div><div class="r">${c.pv.toFixed(4)}</div>
       </div>
-      <div class="verdict ${c.accept?'':'bad'}"><svg><use href="#i-${c.accept?'check':'alert'}"/></svg><p><b>${c.accept?'No se rechaza H₀':'Se rechaza H₀'}.</b> χ² = ${c.chi.toFixed(3)} ${c.accept?'&lt;':'≥'} ${c.crit.toFixed(3)}: ${c.accept?'la diferencia entre O y E se explica por el azar.':'los datos no se ajustan.'}</p></div>
+      <div class="verdict ${c.accept?'':'bad'}"><svg><use href="#i-${c.accept?'check':'alert'}"/></svg><p><b>${c.accept?'No se rechaza H₀':'Se rechaza H₀'}.</b> χ² = ${c.chi.toFixed(3)} ${c.accept?'&lt;':'≥'} ${c.crit.toFixed(3)}: ${c.accept?'la diferencia entre O y E se explica por el azar. <b>En simple: los datos sí siguen ese patrón.</b>':'los datos no se ajustan. <b>En simple: los datos no siguen ese patrón.</b>'}</p></div>
     </div>`;}).join('');
   ['tll','ts'].forEach(k=>chiChart('#chi-ch-'+k,S.chi[k]));
   bindTips($('#chi-blocks'));
@@ -1061,15 +1177,16 @@ function renderTrace(){
     const prev=rows[r.i-2];
     const aPrev=prev?prev.arrival:0, fPrev=prev?prev.end:0;
     return `<article class="rcp"><header><b>Cliente ${r.i}</b><span>réplica ${tr.rep+1} · semilla ${seed}</span></header>
+    <div class="f" style="margin-top:4px">Números al azar que le tocaron y su tiempo (ruleta del Módulo 1):</div>
     <div class="src">R<sub>ll</sub> = ${f4(r.rLl)} ∈ ${intv(TLL,r.rLl)} → T<sub>ll</sub> = <b>${r.tll}</b><br>R<sub>s</sub> = ${f4(r.rS)} ∈ ${intv(TS,r.rS)} → T<sub>s</sub> = <b>${r.ts}</b></div>
     <ol>
-      <li><div><div class="f">Llegada<sub>${r.i}</sub> = Llegada<sub>${r.i-1}</sub> + T<sub>ll,${r.i}</sub></div><div class="c">= ${fx(aPrev)} + ${r.tll} = <b>${fx(r.arrival)}</b></div></div></li>
-      <li><div><div class="f">Inicio<sub>${r.i}</sub> = max(Llegada<sub>${r.i}</sub>, Fin<sub>${r.i-1}</sub>)</div><div class="c">= max(${fx(r.arrival)}, ${fx(fPrev)}) = <b>${fx(r.start)}</b></div></div></li>
-      <li><div><div class="f">Espera<sub>${r.i}</sub> = Inicio<sub>${r.i}</sub> − Llegada<sub>${r.i}</sub></div><div class="c">= ${fx(r.start)} − ${fx(r.arrival)} = <b>${fx(r.wait)}</b></div></div></li>
-      <li><div><div class="f">Fin<sub>${r.i}</sub> = Inicio<sub>${r.i}</sub> + T<sub>s,${r.i}</sub></div><div class="c">= ${fx(r.start)} + ${r.ts} = <b>${fx(r.end)}</b></div></div></li>
+      <li><div><div class="qp">¿Cuándo llega?</div><div class="f">Llegada<sub>${r.i}</sub> = Llegada<sub>${r.i-1}</sub> + T<sub>ll,${r.i}</sub></div><div class="c">= ${fx(aPrev)} + ${r.tll} = <b>${fx(r.arrival)}</b></div></div></li>
+      <li><div><div class="qp">¿Cuándo empieza a cargar?</div><div class="f">Inicio<sub>${r.i}</sub> = max(Llegada<sub>${r.i}</sub>, Fin<sub>${r.i-1}</sub>)</div><div class="c">= max(${fx(r.arrival)}, ${fx(fPrev)}) = <b>${fx(r.start)}</b></div></div></li>
+      <li><div><div class="qp">¿Cuánto esperó en la fila?</div><div class="f">Espera<sub>${r.i}</sub> = Inicio<sub>${r.i}</sub> − Llegada<sub>${r.i}</sub></div><div class="c">= ${fx(r.start)} − ${fx(r.arrival)} = <b>${fx(r.wait)}</b></div></div></li>
+      <li><div><div class="qp">¿Cuándo se va?</div><div class="f">Fin<sub>${r.i}</sub> = Inicio<sub>${r.i}</sub> + T<sub>s,${r.i}</sub></div><div class="c">= ${fx(r.start)} + ${r.ts} = <b>${fx(r.end)}</b></div></div></li>
     </ol>
     <div class="tot"><span>Espera en cola</span><span>${fx(r.wait)} min</span></div>
-    <div class="f" style="margin-top:6px">${r.i===1?'Primer cliente: Llegada₀ = 0 y Fin₀ = 0 porque el sistema inicia vacío.':r.wait>0?`Llegó antes de que terminara el cliente ${r.i-1}, por eso esperó.`:`Llegó con el surtidor libre: no esperó.`}</div></article>`;}).join('');
+    <div class="f" style="margin-top:6px">${r.i===1?'Primer cliente: Llegada₀ = 0 y Fin₀ = 0 porque la gasolinera abre vacía.':r.wait>0?`Llegó mientras el surtidor seguía ocupado con el cliente ${r.i-1}, por eso esperó.`:`Llegó con el surtidor libre: no esperó.`}</div></article>`;}).join('');
 }
 $('#tr-i').addEventListener('input',e=>{tr.i=+e.target.value;renderTrace();renderFull();});
 $('#tr-rep').addEventListener('change',e=>{tr.rep=+e.target.value;renderTrace();});
@@ -1105,19 +1222,20 @@ function renderSeeds(){
 function renderRep(){
   const runs=active(),c=ciOf();
   $('#rp-title').textContent=`Resultados por réplica · ${SCEN[S.sc].label}`;
-  $('#rp-table').innerHTML=`<table class="rt"><thead><tr><th>Réplica</th><th>Semilla</th><th>W̄<sub>q,j</sub> (min)</th><th>W<sub>q</sub> máx.</th><th>P90 W<sub>q</sub></th><th>% que esperó</th><th>Utilización</th><th>Cola final</th><th>Fin (min)</th></tr></thead><tbody>${
+  $('#rp-table').innerHTML=`<table class="rt"><thead><tr><th>Réplica</th><th>Semilla</th><th>W̄<sub>q,j</sub> (min)</th><th>W<sub>q</sub> máx.</th><th>P90 W<sub>q</sub></th><th>% que esperó</th><th>${term('util','Utilización')}</th><th>Cola final</th><th>Fin (min)</th></tr></thead><tbody>${
     runs.map((r,j)=>{const M=r.metrics;return `<tr><td class="w">${j+1}</td><td>${r.seed}</td><td class="w">${f2(M.meanWq)}</td><td>${f2(M.maxWq)}</td><td>${f2(M.p90Wq)}</td><td>${pct(M.pctWait)}</td><td>${pct(M.util)}</td><td>${M.finalQueue}</td><td>${f2(M.makespan)}</td></tr>`;}).join('')
   }</tbody><tfoot><tr><td>Promedio</td><td></td><td>${f2(c.mean)}</td><td>${f2(avg(runs,'maxWq'))}</td><td>${f2(avg(runs,'p90Wq'))}</td><td>${pct(avg(runs,'pctWait'))}</td><td>${pct(avg(runs,'util'))}</td><td>${avg(runs,'finalQueue').toFixed(1)}</td><td>${f2(avg(runs,'makespan'))}</td></tr></tfoot></table>`;
   const ok=c.relErr<=0.10;
   $('#rp-formula').innerHTML=`
     <div class="n">Media global</div><div class="e">W̿<sub>q</sub> = (1/n) Σ W̄<sub>q,j</sub> = (${runs.map(r=>f2(r.metrics.meanWq)).join(' + ')}) / ${c.n}</div><div class="r">${f2(c.mean)} min</div>
-    <div class="n">Desviación estándar</div><div class="e">S = √[ Σ (W̄<sub>q,j</sub> − W̿<sub>q</sub>)² / (n − 1) ]</div><div class="r">${f2(c.S)} min</div>
-    <div class="n">Valor crítico</div><div class="e">t<sub>0.025, n−1</sub> = t<sub>0.025, ${c.n-1}</sub></div><div class="r">${c.t.toFixed(3)}</div>
-    <div class="n">Semi-amplitud</div><div class="e">h = t · S / √n = ${c.t.toFixed(3)} · ${f2(c.S)} / √${c.n}</div><div class="r">${f2(c.h)} min</div>
-    <div class="n">IC 95 %</div><div class="e">[W̿<sub>q</sub> − h, W̿<sub>q</sub> + h]</div><div class="r">[${f2(c.lo)}, ${f2(c.hi)}]</div>
-    <div class="n">Error relativo</div><div class="e">ε<sub>r</sub> = h / W̿<sub>q</sub> = ${f2(c.h)} / ${f2(c.mean)}</div><div class="r ${ok?'good':'alert'}">${pct(c.relErr)}</div>
-    <div class="n">Réplicas requeridas</div><div class="e">n* = ⌈ (t · S / (0.10 · W̿<sub>q</sub>))² ⌉ = ⌈ (${c.t.toFixed(3)} · ${f2(c.S)} / ${f2(0.1*c.mean)})² ⌉</div><div class="r">${c.nStar}</div>`;
-  $('#rp-verdict').innerHTML=`<div class="verdict ${ok?'':'bad'}"><svg><use href="#i-${ok?'check':'alert'}"/></svg><p>${ok?`<b>Se cumple la precisión.</b> Con n = ${c.n} el error relativo es ${pct(c.relErr)} ≤ 10 %.`:`<b>Todavía no se cumple la precisión.</b> Con n = ${c.n} el error relativo es ${pct(c.relErr)} &gt; 10 %. Se necesitan al menos <b>${c.nStar}</b> réplicas (estimación con t de n − 1 = ${c.n-1} gl; al aumentar n, t baja y n* puede reducirse ligeramente).`}</p></div>`;
+    <div class="n">${term('S','Desviación estándar')}</div><div class="e">S = √[ Σ (W̄<sub>q,j</sub> − W̿<sub>q</sub>)² / (n − 1) ]</div><div class="r">${f2(c.S)} min</div>
+    <div class="n">${term('t','Valor crítico t')}</div><div class="e">t<sub>0.025, n−1</sub> = t<sub>0.025, ${c.n-1}</sub></div><div class="r">${c.t.toFixed(3)}</div>
+    <div class="n">${term('h','Semi-amplitud')}</div><div class="e">h = t · S / √n = ${c.t.toFixed(3)} · ${f2(c.S)} / √${c.n}</div><div class="r">${f2(c.h)} min</div>
+    <div class="n">${term('ic','IC 95 %')}</div><div class="e">[W̿<sub>q</sub> − h, W̿<sub>q</sub> + h]</div><div class="r">[${f2(c.lo)}, ${f2(c.hi)}]</div>
+    <div class="n">${term('er','Error relativo')}</div><div class="e">ε<sub>r</sub> = h / W̿<sub>q</sub> = ${f2(c.h)} / ${f2(c.mean)}</div><div class="r ${ok?'good':'alert'}">${pct(c.relErr)}</div>
+    <div class="n">${term('nstar','Réplicas requeridas')}</div><div class="e">n* = ⌈ (t · S / (0.10 · W̿<sub>q</sub>))² ⌉ = ⌈ (${c.t.toFixed(3)} · ${f2(c.S)} / ${f2(0.1*c.mean)})² ⌉</div><div class="r">${c.nStar}</div>`;
+  $('#rp-verdict').innerHTML=`<div class="verdict ${ok?'':'bad'}"><svg><use href="#i-${ok?'check':'alert'}"/></svg><p>${ok?`<b>Se cumple la precisión.</b> Con n = ${c.n} el error relativo es ${pct(c.relErr)} ≤ 10 %.`:`<b>Todavía no se cumple la precisión.</b> Con n = ${c.n} el error relativo es ${pct(c.relErr)} &gt; 10 %. Se necesitan al menos <b>${c.nStar}</b> réplicas (estimación con t de n − 1 = ${c.n-1} gl; al aumentar n, t baja y n* puede reducirse ligeramente).`}</p></div>
+  <p class="plain"><b>En simple:</b> con ${SCEN[S.sc].label.replace(/ \(.*\)/,'')}, un auto espera en promedio <b>${f2(c.mean)} minutos</b> en la fila. Con 95 % de confianza, la espera promedio real está entre <b>${f2(c.lo)}</b> y <b>${f2(c.hi)}</b> minutos (un margen de ± ${f2(c.h)} min). ${ok?'Ese margen es lo bastante pequeño para la meta del 10 %.':`Ese margen todavía es grande; con ${c.nStar} réplicas sería lo bastante pequeño.`}</p>`;
   ciChart(); scTable();
   $$('#rp-n button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.n===S.n));
   $$('#rp-sc button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.sc===S.sc));
@@ -1161,6 +1279,8 @@ function scTable(){
     s+=`<text x="${x(d.c.hi)+8}" y="${y+bh/2+4}" style="font-weight:700;fill:var(--ink)">${f2(d.c.mean)} min</text>`;});
   s+=`<line x1="${m.l}" x2="${m.l}" y1="${m.t}" y2="${H-m.b}" stroke="var(--ink)" stroke-width="1.2"/>`;
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.innerHTML=s;bindTips(svg);
+  const [b,d,r]=data;
+  $('#sc-plain').innerHTML=`<b>En simple:</b> con un segundo surtidor la espera promedio pasa de <b>${f2(b.c.mean)}</b> a <b>${f2(d.c.mean)} minutos</b>, porque ahora se atiende más rápido de lo que llegan los autos (ρ = 0.78 &lt; 1). Cargar 20 % más rápido ayuda (${f2(r.c.mean)} min), pero no alcanza: ρ sigue siendo mayor que 1 y la fila sigue creciendo.`;
 }
 $$('#rp-n button').forEach(b=>b.addEventListener('click',()=>{S.n=+b.dataset.n;refreshAll(true);}));
 $('#rp-double').addEventListener('click',()=>{S.n=10;refreshAll(true);$('#rp-formula').classList.remove('flash');void $('#rp-formula').offsetWidth;$('#rp-formula').classList.add('flash');});
@@ -1169,7 +1289,8 @@ $('#rp-reset').addEventListener('click',()=>{S.seeds=[...DEFAULT_SEEDS];refreshA
 $('#rp-rand').addEventListener('click',()=>{S.seeds=S.seeds.map(()=>1+Math.floor(Math.random()*999999));refreshAll();});
 
 /* ---------- MÓDULO 4 ---------- */
-function q(n,title,body){return `<details class="q"${n===1?' open':''}><summary><span class="qn">${n}</span><span class="qt">${title}</span><svg class="chev"><use href="#i-chev"/></svg></summary><div class="qa">${body}</div></details>`;}
+let SH=[];
+function q(n,title,body){const sh=SH[n-1];return `<details class="q"${n===1?' open':''}><summary><span class="qn">${n}</span><span class="qt">${title}</span><svg class="chev"><use href="#i-chev"/></svg></summary><div class="qa">${sh?`<p class="short">${sh}</p><span class="lbl more">Explicación completa</span>`:''}${body}</div></details>`;}
 const ev=(v,txt)=>`<button class="ev" data-go="${v}">${txt} <svg width="16" height="16"><use href="#i-arrow"/></svg></button>`;
 const hn=x=>`<span class="hl-num">${x}</span>`, hb=x=>`<span class="hl-blue">${x}</span>`;
 function renderQ(){
@@ -1182,7 +1303,27 @@ function renderQ(){
   const runs2=active('dos'), runsF=active('rapido');
   const max1=avg(base,'maxWq'),max2=avg(runs2,'maxWq'),maxF=avg(runsF,'maxWq');
   const n=S.n;
+  const shortTec=[
+    `R1 = ${f4(rs[0].R)} cae en el tramo de ${rs[0].val} min, así que el primer auto llega a los ${rs[0].val} minutos. R2 = ${f4(rs[1].R)} cae en el tramo de ${rs[1].val} min, así que su carga dura ${rs[1].val} minutos.`,
+    `El auto 1 llega en t = ${fx(r1[0].arrival)} y espera ${fx(r1[0].wait)} min; el 2 llega en t = ${fx(r1[1].arrival)} y espera ${fx(r1[1].wait)} min; el 3 llega en t = ${fx(r1[2].arrival)} y espera ${fx(r1[2].wait)} min.`,
+    `Cambian los números de cada corrida (la espera promedio va de ${f2(mn)} a ${f2(mx)} min según la semilla). No cambia la conclusión: en todas, la fila crece.`,
+    `Estamos 95 % seguros de que la espera promedio real está entre ${f2(c.lo)} y ${f2(c.hi)} minutos.`,
+    `El intervalo se vuelve más angosto: el margen pasa de ± ${f2(c5.h)} a ± ${f2(c10.h)} minutos.`
+  ];
+  const shortCri=[
+    `Se compara con la teoría: si la fila crece al ritmo que predice ρ (unos ${predQ.toFixed(0)} autos al final) y con 2 surtidores se estabiliza, no es un error del programa sino falta de capacidad.`,
+    `Sí. Un intervalo estrecho dice que el resultado es preciso, no que el modelo represente bien la realidad.`,
+    `Ninguna por separado: se presenta el promedio de todas las réplicas con su intervalo de confianza.`,
+    `Primero la capacidad (otro surtidor), porque es lo único que hace que ρ baje de 1.`,
+    `No necesariamente: además del promedio hay que mirar a los clientes que esperan mucho.`
+  ];
+  const shortEsc=[
+    `Cada hora llegan unos 23 autos y el surtidor solo atiende 15; en la simulación pasa ocupado el ${pct(avg(base,'util'))} del tiempo y la fila nunca se vacía.`,
+    `No. Con ρ mayor que 1 la fila tiene que crecer; un modelo que mostrara una fila estable sería el que está mal.`,
+    `Habilitar una segunda estación: la espera promedio baja de ${f2(c.mean)} a ${f2(two.mean)} minutos.`
+  ];
 
+  SH=shortTec;
   $('#q-tec').innerHTML=[
     q(1,'¿Cuáles son los primeros 5 números aleatorios y cómo se transforman al menos 2 de ellos en T<sub>ll</sub> y T<sub>s</sub>?',
       `<p>Réplica 1, semilla ${hn(S.seeds[0])}. El generador Mulberry32 entrega R ∈ [0, 1) y se consumen en orden T<sub>ll</sub>, T<sub>s</sub> por cliente:</p>
@@ -1203,6 +1344,7 @@ function renderQ(){
       <p>h = t·S/√n. Duplicar n divide √n entre √2 y además baja t de 2.776 a 2.262, así que, si S se mantiene, h se reduce a ≈ ${(2.262/2.776/Math.SQRT2*100).toFixed(0)} % de su valor. En nuestros datos pasó de ${f2(c5.h)} a ${f2(c10.h)} min (S cambió de ${f2(c5.S)} a ${f2(c10.S)}). Más réplicas dan <b>más precisión</b>, pero no cambian el valor que se estima ni corrigen un modelo mal planteado.</p>${ev('rep','Probar el botón Duplicar réplicas')}`)
   ].join('');
 
+  SH=shortCri;
   $('#q-cri').innerHTML=[
     q(1,'Cuando la cola crece, ¿cómo distinguir un error de programación de una demanda superior a la capacidad (ρ &gt; 1)?',
       `<p>Se contrasta la simulación con lo que la teoría predice. Si coinciden, el crecimiento se debe al sistema y no a un error:</p>
@@ -1230,6 +1372,7 @@ function renderQ(){
       <p>Para decidir se miran varios indicadores juntos: media, P90 o P95, máximo y porcentaje de clientes que superan un umbral aceptable (por ejemplo 10 min). En nuestros escenarios, con 2 surtidores bajan a la vez la media (${f2(c.mean)} → ${f2(two.mean)}) y el máximo promedio (${f2(max1)} → ${f2(max2)}), así que esa mejora no tiene ese dilema. Agilizar el servicio también baja ambos (máx. ${f2(maxF)}). El éxito se define antes de probar, según la meta de la gerencia.</p>`)
   ].join('');
 
+  SH=shortEsc;
   $('#q-esc').innerHTML=[
     q(1,'¿Qué evidencias analíticas y de simulación muestran que la demanda supera la capacidad?',
       `<div class="figs"><div class="fig alert"><span class="v">ρ = 1.5625</span><span class="d">λ = 0.3906 &gt; μ = 0.25</span></div><div class="fig alert"><span class="v">${pct(avg(base,'util'))}</span><span class="d">utilización del surtidor</span></div><div class="fig alert"><span class="v">${simQ.toFixed(1)}</span><span class="d">vehículos en cola al final</span></div></div>
@@ -1273,7 +1416,7 @@ function refreshAll(light=false){
   fillSelects(); renderSeeds(); renderRep(); renderQ(); renderInicio();
   if(!light){ti.R=null;ti.sel=0;renderTIChips();renderTI();prepViz();renderViz();renderTrace();renderFull();}
 }
-recompute(); renderM1(); refreshAll();
+recompute(); renderGloss(); renderM1(); refreshAll();
 go(location.hash.slice(1)||'inicio',false);
 let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{['tll','ts'].forEach(k=>chiChart('#chi-ch-'+k,S.chi[k]));bindTips($('#chi-blocks'));ciChart();scTable();if(viz.run)drawQChart();},150);});
 </script>

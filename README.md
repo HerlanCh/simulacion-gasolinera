@@ -40,4 +40,5 @@ Atajos: las teclas `0`–`4` cambian de sección. En el simulador, `Espacio` rep
 ## Archivos
 
 - `index.html`: la app completa (HTML, CSS y JavaScript en un solo archivo).
+- `motor_simulacion.py`: el mismo motor de simulación en Python. Con las mismas semillas da exactamente los mismos resultados que la app. Se ejecuta con `python motor_simulacion.py` (no necesita instalar librerías).
 - `PRODUCT.md` y `DESIGN.md`: notas sobre el propósito y el diseño visual.

@@ -196,7 +196,7 @@ input[type=range]{accent-color:var(--signal)}
 .chip .w{display:block;font-size:.8rem;color:var(--ink-2)}
 .chip[aria-pressed="true"]{border-color:var(--signal);background:var(--signal-wash)}
 @media (hover:hover) and (pointer:fine){.chip:hover{border-color:var(--ink-3)}}
-.cdf{position:relative;margin:34px 0 30px}
+.cdf{position:relative;margin:34px 0 30px;overflow-x:clip}
 .cdf .track{display:flex;height:56px;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden}
 .cdf .seg-c{position:relative;display:flex;align-items:center;justify-content:center;border-right:1.5px dashed var(--ink-3);font-family:var(--f-mono);font-weight:700;font-size:1.3rem;color:var(--ink-3);transition:background-color 200ms ease,color 200ms ease}
 .cdf .seg-c:last-child{border-right:0}
@@ -313,7 +313,7 @@ pre.code .nm{color:#8FD9AE}
 .seeds label.off input{opacity:.45;border-style:dashed}
 .formula{display:grid;grid-template-columns:minmax(150px,auto) 1fr auto;gap:0;border-top:1.5px solid var(--ink);margin:14px 0}
 .formula > div:not(.frow),.formula .frow > div{padding:10px 12px;border-bottom:1px dashed var(--rule);display:flex;align-items:center}
-.formula .n{font-family:var(--f-display);font-stretch:90%;font-weight:700}
+.formula .n,.formula > .n,.formula .frow > .n{display:block;align-self:center;font-family:var(--f-display);font-stretch:90%;font-weight:700}
 .formula .e,.formula .frow > .e{display:block;align-self:center;font-family:var(--f-mono);font-size:.92rem;line-height:1.8;color:var(--ink-2);overflow-wrap:anywhere}
 .formula .r{font-family:var(--f-mono);font-weight:700;font-size:1.15rem;justify-content:flex-end;white-space:nowrap}
 .formula .r.alert{color:var(--signal-ink)}

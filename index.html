@@ -638,13 +638,13 @@ details.q[open] .chev{transform:rotate(180deg)}
   <div class="legend"><span><i style="background:var(--signal)"></i>Observado O<sub>i</sub></span><span><i style="background:var(--blue)"></i>Esperado E<sub>i</sub></span></div>
   <div class="grid2" id="chi-blocks"></div>
 
-  <h4 class="ss">¿Por qué simulamos con la distribución empírica discreta?</h4>
+  <h4 class="ss">¿Por qué simulamos con los datos y no con la fórmula?</h4>
   <div class="prose">
-    <p>Ambas pruebas aceptan H<sub>0</sub>, así que las distribuciones teóricas son razonables. Aun así el simulador usa la <b>distribución empírica</b> mediante transformada inversa, por tres razones:</p>
+    <p>Las dos fórmulas pasaron la prueba χ², así que podríamos usarlas. Aun así, el simulador usa directamente la tabla de los 50 datos: la <b>distribución empírica</b>, nuestra “ruleta”. Hay tres razones:</p>
     <ul>
-      <li><b>Sin truncamiento.</b> La Poisson desplazada asigna probabilidad a valores mayores que 5 min (<span class="num" id="p-tail">—</span>) que nunca se observaron. Usarla obligaría a truncar o a generar tiempos irreales.</li>
-      <li><b>Fidelidad exacta.</b> La empírica reproduce exactamente las medias observadas (2.56 y 4.00), por lo que ρ = 1.5625 se respeta sin aproximaciones.</li>
-      <li><b>Trazabilidad.</b> Cada R cae en un intervalo de la tabla de arriba, y eso permite verificar a mano cualquier cliente, como exige la rúbrica.</li>
+      <li><b>No inventa tiempos que nunca pasaron.</b> Con la fórmula Poisson, un auto podría tardar 6 minutos o más en llegar (<span class="num" id="p-tail">—</span>), aunque en los datos el máximo fue 5. La ruleta solo da valores que sí se observaron.</li>
+      <li><b>Copia los datos tal cual.</b> Las fórmulas aciertan el promedio, pero no cada probabilidad. Por ejemplo, 3 minutos entre llegadas aparece en el 30 % de los datos y la Poisson le da <span class="num" id="p-three">—</span>. La ruleta usa el 30 % exacto.</li>
+      <li><b>Se puede revisar a mano.</b> Cada número al azar R cae en un tramo de la tabla, así que cualquiera puede comprobar un cliente con lápiz y papel.</li>
     </ul>
   </div>
 
@@ -1279,7 +1279,8 @@ function renderM1(){
   ].map(([v,d])=>`<div class="fig"><span class="v">${v}</span><span class="d">${d}</span></div>`).join('');
 
   S.chi.tll=chiTest(TLL,'poisson'); S.chi.ts=chiTest(TS,'binomial');
-  $('#p-tail').textContent='P(T ≥ 6) ≈ '+(1-[0,1,2,3,4].reduce((s,k)=>s+Math.exp(-1.56)*1.56**k/fact(k),0)).toFixed(4);
+  $('#p-tail').textContent='un '+(100*(1-[0,1,2,3,4].reduce((s,k)=>s+Math.exp(-1.56)*1.56**k/fact(k),0))).toFixed(1)+' % de probabilidad';
+  $('#p-three').textContent=(100*S.chi.tll.cats[2].p).toFixed(1)+' %';
   $('#chi-blocks').innerHTML=[['tll','A · Llegadas','T<sub>ll</sub>'],['ts','B · Servicio','T<sub>s</sub>']].map(([k,t,sym])=>{
     const c=S.chi[k];
     return `<div>

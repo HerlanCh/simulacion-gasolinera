@@ -530,7 +530,7 @@ details.q[open] .chev{transform:rotate(180deg)}
     <div><b>100</b><span>vehículos por réplica</span></div>
     <div><b>t = 0</b><span>servidor libre y cola vacía</span></div>
     <div><b id="i-reps">5 → 10</b><span><span class="term" tabindex="0" data-term="replica">réplicas</span> con <span class="term" tabindex="0" data-term="semilla">semillas</span> reproducibles</span></div>
-    <div><b>95 %</b><span>nivel de <span class="term" tabindex="0" data-term="ic">confianza</span> (α = 0.05)</span></div>
+    <div><b>95 %</b><span>nivel de <span class="term" tabindex="0" data-term="ic">confianza</span> (<span class="term" tabindex="0" data-term="alpha">α</span> = 0.05)</span></div>
     <div><b><span class="term" tabindex="0" data-term="wq">W̄<sub>q</sub></span></b><span>lo que medimos: espera promedio en la fila</span></div>
     <div><b>≤ 10 %</b><span><span class="term" tabindex="0" data-term="er">error relativo</span> máximo deseado</span></div>
   </div>
@@ -567,7 +567,7 @@ details.q[open] .chev{transform:rotate(180deg)}
   </div></div>
 
   <h3 class="st">Tablas de frecuencias e intervalos de asignación</h3>
-  <p class="note">Cada fila es un valor posible. O<sub>i</sub> es cuántas veces se observó; f<sub>i</sub> = O<sub>i</sub>/50 es su probabilidad; <span class="term" tabindex="0" data-term="fi">F<sub>i</sub></span> es la probabilidad acumulada. El intervalo [F<sub>i−1</sub>, F<sub>i</sub>) es su tramo en la ruleta: los números al azar R que caen ahí producen ese valor.</p>
+  <p class="note">Cada fila es un valor posible. <span class="term" tabindex="0" data-term="O">O<sub>i</sub></span> es cuántas veces se observó; <span class="term" tabindex="0" data-term="frel">f<sub>i</sub></span> = O<sub>i</sub>/50 es su probabilidad; <span class="term" tabindex="0" data-term="fi">F<sub>i</sub></span> es la probabilidad acumulada. El intervalo [F<sub>i−1</sub>, F<sub>i</sub>) es su tramo en la ruleta: los números al azar R que caen ahí producen ese valor.</p>
   <div class="grid2">
     <div><h4 class="ss">A · Tiempo entre llegadas T<sub>ll</sub> (min)</h4><div class="tw" id="t-tll"></div></div>
     <div><h4 class="ss">B · Tiempo de servicio T<sub>s</sub> (min)</h4><div class="tw" id="t-ts"></div></div>
@@ -579,7 +579,7 @@ details.q[open] .chev{transform:rotate(180deg)}
   </div>
 
   <h3 class="st">Prueba de bondad de ajuste χ²</h3>
-  <p class="note"><b>La pregunta:</b> ¿los tiempos observados siguen un patrón matemático conocido? Las barras naranjas son lo que pasó (O<sub>i</sub>) y las azules lo que diría la fórmula (E<sub>i</sub>). Si se parecen, el número <span class="term" tabindex="0" data-term="chi">χ²</span> sale pequeño y aceptamos la fórmula. Las categorías con E<sub>i</sub> &lt; 5 se juntan con su vecina, porque con tan pocos casos la prueba no es confiable.</p>
+  <p class="note"><b>La pregunta:</b> ¿los tiempos observados siguen un patrón matemático conocido? Las barras naranjas son lo que pasó (<span class="term" tabindex="0" data-term="O">O<sub>i</sub></span>) y las azules lo que diría la fórmula (<span class="term" tabindex="0" data-term="E">E<sub>i</sub></span>). Si se parecen, el número <span class="term" tabindex="0" data-term="chi">χ²</span> sale pequeño y aceptamos la fórmula. Las categorías con E<sub>i</sub> &lt; 5 se juntan con su vecina, porque con tan pocos casos la prueba no es confiable.</p>
   <div class="legend"><span><i style="background:var(--signal)"></i>Observado O<sub>i</sub></span><span><i style="background:var(--blue)"></i>Esperado E<sub>i</sub></span></div>
   <div class="grid2" id="chi-blocks"></div>
 
@@ -594,7 +594,7 @@ details.q[open] .chev{transform:rotate(180deg)}
   </div>
 
   <h3 class="st">Verificador de transformada inversa</h3>
-  <p class="note">Es la ruleta de la que hablamos (<span class="term" tabindex="0" data-term="ti">transformada inversa</span>): la barra de 0 a 1 está repartida según la probabilidad de cada valor. La computadora saca un número al azar R, mira en qué tramo cae y ese tramo dice el tiempo. Abajo están los 5 primeros números de la Réplica 1 (<span class="term" tabindex="0" data-term="semilla">semilla</span> <b class="num" id="ti-seed">—</b>); se usan en orden: primero el tiempo entre llegadas y luego el de servicio de cada cliente. Toca uno.</p>
+  <p class="note">Es la ruleta de la que hablamos (<span class="term" tabindex="0" data-term="ti">transformada inversa</span>): la barra de 0 a 1 está repartida según la probabilidad de cada valor. La computadora saca un número al azar <span class="term" tabindex="0" data-term="R">R</span>, mira en qué tramo cae y ese tramo dice el tiempo. Abajo están los 5 primeros números de la Réplica 1 (<span class="term" tabindex="0" data-term="semilla">semilla</span> <b class="num" id="ti-seed">—</b>); se usan en orden: primero el tiempo entre llegadas y luego el de servicio de cada cliente. Toca uno.</p>
   <div class="chips" id="ti-chips"></div>
   <div class="bar"><div class="grp"><span class="lbl">O prueba tu propio R</span><input type="range" id="ti-slider" min="0" max="0.9999" step="0.0001" value="0.5" style="width:220px" aria-label="Valor de R"><span class="num" id="ti-sval">0.5000</span></div>
     <div class="seg" id="ti-dist"><button data-d="tll" aria-pressed="true">T<sub>ll</sub></button><button data-d="ts" aria-pressed="false">T<sub>s</sub></button></div></div>
@@ -696,7 +696,7 @@ details.q[open] .chev{transform:rotate(180deg)}
 <section class="view" id="v-rep" aria-labelledby="h-rep">
   <div class="ticket-head"><span><b>Módulo 3</b> · Réplicas e inferencia</span><span>Mulberry32 · semillas deterministas</span></div>
   <h2 class="vt" id="h-rep">Una corrida no basta: repetimos y medimos la incertidumbre</h2>
-  <p class="lede">Cada réplica usa una semilla distinta y produce su propio W̄<sub>q,j</sub>. Con esos valores construimos un intervalo de confianza al 95 % para la espera media.</p>
+  <p class="lede">Cada réplica usa una semilla distinta y produce su propio <span class="term" tabindex="0" data-term="wqj">W̄<sub>q,j</sub></span>. Con esos valores construimos un intervalo de confianza al 95 % para la espera media.</p>
   <div class="simple"><span class="ic"><svg><use href="#i-bulb"/></svg></span><div>
     <span class="lead">En palabras simples</span>
     <p>Una sola simulación puede salir “con suerte” o “sin suerte”, igual que lanzar una moneda una sola vez. Por eso la repetimos varias veces, cada una con un azar distinto (eso es la <span class="term" tabindex="0" data-term="semilla">semilla</span>), y promediamos.</p>
@@ -722,7 +722,7 @@ details.q[open] .chev{transform:rotate(180deg)}
   <div id="rp-verdict"></div>
 
   <h4 class="ss">Efecto de duplicar las réplicas en el intervalo</h4>
-  <p class="note">Cada punto es el W̄<sub>q</sub> de una réplica; la barra es el IC al 95 %. Con más réplicas, h se reduce aproximadamente en proporción a 1/√n (y además baja el valor t).</p>
+  <p class="note">Cada punto es el <span class="term" tabindex="0" data-term="wqj">W̄<sub>q</sub></span> de una réplica; la barra es el <span class="term" tabindex="0" data-term="ic">IC</span> al 95 %. Con más réplicas, <span class="term" tabindex="0" data-term="h">h</span> se reduce aproximadamente en proporción a 1/√n (y además baja el valor t).</p>
   <svg class="chart" id="ci-chart" height="220" role="img" aria-label="Comparación de intervalos de confianza con 5 y 10 réplicas"></svg>
   <p class="figcap" id="ci-cap"></p>
 
@@ -1136,7 +1136,27 @@ const TERMS={
   h:['Semi-amplitud h','La mitad del ancho del intervalo: cuánto puede equivocarse el promedio hacia arriba o hacia abajo.'],
   er:['Error relativo εr','h dividido entre el promedio: qué tan grande es el margen de error comparado con el resultado. La meta es 10 % o menos.'],
   nstar:['n* · réplicas necesarias','Cuántas réplicas harían falta para que el error relativo baje al 10 %.'],
-  util:['Utilización','Porcentaje del tiempo en que el surtidor está ocupado. Cerca de 100 % significa que nunca descansa.']
+  util:['Utilización','Porcentaje del tiempo en que el surtidor está ocupado. Cerca de 100 % significa que nunca descansa.'],
+  tll:['Tll · tiempo entre llegadas','Minutos que pasan entre la llegada de un auto y la del siguiente. En promedio, 2.56.'],
+  ts:['Ts · tiempo de servicio','Minutos que tarda cargar combustible a un auto. En promedio, 4.00.'],
+  R:['R · número al azar','Número aleatorio entre 0 y 1. La ruleta (transformada inversa) lo convierte en un tiempo.'],
+  O:['Oᵢ · frecuencia observada','Cuántas veces se vio ese valor en los 50 datos reales.'],
+  frel:['fᵢ · frecuencia relativa','Oᵢ / 50: la probabilidad de ese valor. Es el tamaño de su tramo en la ruleta.'],
+  E:['Eᵢ · frecuencia esperada','Cuántas veces debería aparecer el valor si los datos siguieran exactamente la fórmula teórica: 50 × su probabilidad.'],
+  xbar:['x̄, ȳ · media','El promedio de los datos observados.'],
+  s2:['s² · varianza muestral','Qué tan dispersos están los datos alrededor de su promedio (se divide entre N − 1).'],
+  h0:['H₀ · hipótesis nula','Lo que se pone a prueba: “los datos siguen esta distribución”. Solo se rechaza si χ² supera el valor crítico.'],
+  h1:['H₁ · hipótesis alternativa','Lo contrario de H₀: los datos no siguen esa distribución.'],
+  k:['k · número de categorías','Cuántos grupos de valores quedan después de juntar los que tenían Eᵢ menor que 5.'],
+  m:['m · parámetros estimados','Cuántos números de la fórmula se calcularon con los mismos datos (aquí 1). Se restan de los grados de libertad.'],
+  gl:['gl · grados de libertad','k − 1 − m. Indica qué fila de la tabla χ² se usa para el valor crítico.'],
+  pval:['Valor p','Probabilidad de ver una diferencia así de grande solo por azar. Si es mayor que 0.05, no se rechaza H₀.'],
+  alpha:['α · nivel de significancia','El margen de error que aceptamos: 0.05, que equivale a 95 % de confianza.'],
+  n:['n · número de réplicas','Cuántas veces se repite la simulación completa (5 o 10).'],
+  wqj:['W̄q,j · espera promedio de una réplica','La espera promedio en la fila obtenida en la réplica número j.'],
+  wqq:['W̿q · media global','El promedio de las esperas de todas las réplicas. Es la mejor estimación de la espera real.'],
+  wmax:['Wq máx · espera máxima','La espera más larga que tuvo un auto en la réplica.'],
+  p90:['P90 · percentil 90','El 90 % de los autos esperó este tiempo o menos.']
 };
 const term=(k,txt)=>`<span class="term" tabindex="0" data-term="${k}">${txt}</span>`;
 const termTip=el=>{const d=TERMS[el.dataset.term];return d?`<div class="td"><b>${d[0]}</b>${d[1]}</div>`:'';};
@@ -1176,20 +1196,20 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b
 
 /* ---------- MÓDULO 1 ---------- */
 function freqTable(dist,sym){
-  return `<table class="rt"><thead><tr><th>${sym}</th><th>O<sub>i</sub></th><th>f<sub>i</sub></th><th>F<sub>i</sub></th><th>Intervalo de R</th></tr></thead><tbody>${
+  return `<table class="rt"><thead><tr><th>${sym}</th><th>${term('O','O<sub>i</sub>')}</th><th>${term('frel','f<sub>i</sub>')}</th><th>${term('fi','F<sub>i</sub>')}</th><th>Intervalo de ${term('R','R')}</th></tr></thead><tbody>${
     dist.filas.map(r=>`<tr><td class="w">${r.x}</td><td>${r.O}</td><td>${r.f.toFixed(2)}</td><td>${r.F.toFixed(2)}</td><td>[${r.inf.toFixed(2)}, ${r.F.toFixed(2)})</td></tr>`).join('')
   }</tbody><tfoot><tr><td>Total</td><td>${dist.N}</td><td>1.00</td><td></td><td></td></tr></tfoot></table>`;
 }
 function renderM1(){
-  $('#t-tll').innerHTML=freqTable(TLL,'T<sub>ll</sub>');
-  $('#t-ts').innerHTML=freqTable(TS,'T<sub>s</sub>');
+  $('#t-tll').innerHTML=freqTable(TLL,term('tll','T<sub>ll</sub>'));
+  $('#t-ts').innerHTML=freqTable(TS,term('ts','T<sub>s</sub>'));
   $('#m1-figs').innerHTML=[
-    ['x̄<sub>ll</sub> = '+TLL.media.toFixed(2),'media entre llegadas (min)'],
-    ['s²<sub>ll</sub> = '+TLL.varMuestral.toFixed(4),'varianza muestral (σ² pobl. '+TLL.varPob.toFixed(4)+')'],
-    ['ȳ<sub>s</sub> = '+TS.media.toFixed(2),'media de servicio (min)'],
-    ['s²<sub>s</sub> = '+TS.varMuestral.toFixed(4),'varianza muestral (σ² pobl. '+TS.varPob.toFixed(4)+')'],
-    ['λ = '+(1/TLL.media).toFixed(4),'llegadas por minuto'],
-    ['μ = '+(1/TS.media).toFixed(4),'servicios por minuto']
+    [term('xbar','x̄<sub>ll</sub>')+' = '+TLL.media.toFixed(2),'media entre llegadas (min)'],
+    [term('s2','s²<sub>ll</sub>')+' = '+TLL.varMuestral.toFixed(4),'varianza muestral (σ² pobl. '+TLL.varPob.toFixed(4)+')'],
+    [term('xbar','ȳ<sub>s</sub>')+' = '+TS.media.toFixed(2),'media de servicio (min)'],
+    [term('s2','s²<sub>s</sub>')+' = '+TS.varMuestral.toFixed(4),'varianza muestral (σ² pobl. '+TS.varPob.toFixed(4)+')'],
+    [term('lambda','λ')+' = '+(1/TLL.media).toFixed(4),'llegadas por minuto'],
+    [term('mu','μ')+' = '+(1/TS.media).toFixed(4),'servicios por minuto']
   ].map(([v,d])=>`<div class="fig"><span class="v">${v}</span><span class="d">${d}</span></div>`).join('');
 
   S.chi.tll=chiTest(TLL,'poisson'); S.chi.ts=chiTest(TS,'binomial');
@@ -1198,17 +1218,17 @@ function renderM1(){
     const c=S.chi[k];
     return `<div>
       <h4 class="ss">${t}: ${c.desc.name}</h4>
-      <div class="hyp"><b>H₀</b><span>${c.desc.h0}</span><b>H₁</b><span>${sym} no sigue esa distribución</span></div>
-      <p class="note" style="margin:2px 0 8px">Parámetro estimado de los datos: <span class="num">${c.desc.est}</span>, por eso m = 1.</p>
+      <div class="hyp"><b>${term('h0','H₀')}</b><span>${c.desc.h0}</span><b>${term('h1','H₁')}</b><span>${sym} no sigue esa distribución</span></div>
+      <p class="note" style="margin:2px 0 8px">Parámetro estimado de los datos: <span class="num">${c.desc.est}</span>, por eso ${term('m','m')} = 1.</p>
       <svg class="chart" id="chi-ch-${k}" height="170" role="img" aria-label="Observado contra esperado"></svg>
-      <div class="tw"><table class="rt"><thead><tr><th>Categoría</th><th>O<sub>i</sub></th><th>E<sub>i</sub></th><th>(O−E)²/E</th></tr></thead><tbody>${
+      <div class="tw"><table class="rt"><thead><tr><th>Categoría</th><th>${term('O','O<sub>i</sub>')}</th><th>${term('E','E<sub>i</sub>')}</th><th>(O−E)²/E</th></tr></thead><tbody>${
         c.groups.map(g=>`<tr class="${g.merged?'grp':''}"><td>${g.labels.join(' + ')}${g.merged?` <span class="bracket">agrupada</span>`:''}</td><td>${g.O}</td><td>${g.E.toFixed(3)}</td><td>${g.chi.toFixed(4)}</td></tr>`).join('')
       }</tbody><tfoot><tr><td>χ² calculado</td><td>50</td><td>50.000</td><td>${c.chi.toFixed(4)}</td></tr></tfoot></table></div>
       <div class="formula" style="grid-template-columns:1fr auto">
-        <div class="n">Categorías tras agrupar (k)</div><div class="r">${c.k}</div>
-        <div class="n">Grados de libertad gl = k − 1 − m</div><div class="r">${c.k} − 1 − ${c.m} = ${c.gl}</div>
+        <div class="n">Categorías tras agrupar (${term('k','k')})</div><div class="r">${c.k}</div>
+        <div class="n">Grados de libertad ${term('gl','gl')} = k − 1 − m</div><div class="r">${c.k} − 1 − ${c.m} = ${c.gl}</div>
         <div class="n">Valor crítico χ²<sub>0.05, ${c.gl}</sub></div><div class="r">${c.crit.toFixed(3)}</div>
-        <div class="n">Valor p</div><div class="r">${c.pv.toFixed(4)}</div>
+        <div class="n">${term('pval','Valor p')}</div><div class="r">${c.pv.toFixed(4)}</div>
       </div>
       <div class="verdict ${c.accept?'':'bad'}"><svg><use href="#i-${c.accept?'check':'alert'}"/></svg><p><b>${c.accept?'No se rechaza H₀':'Se rechaza H₀'}.</b> χ² = ${c.chi.toFixed(3)} ${c.accept?'&lt;':'≥'} ${c.crit.toFixed(3)}: ${c.accept?'la diferencia entre O y E se explica por el azar. <b>En simple: los datos sí siguen ese patrón.</b>':'los datos no se ajustan. <b>En simple: los datos no siguen ese patrón.</b>'}</p></div>
     </div>`;}).join('');
@@ -1442,7 +1462,7 @@ function renderTrace(){
     const aPrev=prev?prev.llegada:0, fPrev=prev?prev.fin:0;
     return `<article class="rcp"><header><b>Cliente ${r.i}</b><span>réplica ${tr.rep+1} · semilla ${seed}</span></header>
     <div class="f" style="margin-top:4px">Números al azar que le tocaron y su tiempo (ruleta del Módulo 1):</div>
-    <div class="src">R<sub>ll</sub> = ${f4(r.rLlegada)} ∈ ${intv(TLL,r.rLlegada)} → T<sub>ll</sub> = <b>${r.tll}</b><br>R<sub>s</sub> = ${f4(r.rServicio)} ∈ ${intv(TS,r.rServicio)} → T<sub>s</sub> = <b>${r.ts}</b></div>
+    <div class="src">${term('R','R<sub>ll</sub>')} = ${f4(r.rLlegada)} ∈ ${intv(TLL,r.rLlegada)} → ${term('tll','T<sub>ll</sub>')} = <b>${r.tll}</b><br>${term('R','R<sub>s</sub>')} = ${f4(r.rServicio)} ∈ ${intv(TS,r.rServicio)} → ${term('ts','T<sub>s</sub>')} = <b>${r.ts}</b></div>
     <ol>
       <li><div><div class="qp">¿Cuándo llega?</div><div class="f">Llegada<sub>${r.i}</sub> = Llegada<sub>${r.i-1}</sub> + T<sub>ll,${r.i}</sub></div><div class="c">= ${fx(aPrev)} + ${r.tll} = <b>${fx(r.llegada)}</b></div></div></li>
       <li><div><div class="qp">¿Cuándo empieza a cargar?</div><div class="f">Inicio<sub>${r.i}</sub> = max(Llegada<sub>${r.i}</sub>, Fin<sub>${r.i-1}</sub>)</div><div class="c">= max(${fx(r.llegada)}, ${fx(fPrev)}) = <b>${fx(r.inicio)}</b></div></div></li>
@@ -1457,7 +1477,7 @@ $('#tr-rep').addEventListener('change',e=>{tr.rep=+e.target.value;renderTrace();
 function renderFull(){
   const run=simular(S.seeds[tb.rep],{surtidores:tb.c,factorServicio:1});
   const hl=new Set(tb.rep===tr.rep&&tb.c===1?[tr.i,tr.i+1,tr.i+2]:[]);
-  $('#full-table').innerHTML=`<table class="rt"><thead><tr><th>Cliente</th><th>R<sub>ll</sub></th><th>T<sub>ll</sub></th><th>Llegada</th><th>R<sub>s</sub></th><th>T<sub>s</sub></th>${tb.c>1?'<th>Surtidor</th>':''}<th>Inicio</th><th>Espera</th><th>Fin</th><th>En sistema</th><th>Cola al llegar</th></tr></thead><tbody>${
+  $('#full-table').innerHTML=`<table class="rt"><thead><tr><th>Cliente</th><th>${term('R','R<sub>ll</sub>')}</th><th>${term('tll','T<sub>ll</sub>')}</th><th>Llegada</th><th>${term('R','R<sub>s</sub>')}</th><th>${term('ts','T<sub>s</sub>')}</th>${tb.c>1?'<th>Surtidor</th>':''}<th>Inicio</th><th>Espera</th><th>Fin</th><th>En sistema</th><th>Cola al llegar</th></tr></thead><tbody>${
     run.filas.map(r=>`<tr class="${hl.has(r.i)?'hl':''}"><td class="w">${r.i}</td><td>${f4(r.rLlegada)}</td><td>${r.tll}</td><td>${fx(r.llegada)}</td><td>${f4(r.rServicio)}</td><td>${fx(r.ts)}</td>${tb.c>1?`<td>${r.surtidor}</td>`:''}<td>${fx(r.inicio)}</td><td class="${r.espera>0?'w':'w0'}">${fx(r.espera)}</td><td>${fx(r.fin)}</td><td>${fx(r.enSistema)}</td><td>${r.colaAlLlegar}</td></tr>`).join('')
   }</tbody><tfoot><tr><td>Promedio</td><td></td><td>${f2(run.metricas.mediaTll)}</td><td></td><td></td><td>${f2(run.metricas.mediaTs)}</td>${tb.c>1?'<td></td>':''}<td></td><td>${f2(run.metricas.esperaMedia)}</td><td></td><td>${f2(run.metricas.sistemaMedio)}</td><td></td></tr></tfoot></table>`;
 }
@@ -1512,18 +1532,18 @@ function renderSeeds(){
 function renderRep(){
   const runs=active(),c=ciOf();
   $('#rp-title').textContent=`Resultados por réplica · ${SCEN[S.sc].label}`;
-  $('#rp-table').innerHTML=`<table class="rt"><thead><tr><th>Réplica</th><th>Semilla</th><th>W̄<sub>q,j</sub> (min)</th><th>W<sub>q</sub> máx.</th><th>P90 W<sub>q</sub></th><th>% que esperó</th><th>${term('util','Utilización')}</th><th>Cola final</th><th>Fin (min)</th></tr></thead><tbody>${
+  $('#rp-table').innerHTML=`<table class="rt"><thead><tr><th>Réplica</th><th>${term('semilla','Semilla')}</th><th>${term('wqj','W̄<sub>q,j</sub>')} (min)</th><th>${term('wmax','W<sub>q</sub> máx.')}</th><th>${term('p90','P90 W<sub>q</sub>')}</th><th>% que esperó</th><th>${term('util','Utilización')}</th><th>Cola final</th><th>Fin (min)</th></tr></thead><tbody>${
     runs.map((r,j)=>{const M=r.metricas;return `<tr><td class="w">${j+1}</td><td>${r.semilla}</td><td class="w">${f2(M.esperaMedia)}</td><td>${f2(M.esperaMax)}</td><td>${f2(M.espera90)}</td><td>${pct(M.pctEsperaron)}</td><td>${pct(M.utilizacion)}</td><td>${M.colaFinal}</td><td>${f2(M.finUltimo)}</td></tr>`;}).join('')
   }</tbody><tfoot><tr><td>Promedio</td><td></td><td>${f2(c.media)}</td><td>${f2(avg(runs,'esperaMax'))}</td><td>${f2(avg(runs,'espera90'))}</td><td>${pct(avg(runs,'pctEsperaron'))}</td><td>${pct(avg(runs,'utilizacion'))}</td><td>${avg(runs,'colaFinal').toFixed(1)}</td><td>${f2(avg(runs,'finUltimo'))}</td></tr></tfoot></table>`;
   const ok=c.errorRel<=0.10;
   $('#rp-formula').innerHTML=`
-    <div class="frow"><div class="n">Media global</div><div class="e">W̿<sub>q</sub> = (1/n) Σ W̄<sub>q,j</sub> = (${runs.map(r=>f2(r.metricas.esperaMedia)).join(' + ')}) / ${c.n}</div><div class="r">${f2(c.media)} min</div></div>
-    <div class="frow"><div class="n">${term('S','Desviación estándar')}</div><div class="e">S = √[ Σ (W̄<sub>q,j</sub> − W̿<sub>q</sub>)² / (n − 1) ]</div><div class="r">${f2(c.S)} min</div></div>
-    <div class="frow"><div class="n">${term('t','Valor crítico t')}</div><div class="e">t<sub>0.025, n−1</sub> = t<sub>0.025, ${c.n-1}</sub></div><div class="r">${c.t.toFixed(3)}</div></div>
-    <div class="frow"><div class="n">${term('h','Semi-amplitud')}</div><div class="e">h = t · S / √n = ${c.t.toFixed(3)} · ${f2(c.S)} / √${c.n}</div><div class="r">${f2(c.h)} min</div></div>
+    <div class="frow"><div class="n">Media global</div><div class="e">${term('wqq','W̿<sub>q</sub>')} = (1/${term('n','n')}) Σ ${term('wqj','W̄<sub>q,j</sub>')} = (${runs.map(r=>f2(r.metricas.esperaMedia)).join(' + ')}) / ${c.n}</div><div class="r">${f2(c.media)} min</div></div>
+    <div class="frow"><div class="n">${term('S','Desviación estándar')}</div><div class="e">${term('S','S')} = √[ Σ (W̄<sub>q,j</sub> − W̿<sub>q</sub>)² / (n − 1) ]</div><div class="r">${f2(c.S)} min</div></div>
+    <div class="frow"><div class="n">${term('t','Valor crítico t')}</div><div class="e">${term('t','t<sub>0.025, n−1</sub>')} = t<sub>0.025, ${c.n-1}</sub></div><div class="r">${c.t.toFixed(3)}</div></div>
+    <div class="frow"><div class="n">${term('h','Semi-amplitud')}</div><div class="e">${term('h','h')} = t · S / √n = ${c.t.toFixed(3)} · ${f2(c.S)} / √${c.n}</div><div class="r">${f2(c.h)} min</div></div>
     <div class="frow"><div class="n">${term('ic','IC 95 %')}</div><div class="e">[W̿<sub>q</sub> − h, W̿<sub>q</sub> + h]</div><div class="r">[${f2(c.inf)}, ${f2(c.sup)}]</div></div>
-    <div class="frow"><div class="n">${term('er','Error relativo')}</div><div class="e">ε<sub>r</sub> = h / W̿<sub>q</sub> = ${f2(c.h)} / ${f2(c.media)}</div><div class="r ${ok?'good':'alert'}">${pct(c.errorRel)}</div></div>
-    <div class="frow"><div class="n">${term('nstar','Réplicas requeridas')}</div><div class="e">n* = ⌈ (t · S / (0.10 · W̿<sub>q</sub>))² ⌉ = ⌈ (${c.t.toFixed(3)} · ${f2(c.S)} / ${f2(0.1*c.media)})² ⌉</div><div class="r">${c.nEstrella}</div></div>`;
+    <div class="frow"><div class="n">${term('er','Error relativo')}</div><div class="e">${term('er','ε<sub>r</sub>')} = h / W̿<sub>q</sub> = ${f2(c.h)} / ${f2(c.media)}</div><div class="r ${ok?'good':'alert'}">${pct(c.errorRel)}</div></div>
+    <div class="frow"><div class="n">${term('nstar','Réplicas requeridas')}</div><div class="e">${term('nstar','n*')} = ⌈ (t · S / (0.10 · W̿<sub>q</sub>))² ⌉ = ⌈ (${c.t.toFixed(3)} · ${f2(c.S)} / ${f2(0.1*c.media)})² ⌉</div><div class="r">${c.nEstrella}</div></div>`;
   $('#rp-verdict').innerHTML=`<div class="verdict ${ok?'':'bad'}"><svg><use href="#i-${ok?'check':'alert'}"/></svg><p>${ok?`<b>Se cumple la precisión.</b> Con n = ${c.n} el error relativo es ${pct(c.errorRel)} ≤ 10 %.`:`<b>Todavía no se cumple la precisión.</b> Con n = ${c.n} el error relativo es ${pct(c.errorRel)} &gt; 10 %. Se necesitan al menos <b>${c.nEstrella}</b> réplicas (estimación con t de n − 1 = ${c.n-1} gl; al aumentar n, t baja y n* puede reducirse ligeramente).`}</p></div>
   <p class="plain"><b>En simple:</b> con ${SCEN[S.sc].label.replace(/ \(.*\)/,'')}, un auto espera en promedio <b>${f2(c.media)} minutos</b> en la fila. Con 95 % de confianza, la espera promedio real está entre <b>${f2(c.inf)}</b> y <b>${f2(c.sup)}</b> minutos (un margen de ± ${f2(c.h)} min). ${ok?'Ese margen es lo bastante pequeño para la meta del 10 %.':`Ese margen todavía es grande; con ${c.nEstrella} réplicas sería lo bastante pequeño.`}</p>`;
   ciChart(); scTable();
@@ -1557,7 +1577,7 @@ function niceTicks(lo,hi,n){const step0=(hi-lo)/n,mag=10**Math.floor(Math.log10(
 function scTable(){
   const keys=['base','dos','rapido'];
   const data=keys.map(k=>{const runs=active(k);return {k,runs,c:ciOf(k),rho:(1/TLL.media)/(SCEN[k].surtidores/(TS.media*SCEN[k].factorServicio))};});
-  $('#sc-table').innerHTML=`<table class="rt"><thead><tr><th>Escenario</th><th>ρ por servidor</th><th>W̿<sub>q</sub> (min)</th><th>IC 95 %</th><th>W<sub>q</sub> máx. prom.</th><th>Utilización</th><th>Cola final prom.</th></tr></thead><tbody>${
+  $('#sc-table').innerHTML=`<table class="rt"><thead><tr><th>Escenario</th><th>${term('rho','ρ')} por servidor</th><th>${term('wqq','W̿<sub>q</sub>')} (min)</th><th>${term('ic','IC 95 %')}</th><th>${term('wmax','W<sub>q</sub> máx.')} prom.</th><th>${term('util','Utilización')}</th><th>Cola final prom.</th></tr></thead><tbody>${
     data.map(d=>`<tr class="${d.k===S.sc?'hl':''}"><td class="w" style="font-family:var(--f-body)">${SCEN[d.k].label}</td><td>${d.rho.toFixed(4)}</td><td class="w">${f2(d.c.media)}</td><td>[${f2(d.c.inf)}, ${f2(d.c.sup)}]</td><td>${f2(avg(d.runs,'esperaMax'))}</td><td>${pct(avg(d.runs,'utilizacion'))}</td><td>${avg(d.runs,'colaFinal').toFixed(1)}</td></tr>`).join('')
   }</tbody></table>`;
   const svg=$('#sc-chart'),W=svg.clientWidth||900,narrow=W<560,bh=26,gap=narrow?62:44,m=narrow?{l:4,r:84,t:22,b:26}:{l:210,r:90,t:10,b:26},H=m.t+8+gap*3+m.b-(narrow?14:0);
@@ -1603,33 +1623,33 @@ function renderQ(){
     `El intervalo se vuelve más angosto: el margen pasa de ± ${f2(c5.h)} a ± ${f2(c10.h)} minutos.`
   ];
   const shortCri=[
-    `Se compara con la teoría: si la fila crece al ritmo que predice ρ (unos ${predQ.toFixed(0)} autos al final) y con 2 surtidores se estabiliza, no es un error del programa sino falta de capacidad.`,
+    `Se compara con la teoría: si la fila crece al ritmo que predice ${term('rho','ρ')} (unos ${predQ.toFixed(0)} autos al final) y con 2 surtidores se estabiliza, no es un error del programa sino falta de capacidad.`,
     `Sí. Un intervalo estrecho dice que el resultado es preciso, no que el modelo represente bien la realidad.`,
     `Ninguna por separado: se presenta el promedio de todas las réplicas con su intervalo de confianza.`,
-    `Primero la capacidad (otro surtidor), porque es lo único que hace que ρ baje de 1.`,
+    `Primero la capacidad (otro surtidor), porque es lo único que hace que ${term('rho','ρ')} baje de 1.`,
     `No necesariamente: además del promedio hay que mirar a los clientes que esperan mucho.`
   ];
   const shortEsc=[
     `Cada hora llegan unos 23 autos y el surtidor solo atiende 15; en la simulación pasa ocupado el ${pct(avg(base,'utilizacion'))} del tiempo y la fila nunca se vacía.`,
-    `No. Con ρ mayor que 1 la fila tiene que crecer; un modelo que mostrara una fila estable sería el que está mal.`,
+    `No. Con ${term('rho','ρ')} mayor que 1 la fila tiene que crecer; un modelo que mostrara una fila estable sería el que está mal.`,
     `Habilitar una segunda estación: la espera promedio baja de ${f2(c.media)} a ${f2(two.media)} minutos.`
   ];
 
   SH=shortTec;
   $('#q-tec').innerHTML=[
     q(1,'¿Cuáles son los primeros 5 números aleatorios y cómo se transforman al menos 2 de ellos en T<sub>ll</sub> y T<sub>s</sub>?',
-      `<p>Réplica 1, semilla ${hn(S.seeds[0])}. El generador Mulberry32 entrega R ∈ [0, 1) y se consumen en orden T<sub>ll</sub>, T<sub>s</sub> por cliente:</p>
-      <div class="tw"><table class="rt"><thead><tr><th>R</th><th>Valor</th><th>Uso</th><th>Intervalo</th><th>Resultado</th></tr></thead><tbody>${rs.map((x,i)=>{const D=x.d==='tll'?TLL:TS,row=D.filas.find(r=>x.R<r.F);return `<tr><td>R${i+1}</td><td>${f4(x.R)}</td><td style="font-family:var(--f-body)">${x.who}</td><td>[${row.inf.toFixed(2)}, ${row.F.toFixed(2)})</td><td class="w">${x.val} min</td></tr>`;}).join('')}</tbody></table></div>
-      <p>Ejemplo 1: R1 = ${f4(rs[0].R)} cae en el intervalo de T<sub>ll</sub> = ${rs[0].val}, así que el primer vehículo llega en t = ${rs[0].val}. Ejemplo 2: R2 = ${f4(rs[1].R)} cae en el intervalo de T<sub>s</sub> = ${rs[1].val}, así que su servicio dura ${rs[1].val} min.</p>${ev('datos','Ver el verificador visual de la transformada')}`),
+      `<p>Réplica 1, semilla ${hn(S.seeds[0])}. El generador Mulberry32 entrega R ∈ [0, 1) y se consumen en orden ${term('tll','T<sub>ll</sub>')}, ${term('ts','T<sub>s</sub>')} por cliente:</p>
+      <div class="tw"><table class="rt"><thead><tr><th>${term('R','R')}</th><th>Valor</th><th>Uso</th><th>Intervalo</th><th>Resultado</th></tr></thead><tbody>${rs.map((x,i)=>{const D=x.d==='tll'?TLL:TS,row=D.filas.find(r=>x.R<r.F);return `<tr><td>R${i+1}</td><td>${f4(x.R)}</td><td style="font-family:var(--f-body)">${x.who}</td><td>[${row.inf.toFixed(2)}, ${row.F.toFixed(2)})</td><td class="w">${x.val} min</td></tr>`;}).join('')}</tbody></table></div>
+      <p>Ejemplo 1: R1 = ${f4(rs[0].R)} cae en el intervalo de ${term('tll','T<sub>ll</sub>')} = ${rs[0].val}, así que el primer vehículo llega en t = ${rs[0].val}. Ejemplo 2: R2 = ${f4(rs[1].R)} cae en el intervalo de ${term('ts','T<sub>s</sub>')} = ${rs[1].val}, así que su servicio dura ${rs[1].val} min.</p>${ev('datos','Ver el verificador visual de la transformada')}`),
     q(2,'Reconstrucción manual de 3 clientes consecutivos',
       `<p>Para la réplica 1 (clientes 1 a 3):</p><ul>${r1.slice(0,3).map((r,k)=>{const p=k?r1[k-1]:{llegada:0,fin:0};return `<li><b>Cliente ${r.i}:</b> llegada = ${fx(p.llegada)} + ${r.tll} = ${fx(r.llegada)}; inicio = max(${fx(r.llegada)}, ${fx(p.fin)}) = ${fx(r.inicio)}; espera = ${hn(fx(r.espera))}; fin = ${fx(r.inicio)} + ${r.ts} = ${fx(r.fin)}.</li>`;}).join('')}</ul>
       <p>Los valores coinciden con la tabla generada por el motor, lo que valida la implementación.</p>${ev('sim','Ver los comprobantes y la tabla completa')}`),
     q(3,'¿Qué resultados cambian al cambiar la semilla y cuáles permanecen estables?',
       `<p><b>Cambian</b> (dependen del azar): la secuencia de R, los tiempos individuales, la espera de cada cliente y los indicadores de cada réplica. Con las ${n} semillas actuales, W̄<sub>q,j</sub> va de ${hn(f2(mn))} a ${hn(f2(mx))} min.</p>
-      <p><b>Permanecen estables</b> (dependen del sistema): las distribuciones de entrada, ρ = 1.5625, las medias muestrales cercanas a las teóricas (T<sub>ll</sub> simulado ≈ ${f2(Math.min(...tllS))}–${f2(Math.max(...tllS))} vs 2.56; T<sub>s</sub> ≈ ${f2(Math.min(...tsS))}–${f2(Math.max(...tsS))} vs 4.00) y el comportamiento cualitativo: en todas las réplicas la cola crece y la utilización ronda ${pct(avg(base,'utilizacion'))}.</p>
+      <p><b>Permanecen estables</b> (dependen del sistema): las distribuciones de entrada, ${term('rho','ρ')} = 1.5625, las medias muestrales cercanas a las teóricas (${term('tll','T<sub>ll</sub>')} simulado ≈ ${f2(Math.min(...tllS))}–${f2(Math.max(...tllS))} vs 2.56; ${term('ts','T<sub>s</sub>')} ≈ ${f2(Math.min(...tsS))}–${f2(Math.max(...tsS))} vs 4.00) y el comportamiento cualitativo: en todas las réplicas la cola crece y la utilización ronda ${pct(avg(base,'utilizacion'))}.</p>
       <p>Por eso no se reporta una réplica aislada, sino la media de varias con su intervalo de confianza.</p>${ev('rep','Cambiar semillas en el Módulo 3')}`),
     q(4,'¿Cómo se obtuvo el IC del 95 % y qué significa para el tiempo medio de espera?',
-      `<p>Con n = ${c.n} réplicas: W̿<sub>q</sub> = ${f2(c.media)}, S = ${f2(c.S)}, t<sub>0.025,${c.n-1}</sub> = ${c.t.toFixed(3)}, h = t·S/√n = ${f2(c.h)}. El intervalo es ${hn(`[${f2(c.inf)}, ${f2(c.sup)}] min`)}.</p>
+      `<p>Con n = ${c.n} réplicas: ${term('wqq','W̿<sub>q</sub>')} = ${f2(c.media)}, S = ${f2(c.S)}, t<sub>0.025,${c.n-1}</sub> = ${c.t.toFixed(3)}, h = t·S/√n = ${f2(c.h)}. El intervalo es ${hn(`[${f2(c.inf)}, ${f2(c.sup)}] min`)}.</p>
       <p><b>Significado:</b> si repitiéramos este procedimiento muchas veces, el 95 % de los intervalos construidos contendría la espera media verdadera de los primeros 100 clientes en este sistema. No significa que el 95 % de los clientes espere dentro de ese rango: habla del promedio, no de cada auto. El error relativo es ${pct(c.errorRel)}, ${c.errorRel<=0.1?'dentro':'por encima'} del 10 % deseado${c.errorRel>0.1?`; harían falta unas ${c.nEstrella} réplicas`:''}.</p>${ev('rep','Ver el cálculo paso a paso')}`),
     q(5,'¿Qué efecto tiene duplicar el número de réplicas sobre la amplitud del intervalo?',
       `<div class="figs"><div class="fig"><span class="v">${f2(c5.h)}</span><span class="d">h con n = 5</span></div><div class="fig"><span class="v">${f2(c10.h)}</span><span class="d">h con n = 10</span></div><div class="fig"><span class="v">${pct(c5.errorRel)} → ${pct(c10.errorRel)}</span><span class="d">error relativo</span></div></div>
@@ -1640,25 +1660,25 @@ function renderQ(){
   $('#q-cri').innerHTML=[
     q(1,'Cuando la cola crece, ¿cómo distinguir un error de programación de una demanda superior a la capacidad (ρ &gt; 1)?',
       `<p>Se contrasta la simulación con lo que la teoría predice. Si coinciden, el crecimiento se debe al sistema y no a un error:</p>
-      <ul><li><b>Entradas correctas:</b> las medias simuladas de T<sub>ll</sub> y T<sub>s</sub> coinciden con 2.56 y 4.00 (pregunta técnica 3).</li>
-      <li><b>Tasa de crecimiento:</b> la cola debería crecer λ − μ = ${growth.toFixed(4)} veh/min. Al llegar el último cliente (t ≈ ${f2(lastA)}) se esperan ≈ ${hb(predQ.toFixed(1))} en cola; la simulación da ${hn(simQ.toFixed(1))}.</li>
-      <li><b>Espera aproximada:</b> cada cliente acumula ≈ 4.00 − 2.56 = 1.44 min más que el anterior, así que W̄<sub>q</sub> ≈ 49.5 · 1.44 = ${hb(f2(approxWq))} min; la simulación da ${hn(f2(c.media))}.</li>
-      <li><b>Prueba de control:</b> con 2 surtidores (ρ = 0.78) el mismo código produce una cola estable (W̄<sub>q</sub> = ${f2(two.media)} min). Un error de programación no desaparecería solo por cambiar un parámetro.</li>
+      <ul><li><b>Entradas correctas:</b> las medias simuladas de ${term('tll','T<sub>ll</sub>')} y ${term('ts','T<sub>s</sub>')} coinciden con 2.56 y 4.00 (pregunta técnica 3).</li>
+      <li><b>Tasa de crecimiento:</b> la cola debería crecer ${term('lambda','λ')} − ${term('mu','μ')} = ${growth.toFixed(4)} veh/min. Al llegar el último cliente (t ≈ ${f2(lastA)}) se esperan ≈ ${hb(predQ.toFixed(1))} en cola; la simulación da ${hn(simQ.toFixed(1))}.</li>
+      <li><b>Espera aproximada:</b> cada cliente acumula ≈ 4.00 − 2.56 = 1.44 min más que el anterior, así que ${term('wq','W̄<sub>q</sub>')} ≈ 49.5 · 1.44 = ${hb(f2(approxWq))} min; la simulación da ${hn(f2(c.media))}.</li>
+      <li><b>Prueba de control:</b> con 2 surtidores (${term('rho','ρ')} = 0.78) el mismo código produce una cola estable (${term('wq','W̄<sub>q</sub>')} = ${f2(two.media)} min). Un error de programación no desaparecería solo por cambiar un parámetro.</li>
       <li><b>Traza manual:</b> 3 clientes reconstruidos a mano coinciden con la tabla.</li></ul>`),
     q(2,'¿Puede un modelo tener un IC muy estrecho y aun así representar mal la realidad?',
       `<p>Sí. El IC mide <b>precisión</b> (cuánto varía el estimador entre réplicas), no <b>validez</b> (si el modelo representa el sistema real). Con 1000 réplicas el intervalo sería diminuto, pero seguiría heredando todos los supuestos:</p>
       <ul><li><b>Sesgo de entrada:</b> solo 50 observaciones, discretizadas en minutos enteros; quizá no capturan horas pico ni días distintos.</li>
-      <li><b>Omisiones de comportamiento:</b> el modelo supone que nadie se va. En la realidad hay <i>balking</i> (conductores que ven una cola de ${Math.round(simQ)} autos y no entran) y <i>reneging</i> (abandonan tras esperar). Con ρ &gt; 1 eso es casi seguro.</li>
+      <li><b>Omisiones de comportamiento:</b> el modelo supone que nadie se va. En la realidad hay <i>balking</i> (conductores que ven una cola de ${Math.round(simQ)} autos y no entran) y <i>reneging</i> (abandonan tras esperar). Con ${term('rho','ρ')} &gt; 1 eso es casi seguro.</li>
       <li><b>Horizonte:</b> se simulan solo 100 clientes desde un sistema vacío; el resultado depende de ese corte.</li></ul>
       <p>Para validar se compara con datos reales (por ejemplo, esperas medidas en la estación), no con más réplicas.</p>`),
     q(3,'Si una réplica da un resultado favorable y otra desfavorable, ¿cuál presentar a la gerencia?',
       `<p>Ninguna de las dos por separado. Una réplica es una sola muestra del azar; elegir la más conveniente sería sesgar la decisión. Con las semillas actuales la mejor réplica da ${hn(f2(mn))} min y la peor ${hn(f2(mx))} min: presentar solo una exagera o minimiza el problema.</p>
       <p>Lo correcto es presentar la <b>media de todas las réplicas con su IC 95 %</b>, ${hn(`${f2(c.media)} min [${f2(c.inf)}, ${f2(c.sup)}]`)}, y mostrar el rango para comunicar la variabilidad. Si la gerencia necesita prepararse para el peor caso, se reporta además un percentil alto (P90 promedio: ${f2(avg(base,'espera90'))} min) o el máximo, siempre identificados como tales.</p>`),
     q(4,'¿Qué cambiar primero: tiempo de servicio, política de atención o número de servidores? ¿Qué evidencia se necesita?',
-      `<ul><li><b>Política de atención</b> (por ejemplo, prioridades): reordena quién espera, pero no cambia la capacidad. Con ρ &gt; 1 la cola seguiría creciendo igual en promedio.</li>
-      <li><b>Agilizar el servicio un 20 %:</b> T<sub>s</sub> medio pasa a 3.20 min, ρ = ${hn('1.25')}, todavía &gt; 1. W̿<sub>q</sub> baja a ${f2(fast.media)} min, pero la cola sigue creciendo.</li>
-      <li><b>Segundo surtidor:</b> ρ por servidor = ${hb('0.78')} &lt; 1. W̿<sub>q</sub> baja a ${hb(f2(two.media)+' min')}.</li></ul>
-      <p>Primero hay que actuar sobre la <b>capacidad</b> (servidores o velocidad) hasta lograr ρ &lt; 1; la política es secundaria. La evidencia necesaria: costo por hora de cada alternativa, cuánto se puede reducir realmente T<sub>s</sub> (estudio de tiempos), espacio físico para otra estación y datos de demanda por franja horaria.</p>${ev('rep','Comparar escenarios')}`),
+      `<ul><li><b>Política de atención</b> (por ejemplo, prioridades): reordena quién espera, pero no cambia la capacidad. Con ${term('rho','ρ')} &gt; 1 la cola seguiría creciendo igual en promedio.</li>
+      <li><b>Agilizar el servicio un 20 %:</b> ${term('ts','T<sub>s</sub>')} medio pasa a 3.20 min, ${term('rho','ρ')} = ${hn('1.25')}, todavía &gt; 1. ${term('wqq','W̿<sub>q</sub>')} baja a ${f2(fast.media)} min, pero la cola sigue creciendo.</li>
+      <li><b>Segundo surtidor:</b> ${term('rho','ρ')} por servidor = ${hb('0.78')} &lt; 1. ${term('wqq','W̿<sub>q</sub>')} baja a ${hb(f2(two.media)+' min')}.</li></ul>
+      <p>Primero hay que actuar sobre la <b>capacidad</b> (servidores o velocidad) hasta lograr ${term('rho','ρ')} &lt; 1; la política es secundaria. La evidencia necesaria: costo por hora de cada alternativa, cuánto se puede reducir realmente ${term('ts','T<sub>s</sub>')} (estudio de tiempos), espacio físico para otra estación y datos de demanda por franja horaria.</p>${ev('rep','Comparar escenarios')}`),
     q(5,'Si la espera media disminuye pero aumenta el tiempo máximo de espera, ¿la modificación fue exitosa?',
       `<p>No necesariamente. La media mejora la experiencia típica, pero un máximo mayor indica que algunos clientes quedaron mucho peor; eso suele pasar con políticas que priorizan servicios cortos y dejan esperando a los largos. Esos clientes son los que se quejan o no vuelven.</p>
       <p>Para decidir se miran varios indicadores juntos: media, P90 o P95, máximo y porcentaje de clientes que superan un umbral aceptable (por ejemplo 10 min). En nuestros escenarios, con 2 surtidores bajan a la vez la media (${f2(c.media)} → ${f2(two.media)}) y el máximo promedio (${f2(max1)} → ${f2(max2)}), así que esa mejora no tiene ese dilema. Agilizar el servicio también baja ambos (máx. ${f2(maxF)}). El éxito se define antes de probar, según la meta de la gerencia.</p>`)
@@ -1667,20 +1687,20 @@ function renderQ(){
   SH=shortEsc;
   $('#q-esc').innerHTML=[
     q(1,'¿Qué evidencias analíticas y de simulación muestran que la demanda supera la capacidad?',
-      `<div class="figs"><div class="fig alert"><span class="v">ρ = 1.5625</span><span class="d">λ = 0.3906 &gt; μ = 0.25</span></div><div class="fig alert"><span class="v">${pct(avg(base,'utilizacion'))}</span><span class="d">utilización del surtidor</span></div><div class="fig alert"><span class="v">${simQ.toFixed(1)}</span><span class="d">vehículos en cola al final</span></div></div>
-      <p><b>Analíticas:</b> ρ = λ/μ = 1.5625 &gt; 1. La capacidad máxima es de 15 vehículos por hora (60/4) y llegan en promedio 23.4 (60/2.56).</p>
+      `<div class="figs"><div class="fig alert"><span class="v">${term('rho','ρ')} = 1.5625</span><span class="d">${term('lambda','λ')} = 0.3906 &gt; ${term('mu','μ')} = 0.25</span></div><div class="fig alert"><span class="v">${pct(avg(base,'utilizacion'))}</span><span class="d">utilización del surtidor</span></div><div class="fig alert"><span class="v">${simQ.toFixed(1)}</span><span class="d">vehículos en cola al final</span></div></div>
+      <p><b>Analíticas:</b> ${term('rho','ρ')} = ${term('lambda','λ')}/${term('mu','μ')} = 1.5625 &gt; 1. La capacidad máxima es de 15 vehículos por hora (60/4) y llegan en promedio 23.4 (60/2.56).</p>
       <p><b>Simulación:</b> en todas las réplicas el surtidor está ocupado casi siempre (${pct(avg(base,'utilizacion'))}), ${pct(avg(base,'pctEsperaron'))} de los clientes espera, la espera promedio es ${hn(f2(c.media)+' min')} y el último cliente espera en promedio ${f2(max1)} min. La gráfica de la cola sube casi en línea recta, sin estabilizarse.</p>${ev('sim','Ver la cola crecer en el simulador')}`),
     q(2,'Si la cola crece durante la simulación, ¿significa necesariamente que el modelo está mal construido?',
-      `<p>No. Con ρ &gt; 1 lo correcto es que la cola crezca: es exactamente lo que predice la teoría de colas. Un modelo que mostrara una cola estable con estos datos sí estaría mal.</p>
+      `<p>No. Con ${term('rho','ρ')} &gt; 1 lo correcto es que la cola crezca: es exactamente lo que predice la teoría de colas. Un modelo que mostrara una cola estable con estos datos sí estaría mal.</p>
       <p>La prueba es la coherencia: el crecimiento simulado (${simQ.toFixed(1)} vehículos) se parece al teórico (${predQ.toFixed(1)}), la traza manual coincide con el motor y, con 2 surtidores, el mismo código produce una cola estable. Lo que sí cabe revisar es si el sistema real tiene comportamientos que el modelo omite, como conductores que se van al ver la fila.</p>`),
     q(3,'Recomendación: ¿ampliar horario, agilizar el servicio o habilitar otra estación?',
-      `<div class="tw"><table class="rt"><thead><tr><th>Alternativa</th><th>ρ</th><th>W̿<sub>q</sub> (min)</th><th>¿Se estabiliza?</th></tr></thead><tbody>
+      `<div class="tw"><table class="rt"><thead><tr><th>Alternativa</th><th>${term('rho','ρ')}</th><th>${term('wqq','W̿<sub>q</sub>')} (min)</th><th>¿Se estabiliza?</th></tr></thead><tbody>
       <tr><td style="font-family:var(--f-body)">Situación actual</td><td>1.5625</td><td>${f2(c.media)}</td><td>No</td></tr>
       <tr><td style="font-family:var(--f-body)">Ampliar horario</td><td>1.5625</td><td>igual o peor</td><td>No</td></tr>
       <tr><td style="font-family:var(--f-body)">Servicio −20 %</td><td>1.25</td><td>${f2(fast.media)}</td><td>No</td></tr>
       <tr class="hl"><td style="font-family:var(--f-body)"><b>Segunda estación</b></td><td>0.78</td><td>${f2(two.media)}</td><td>Sí</td></tr></tbody></table></div>
-      <p><b>Recomendación: habilitar una segunda estación.</b> Es la única alternativa que lleva ρ por debajo de 1. Reduce la espera media de ${hn(f2(c.media)+' min')} a ${hb(f2(two.media)+' min')} (−${pct(1-two.media/c.media)}), con IC [${f2(two.inf)}, ${f2(two.sup)}].</p>
-      <p><b>Ampliar el horario</b> no cambia λ ni μ: atiende más clientes en total, pero con la misma tasa de saturación la cola crece igual o más mientras dure la jornada. <b>Agilizar el servicio</b> ayuda (−${pct(1-fast.media/c.media)}) y conviene como complemento de bajo costo, pero solo no basta. Antes de invertir, conviene validar con datos reales de demanda por franja horaria y registrar cuántos conductores se van al ver la fila.</p>${ev('rep','Ver la comparación de escenarios')}`)
+      <p><b>Recomendación: habilitar una segunda estación.</b> Es la única alternativa que lleva ${term('rho','ρ')} por debajo de 1. Reduce la espera media de ${hn(f2(c.media)+' min')} a ${hb(f2(two.media)+' min')} (−${pct(1-two.media/c.media)}), con IC [${f2(two.inf)}, ${f2(two.sup)}].</p>
+      <p><b>Ampliar el horario</b> no cambia ${term('lambda','λ')} ni ${term('mu','μ')}: atiende más clientes en total, pero con la misma tasa de saturación la cola crece igual o más mientras dure la jornada. <b>Agilizar el servicio</b> ayuda (−${pct(1-fast.media/c.media)}) y conviene como complemento de bajo costo, pero solo no basta. Antes de invertir, conviene validar con datos reales de demanda por franja horaria y registrar cuántos conductores se van al ver la fila.</p>${ev('rep','Ver la comparación de escenarios')}`)
   ].join('');
 }
 

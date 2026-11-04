@@ -362,13 +362,47 @@ details.q[open] .chev{transform:rotate(180deg)}
 .route .rd{font-size:.9rem;color:var(--ink-2)}
 @media (hover:hover) and (pointer:fine){.route li:hover .rt{text-decoration-color:var(--signal)}}
 @media (max-width:900px){.route{grid-template-columns:1fr 1fr}.route li:nth-child(2n){border-right:0}}
-.verdict-big{font-family:var(--f-display);font-stretch:80%;font-weight:800;font-size:clamp(1.5rem,2.8vw,2.1rem);line-height:1.15;max-width:30ch;margin:14px 0;text-wrap:balance}
-.verdict-big em{font-style:normal;color:var(--signal)}
 .barcode{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:40px;color:var(--ink-3);font-family:var(--f-mono);font-size:.78rem}
 .foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:2px dotted var(--rule);margin-top:56px;padding-top:16px;font-family:var(--f-mono);font-size:.82rem;color:var(--ink-3)}
 .foot button{border:0;background:none;cursor:pointer;font-family:var(--f-display);font-stretch:90%;font-weight:700;font-size:1rem;color:var(--ink);display:inline-flex;gap:8px;align-items:center;padding:0}
 .foot button svg{width:18px;height:18px;transition:transform 160ms var(--ease-out)}
 @media (hover:hover) and (pointer:fine){.foot button:hover svg{transform:translateX(3px)}}
+
+/* ===== planteamiento ===== */
+.hour{margin-top:12px}
+.answer{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);margin:14px 0 10px;border:1.5px solid var(--ink);border-radius:16px;overflow:hidden}
+.answer .opt{display:flex;flex-direction:column;padding:22px 24px}
+.answer .now{background:var(--signal-wash)}
+.answer .prop{background:var(--go-wash)}
+.answer .lab{font-family:var(--f-display);font-stretch:88%;font-weight:800;font-size:1.1rem}
+.answer .big{font-family:var(--f-mono);font-weight:700;font-size:clamp(2.4rem,5vw,3.4rem);line-height:1.05;margin:10px 0 6px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.answer .now .big{color:var(--signal-ink)}
+.answer .prop .big{color:var(--go)}
+.answer .big small{font-size:.38em;color:var(--ink-2);margin-left:6px}
+.answer .d{font-size:.95rem;color:var(--ink-2);max-width:34ch}
+.answer .mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:0 20px;background:var(--paper);border-inline:1.5px dashed var(--rule);text-align:center}
+.answer .mid svg{width:26px;height:26px;color:var(--ink-2)}
+.answer .mid b{font-family:var(--f-mono);font-size:1.35rem;color:var(--go)}
+.answer .mid span{font-size:.8rem;color:var(--ink-3)}
+@media (max-width:700px){.answer{grid-template-columns:minmax(0,1fr)}.answer .opt{padding:18px}.answer .mid{flex-direction:row;gap:10px;padding:10px;border-inline:0;border-block:1.5px dashed var(--rule)}.answer .mid svg{transform:rotate(90deg)}}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 4px}
+.cta .btn .ra,.route .ra{width:18px;height:18px;flex:0 0 auto;transition:transform 160ms var(--ease-out)}
+.route .ra{display:inline-block;vertical-align:-3px;margin-left:2px;color:var(--signal-ink);width:17px;height:17px}
+.route li{transition:background-color 160ms ease}
+@media (hover:hover) and (pointer:fine){.route li:hover{background:var(--paper-2)}.route li:hover .ra,.cta .btn:hover .ra{transform:translateX(3px)}}
+.route button:focus-visible{outline-offset:6px}
+@media (hover:none){.kbd-hint{display:none}}
+.gloss-box{border-top:1.5px solid var(--ink);border-bottom:1px dashed var(--rule);margin-top:10px}
+.gloss-box summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:16px 0}
+.gloss-box summary::-webkit-details-marker{display:none}
+.gloss-box .gl-t{font-family:var(--f-display);font-stretch:90%;font-weight:800;font-size:1.1rem}
+.gloss-box .gl-n{font-family:var(--f-mono);font-size:.8rem;color:var(--ink-2);background:var(--paper-2);border-radius:999px;padding:2px 10px}
+.gloss-box .chev{width:22px;height:22px;margin-left:auto;color:var(--ink-2);transition:transform 220ms var(--ease-out)}
+.gloss-box[open] .chev{transform:rotate(180deg)}
+.gloss-q{width:100%;max-width:420px;border:1.5px solid var(--ink);border-radius:999px;background:var(--paper);padding:9px 16px;margin:0 0 6px}
+.gloss-q:focus{outline:2.5px solid var(--blue);outline-offset:2px}
+.gloss-in{padding-bottom:14px}
+.gloss div[hidden]{display:none}
 
 /* ===== plain-language layer ===== */
 .term{border-bottom:2px dotted var(--blue);cursor:help;border-radius:2px;transition:background-color 160ms ease}
@@ -386,8 +420,10 @@ details.q[open] .chev{transform:rotate(180deg)}
 .hour-row + .hour-row{border-top:1px dashed var(--rule)}
 .hour-row .hl{font-family:var(--f-display);font-stretch:88%;font-weight:750;font-size:1.08rem;line-height:1.3}
 .hour-row .hl span{display:block;font-family:var(--f-body);font-weight:400;font-size:.88rem;color:var(--ink-2)}
-.cars{display:flex;flex-wrap:wrap;gap:5px 4px}
-.cars svg{width:26px;height:16px}
+.cars{--cols:23;display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:6px 4px;align-items:center}
+.cars svg{width:100%;max-width:28px;height:auto;aspect-ratio:28/17}
+.cars .o{color:var(--signal);opacity:.75}
+.cars .b{visibility:hidden}
 .cars .a{color:var(--ink)}
 .cars .s{color:var(--go)}
 .cars .x{color:var(--signal)}
@@ -397,7 +433,7 @@ details.q[open] .chev{transform:rotate(180deg)}
 .hour-row .n small{display:block;font-size:.75rem;font-weight:400;color:var(--ink-3);margin-top:4px}
 .hour-row.left{background:var(--signal-wash);margin:0 -14px;padding:14px;border-radius:12px;border-top:0}
 .hour-row.left .n{color:var(--signal-ink)}
-@media (max-width:760px){.hour-row{grid-template-columns:minmax(0,1fr) auto}.hour-row .cars{grid-column:1/-1;order:3}}
+@media (max-width:760px){.hour-row{grid-template-columns:minmax(0,1fr) auto}.hour-row .cars{grid-column:1/-1;order:3;--cols:12}.hour-row .cars .b:nth-child(-n+12){display:none}}
 .gloss{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 44px;margin:14px 0 0}
 .gloss div{padding:12px 0;border-bottom:1px dashed var(--rule)}
 .gloss dt{font-family:var(--f-display);font-stretch:90%;font-weight:800;font-size:1.05rem}
@@ -484,6 +520,7 @@ details.q[open] .chev{transform:rotate(180deg)}
     <symbol id="i-dice" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="9" r="1.4" fill="currentColor"/><circle cx="15" cy="15" r="1.4" fill="currentColor"/><circle cx="15" cy="9" r="1.4" fill="currentColor"/><circle cx="9" cy="15" r="1.4" fill="currentColor"/></symbol>
     <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-car" viewBox="0 0 28 17"><path d="M2.5 12.5V9c0-.8.5-1.5 1.2-1.8l3-1.2L9.8 2.2h8.6l3.8 3.9 2.6.8c.7.2 1.2.9 1.2 1.6v4z" fill="currentColor"/><circle cx="7.8" cy="13.2" r="2.6" fill="currentColor" stroke="#FBF8F1" stroke-width="1.6"/><circle cx="20" cy="13.2" r="2.6" fill="currentColor" stroke="#FBF8F1" stroke-width="1.6"/></symbol>
+    <symbol id="i-car-o" viewBox="0 0 28 17"><path d="M2.5 12.5V9c0-.8.5-1.5 1.2-1.8l3-1.2L9.8 2.2h8.6l3.8 3.9 2.6.8c.7.2 1.2.9 1.2 1.6v4z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2.5 2" stroke-linejoin="round"/><circle cx="7.8" cy="13.2" r="2.3" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="20" cy="13.2" r="2.3" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
     <symbol id="i-double" viewBox="0 0 24 24"><rect x="3.5" y="7" width="11" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 4h9a2 2 0 0 1 2 2v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   </defs>
 </svg>
@@ -517,13 +554,27 @@ details.q[open] .chev{transform:rotate(180deg)}
   <h2 class="vt" id="h-inicio">Llegan más autos de los que el surtidor puede atender</h2>
   <p class="lede">En promedio llega un auto cada <b class="num">2.56</b> minutos, pero cargar combustible a cada uno toma <b class="num">4.00</b> minutos. Es como una caja de supermercado donde la gente llega más rápido de lo que la cajera puede cobrar: la fila solo puede crecer.</p>
 
-  <div class="hour" aria-label="Una hora en la gasolinera">
-    <div class="hour-row"><div class="hl">Llegan en una hora<span>un auto cada 2.56 min</span></div><div class="cars" id="h-arr"></div><div class="n">23.4<small>autos</small></div></div>
-    <div class="hour-row"><div class="hl">El surtidor atiende en una hora<span>cada carga dura 4 min</span></div><div class="cars" id="h-srv"></div><div class="n">15<small>autos</small></div></div>
+  <h3 class="st">Una hora en la gasolinera</h3>
+  <div class="hour" aria-label="En una hora llegan 23.4 autos, el surtidor atiende 15 y se quedan esperando 8.4">
+    <div class="hour-row"><div class="hl">Llegan<span>un auto cada 2.56 min</span></div><div class="cars" id="h-arr"></div><div class="n">23.4<small>autos</small></div></div>
+    <div class="hour-row"><div class="hl">El surtidor atiende<span>cada carga dura 4 min</span></div><div class="cars" id="h-srv"></div><div class="n">15<small>autos</small></div></div>
     <div class="hour-row left"><div class="hl">Se quedan esperando<span>cada hora, y se van sumando</span></div><div class="cars" id="h-left"></div><div class="n">+8.4<small>autos</small></div></div>
   </div>
-  <p class="figcap">Cada dibujo es un auto. La relación entre lo que llega y lo que se atiende se llama <span class="term" tabindex="0" data-term="rho">ρ</span> = 23.4 / 15 = 1.56. Si es mayor que 1, la fila nunca se vacía.</p>
+  <p class="figcap">Cada dibujo es un auto. Los contornos punteados son los autos que el surtidor no alcanza a atender: pasan a la fila. La relación entre lo que llega y lo que se atiende se llama <span class="term" tabindex="0" data-term="rho">ρ</span> = 23.4 / 15 = 1.56; si es mayor que 1, la fila nunca se vacía.</p>
 
+  <h3 class="st">La respuesta</h3>
+  <div class="answer">
+    <div class="opt now"><span class="lab">Con 1 surtidor (hoy)</span><span class="big" id="i-w1">—<small>min</small></span><span class="d">de espera promedio en la fila. <span class="term" tabindex="0" data-term="rho">ρ</span> = 1.56: la fila crece sin parar.</span></div>
+    <div class="mid"><svg aria-hidden="true"><use href="#i-arrow"/></svg><b id="i-drop">—</b><span>de espera</span></div>
+    <div class="opt prop"><span class="lab">Con 2 surtidores (propuesta)</span><span class="big" id="i-w2">—<small>min</small></span><span class="d">de espera promedio en la fila. ρ = 0.78 por surtidor: la fila se mantiene corta.</span></div>
+  </div>
+  <p class="note" id="i-verdict-sub"></p>
+  <div class="cta">
+    <button class="btn primary" data-go="sim"><svg><use href="#i-play"/></svg>Ver la simulación</button>
+    <button class="btn" data-go="rep">Ver cómo se calculó la confianza <svg class="ra" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+  </div>
+
+  <h3 class="st">Datos del problema</h3>
   <div class="params">
     <div><b>1</b><span>estación de atención (servidor)</span></div>
     <div><b><span class="term" tabindex="0" data-term="fifo">FIFO</span></b><span>primero en llegar, primero en ser atendido</span></div>
@@ -535,21 +586,25 @@ details.q[open] .chev{transform:rotate(180deg)}
     <div><b>≤ 10 %</b><span><span class="term" tabindex="0" data-term="er">error relativo</span> máximo deseado</span></div>
   </div>
 
-  <p class="verdict-big" id="i-verdict">—</p>
-  <p class="note" id="i-verdict-sub"></p>
-
   <h3 class="st">Cómo lo resolvimos, en 4 pasos</h3>
   <ol class="route">
-    <li><button data-go="datos"><span class="rn">Paso 1 · Módulo 1</span><span class="rt">Medir la realidad</span><span class="rd">Con 50 autos observados vemos cada cuánto llegan y cuánto tardan en cargar, y comprobamos que siguen un patrón conocido.</span></button></li>
-    <li><button data-go="sim"><span class="rn">Paso 2 · Módulo 2</span><span class="rt">Simular 100 autos</span><span class="rd">La computadora inventa autos con números al azar que respetan esos patrones, y anota cuándo llega, espera y se va cada uno.</span></button></li>
-    <li><button data-go="rep"><span class="rn">Paso 3 · Módulo 3</span><span class="rt">Repetir para estar seguros</span><span class="rd">Repetimos la simulación 5 y 10 veces con distinto azar y calculamos un rango confiable para la espera promedio.</span></button></li>
-    <li><button data-go="preg"><span class="rn">Paso 4 · Módulo 4</span><span class="rt">Responder y recomendar</span><span class="rd">Contestamos las preguntas del trabajo con las cifras obtenidas y recomendamos qué hacer.</span></button></li>
+    <li><button data-go="datos"><span class="rn">Paso 1 · Módulo 1</span><span class="rt">Medir la realidad <svg class="ra" aria-hidden="true"><use href="#i-arrow"/></svg></span><span class="rd">Con 50 autos observados vemos cada cuánto llegan y cuánto tardan en cargar, y comprobamos que siguen un patrón conocido.</span></button></li>
+    <li><button data-go="sim"><span class="rn">Paso 2 · Módulo 2</span><span class="rt">Simular 100 autos <svg class="ra" aria-hidden="true"><use href="#i-arrow"/></svg></span><span class="rd">La computadora inventa autos con números al azar que respetan esos patrones, y anota cuándo llega, espera y se va cada uno.</span></button></li>
+    <li><button data-go="rep"><span class="rn">Paso 3 · Módulo 3</span><span class="rt">Repetir para estar seguros <svg class="ra" aria-hidden="true"><use href="#i-arrow"/></svg></span><span class="rd">Repetimos la simulación 5 y 10 veces con distinto azar y calculamos un rango confiable para la espera promedio.</span></button></li>
+    <li><button data-go="preg"><span class="rn">Paso 4 · Módulo 4</span><span class="rt">Responder y recomendar <svg class="ra" aria-hidden="true"><use href="#i-arrow"/></svg></span><span class="rd">Contestamos las preguntas del trabajo con las cifras obtenidas y recomendamos qué hacer.</span></button></li>
   </ol>
-  <p class="note">Atajos: teclas <span class="kbd">0</span>–<span class="kbd">4</span> cambian de módulo; en el simulador <span class="kbd">Espacio</span> reproduce o pausa y <span class="kbd">→</span> avanza un evento.</p>
+  <p class="note kbd-hint">Atajos: teclas <span class="kbd">0</span>–<span class="kbd">4</span> cambian de módulo; en el simulador <span class="kbd">Espacio</span> reproduce o pausa y <span class="kbd">→</span> avanza un evento.</p>
 
-  <h3 class="st">Glosario: las palabras técnicas, en simple</h3>
-  <p class="note">En toda la app, las palabras con <span class="term" tabindex="0" data-term="rho">subrayado de puntos</span> tienen una explicación: pasa el cursor encima o tócalas.</p>
-  <dl class="gloss" id="gloss"></dl>
+  <h3 class="st">Palabras técnicas</h3>
+  <p class="note">En toda la app, las palabras con <span class="term" tabindex="0" data-term="rho">subrayado de puntos</span> tienen una explicación corta: pasa el cursor encima o tócalas. Aquí están todas juntas.</p>
+  <details class="gloss-box" id="gloss-box">
+    <summary><span class="gl-t">Abrir el glosario</span><span class="gl-n" id="gloss-n"></span><svg class="chev"><use href="#i-chev"/></svg></summary>
+    <div class="gloss-in">
+      <input type="search" class="gloss-q" id="gloss-q" placeholder="Buscar: réplica, ρ, intervalo…" aria-label="Buscar en el glosario">
+      <dl class="gloss" id="gloss"></dl>
+      <p class="note" id="gloss-empty" hidden></p>
+    </div>
+  </details>
 
   <div class="barcode" aria-hidden="true"><svg id="barcode" width="260" height="46"></svg><span id="barcode-txt"></span></div>
   <div class="foot"><span>Fin del planteamiento</span><button data-go="datos">Módulo 1: Datos y χ² <svg><use href="#i-arrow"/></svg></button></div>
@@ -1173,8 +1228,19 @@ function renderGloss(){
   $('#gloss').innerHTML=Object.values(TERMS).map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
   const car=(cls,i)=>`<svg class="${cls}" style="--i:${i}" aria-hidden="true"><use href="#i-car"/></svg>`;
   $('#h-arr').innerHTML=Array.from({length:23},(_,i)=>car('a',i)).join('');
-  $('#h-srv').innerHTML=Array.from({length:15},(_,i)=>car('s',i)).join('');
-  $('#h-left').innerHTML=Array.from({length:8},(_,i)=>car('x',i)).join('');
+  // Las tres filas comparten la misma cuadrícula: los 8 que no se atienden quedan alineados
+  const carO=`<svg class="o" aria-hidden="true"><use href="#i-car-o"/></svg>`, blank=`<svg class="b" aria-hidden="true"></svg>`;
+  $('#h-srv').innerHTML=Array.from({length:15},(_,i)=>car('s',i)).join('')+carO.repeat(8);
+  $('#h-left').innerHTML=blank.repeat(15)+Array.from({length:8},(_,i)=>car('x',i)).join('');
+  $('#gloss-n').textContent=`${Object.keys(TERMS).length} términos`;
+  $('#gloss-box').addEventListener('toggle',e=>{$('#gloss-box .gl-t').textContent=e.target.open?'Cerrar el glosario':'Abrir el glosario';});
+  const norm=t=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  $('#gloss-q').addEventListener('input',e=>{
+    const q=norm(e.target.value.trim()); let shown=0;
+    $$('#gloss > div').forEach(d=>{const ok=!q||norm(d.textContent).includes(q);d.hidden=!ok;if(ok)shown++;});
+    const empty=$('#gloss-empty'); empty.hidden=shown>0;
+    empty.textContent=shown?'':`No hay ningún término que contenga «${e.target.value.trim()}». Prueba con otra palabra.`;
+  });
 }
 
 /* ---------- navigation ---------- */
@@ -1708,8 +1774,10 @@ function renderQ(){
 function renderInicio(){
   const c=ciOf('base'),two=ciOf('dos');
   $('#i-seed').textContent=S.seeds[0];
-  $('#i-verdict').innerHTML=`Con 1 surtidor cada auto espera en promedio <em>${f2(c.media)} min</em>; con 2 surtidores la espera baja a ${f2(two.media)} min.`;
-  $('#i-verdict-sub').innerHTML=`Resultado de ${c.n} réplicas de 100 vehículos, IC 95 % [${f2(c.inf)}, ${f2(c.sup)}] min. Cambia las semillas o el número de réplicas en el Módulo 3 y esta frase se actualiza.`;
+  $('#i-w1').innerHTML=`${f2(c.media)}<small>min</small>`;
+  $('#i-w2').innerHTML=`${f2(two.media)}<small>min</small>`;
+  $('#i-drop').textContent=`−${(100*(1-two.media/c.media)).toFixed(0)} %`;
+  $('#i-verdict-sub').innerHTML=`Promedio de ${c.n} réplicas de 100 autos. Con 1 surtidor, el ${term('ic','intervalo de confianza')} al 95 % es [${f2(c.inf)}, ${f2(c.sup)}] min. Si cambias las semillas o el número de réplicas en el Módulo 3, estas cifras se actualizan.`;
   const digits=String(S.seeds[0]).padStart(8,'0'); let x=0,s='';
   for(const ch of (digits+digits.split('').reverse().join(''))){const d=+ch;const w1=1+d%3,w2=1+(d>>1)%2;s+=`<rect x="${x}" y="0" width="${w1*2}" height="46" fill="var(--ink)"/>`;x+=w1*2+w2*2+1;}
   const bc=$('#barcode');bc.setAttribute('viewBox',`0 0 ${x} 46`);bc.innerHTML=s;

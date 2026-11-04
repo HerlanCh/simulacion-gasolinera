@@ -196,18 +196,19 @@ input[type=range]{accent-color:var(--signal)}
 .chip .w{display:block;font-size:.8rem;color:var(--ink-2)}
 .chip[aria-pressed="true"]{border-color:var(--signal);background:var(--signal-wash)}
 @media (hover:hover) and (pointer:fine){.chip:hover{border-color:var(--ink-3)}}
-.cdf{position:relative;margin:34px 0 46px}
+.cdf{position:relative;margin:34px 0 30px}
 .cdf .track{display:flex;height:56px;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden}
 .cdf .seg-c{position:relative;display:flex;align-items:center;justify-content:center;border-right:1.5px dashed var(--ink-3);font-family:var(--f-mono);font-weight:700;font-size:1.3rem;color:var(--ink-3);transition:background-color 200ms ease,color 200ms ease}
 .cdf .seg-c:last-child{border-right:0}
 .cdf .seg-c.hit{background:var(--signal);color:#fff}
-.cdf .ticks{position:relative;height:22px;font-family:var(--f-mono);font-size:.78rem;color:var(--ink-3)}
-.cdf .ticks span{position:absolute;top:4px;transform:translateX(-50%)}
+.cdf .ticks{position:relative;height:42px;font-family:var(--f-mono);font-size:.78rem;color:var(--ink-3)}
+.cdf .ticks span{position:absolute;top:4px;transform:translateX(-50%);white-space:nowrap}
+.cdf .ticks span.low{top:22px}
 .cdf .ticks span:first-child{transform:none}
 .cdf .ticks span:last-child{transform:translateX(-100%)}
 .cdf .marker{position:absolute;top:-30px;left:0;transform:translateX(-50%);transition:left 420ms var(--ease-in-out);display:flex;flex-direction:column;align-items:center;pointer-events:none}
-.cdf .marker b{font-family:var(--f-mono);font-size:.85rem;background:var(--ink);color:var(--paper);padding:1px 7px;border-radius:5px}
-.cdf .marker i{width:2px;height:86px;background:var(--ink)}
+.cdf .marker b{white-space:nowrap;transition:transform 420ms var(--ease-in-out);font-family:var(--f-mono);font-size:.85rem;background:var(--ink);color:var(--paper);padding:1px 7px;border-radius:5px}
+.cdf .marker i{width:2px;height:62px;background:var(--ink)}
 .steps{list-style:none;padding:0;margin:0;counter-reset:s}
 .steps li{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:baseline;padding:10px 0;border-bottom:1px dashed var(--rule)}
 .steps li:last-child{border-bottom:0}
@@ -1164,7 +1165,7 @@ function go(v,push=true){
   $$('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.v===v));
   if(push&&location.hash!=='#'+v)history.replaceState(null,'','#'+v);
   if(v==='sim')requestAnimationFrame(()=>{layoutStage();renderViz();});
-  if(v==='datos')requestAnimationFrame(()=>{['tll','ts'].forEach(k=>chiChart('#chi-ch-'+k,S.chi[k]));bindTips($('#chi-blocks'));});
+  if(v==='datos')requestAnimationFrame(()=>{layoutCdf($('#cdf'),ti.R);['tll','ts'].forEach(k=>chiChart('#chi-ch-'+k,S.chi[k]));bindTips($('#chi-blocks'));});
   if(v==='rep')requestAnimationFrame(()=>{ciChart();scTable();});
   const tab=$(`.tab[data-v="${v}"]`); if(tab)tab.scrollIntoView({block:'nearest',inline:'nearest'});
   if(v!=='sim'&&viz.playing)togglePlay(false);
@@ -1241,6 +1242,17 @@ function renderTIChips(){
   $$('#ti-chips .chip').forEach(b=>b.addEventListener('click',()=>{ti.sel=+b.dataset.i;const x=rs[ti.sel];ti.dist=x.d;ti.R=x.R;$('#ti-slider').value=x.R;renderTI();renderTIChips();}));
   if(ti.R===null){ti.R=rs[0].R;ti.dist='tll';$('#ti-slider').value=ti.R;}
 }
+// Mantiene la etiqueta de R dentro de la barra y baja las marcas que se enciman
+function layoutCdf(cdf,R){
+  const W=cdf.clientWidth; if(!W)return;
+  const b=cdf.querySelector('.marker b'), bw=b.offsetWidth, x=R*W;
+  const shift=Math.min(Math.max(x-bw/2,0),W-bw)-(x-bw/2);
+  b.style.transform=`translateX(${shift}px)`;
+  const spans=[...cdf.querySelectorAll('.ticks span')];
+  spans.forEach(sp=>sp.classList.remove('low'));
+  let prevRight=-Infinity;
+  spans.forEach(sp=>{const r=sp.getBoundingClientRect();if(r.left<prevRight+8)sp.classList.add('low');else prevRight=r.right;});
+}
 function renderTI(){
   const D=ti.dist==='tll'?TLL:TS, R=ti.R, x=transformadaInversa(D,R), row=D.filas.find(r=>r.x===x);
   $$('#ti-dist button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.d===ti.dist));
@@ -1253,6 +1265,7 @@ function renderTI(){
   }
   cdf.querySelector('.marker').style.left=(R*100)+'%';
   cdf.querySelector('.marker b').textContent='R = '+f4(R);
+  layoutCdf(cdf,R);
   cdf.querySelectorAll('.seg-c').forEach(s=>s.classList.toggle('hit',+s.dataset.x===x));
   $$('#ghost span').forEach(s=>s.classList.toggle('on',+s.dataset.x===x));
   const sym=ti.dist==='tll'?'T<sub>ll</sub>':'T<sub>s</sub>';
@@ -1697,7 +1710,7 @@ function refreshAll(light=false){
 }
 recompute(); renderGloss(); renderM1(); refreshAll();
 go(location.hash.slice(1)||'inicio',false);
-let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{['tll','ts'].forEach(k=>chiChart('#chi-ch-'+k,S.chi[k]));bindTips($('#chi-blocks'));ciChart();scTable();if(viz.run)drawQChart();},150);});
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{layoutCdf($('#cdf'),ti.R);['tll','ts'].forEach(k=>chiChart('#chi-ch-'+k,S.chi[k]));bindTips($('#chi-blocks'));ciChart();scTable();if(viz.run)drawQChart();},150);});
 </script>
 </body>
 </html>

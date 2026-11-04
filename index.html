@@ -1632,8 +1632,8 @@ function ciChart(){
     s+=`<line x1="${x(r.c.inf)}" x2="${x(r.c.sup)}" y1="${y}" y2="${y}" stroke="${col}" stroke-width="6" stroke-linecap="round" opacity="${cur?1:.55}" data-tip="n = ${r.n}<br>IC 95 %: [${f2(r.c.inf)}, ${f2(r.c.sup)}]<br>h = ${f2(r.c.h)} · ε<sub>r</sub> = ${pct(r.c.errorRel)}"/>`;
     s+=`<line x1="${x(r.c.media)}" x2="${x(r.c.media)}" y1="${y-14}" y2="${y+14}" stroke="var(--ink)" stroke-width="2"/>`;
     r.vals.forEach((v,j)=>{s+=`<circle cx="${x(v)}" cy="${y-26}" r="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.6" data-tip="Réplica ${j+1} (semilla ${S.seeds[j]})<br>W̄q = ${f2(v)} min"/>`;});
-    s+=narrow?`<text x="${m.l}" y="${y+30}" style="font-weight:700;fill:var(--ink)">h = ${f2(r.c.h)} · ε<tspan font-size="10" dy="2">r</tspan><tspan dy="-2"> = ${pct(r.c.errorRel)}</tspan></text>`
-      :`<text x="${W-m.r+16}" y="${y-2}" style="font-weight:700;fill:var(--ink)">h = ${f2(r.c.h)}</text><text x="${W-m.r+16}" y="${y+16}">ε<tspan font-size="10" dy="2">r</tspan><tspan dy="-2"> = ${pct(r.c.errorRel)}</tspan></text>`;
+    s+=narrow?`<text x="${m.l}" y="${y+30}" style="font-weight:700;fill:var(--ink)">h = ${f2(r.c.h)} · ε<tspan font-size="11" dy="2">r</tspan><tspan dy="-2"> = ${pct(r.c.errorRel)}</tspan></text>`
+      :`<text x="${W-m.r+16}" y="${y-2}" style="font-weight:700;fill:var(--ink)">h = ${f2(r.c.h)}</text><text x="${W-m.r+16}" y="${y+16}">ε<tspan font-size="11" dy="2">r</tspan><tspan dy="-2"> = ${pct(r.c.errorRel)}</tspan></text>`;
   });
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('height',H);svg.innerHTML=s;bindTips(svg);
   const a=rowsN[0].c,b=rowsN[1].c;

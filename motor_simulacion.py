@@ -121,9 +121,11 @@ def intervalo_confianza(valores, error_max=0.10):
     S = math.sqrt(sum((x - media) ** 2 for x in valores) / (n - 1))
     t = TABLA_T[n - 2]                       # gl = n - 1
     h = t * S / math.sqrt(n)                 # semi-amplitud: el margen de error
-    n_estrella = math.ceil((t * S / (error_max * media)) ** 2)
+    # Si nadie esperó (media = 0) no hay error relativo que calcular
+    error_rel = h / media if media > 0 else 0
+    n_estrella = math.ceil((t * S / (error_max * media)) ** 2) if media > 0 else n
     return {"n": n, "media": media, "S": S, "t": t, "h": h,
-            "inf": media - h, "sup": media + h, "error_rel": h / media, "n_estrella": n_estrella}
+            "inf": media - h, "sup": media + h, "error_rel": error_rel, "n_estrella": n_estrella}
 
 
 # ===== PROGRAMA PRINCIPAL =====

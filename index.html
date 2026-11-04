@@ -61,7 +61,7 @@ input,select{font:inherit;color:inherit}
 @media (max-width:760px){.mast{grid-template-columns:minmax(0,1fr)}.pump-led{justify-self:start}}
 .pump-led{display:flex;gap:18px;align-items:stretch;background:var(--ink);color:var(--paper);border-radius:10px;padding:10px 16px;box-shadow:0 2px 0 rgba(0,0,0,.08),0 10px 24px -12px rgba(27,29,34,.5)}
 .pump-led div{display:flex;flex-direction:column}
-.pump-led small{font-family:var(--f-display);font-stretch:90%;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#B9B4A8}
+.pump-led small{font-family:var(--f-display);font-stretch:90%;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:#B9B4A8}
 .pump-led b{font-family:var(--f-mono);font-size:1.5rem;font-weight:700;line-height:1.1;color:#FF8A4C}
 .pump-led b.ok{color:#8FD9AE}
 
@@ -73,9 +73,9 @@ nav.tabs::-webkit-scrollbar{display:none}
   transition:background-color 160ms ease, transform 160ms var(--ease-out);
   display:flex;flex-direction:column;gap:0;min-width:150px;
 }
-.tab .t-n{font-family:var(--f-mono);font-size:.72rem;color:var(--ink-2)}
+.tab .t-n{font-family:var(--f-mono);font-size:.75rem;color:var(--ink-2)}
 .tab .t-l{font-family:var(--f-display);font-stretch:85%;font-weight:700;font-size:1.02rem;letter-spacing:.01em}
-.tab .t-p{font-family:var(--f-mono);font-size:.7rem;color:var(--ink-2)}
+.tab .t-p{font-family:var(--f-mono);font-size:.75rem;color:var(--ink-2)}
 .tab:active{transform:scale(.97)}
 @media (hover:hover) and (pointer:fine){.tab:hover{background:var(--paper-3)}}
 .tab[aria-selected="true"]{background:var(--paper)}
@@ -191,7 +191,7 @@ input[type=range]{accent-color:var(--signal)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
 .chip{border:1.5px solid var(--rule);background:var(--paper);border-radius:10px;padding:8px 12px;cursor:pointer;text-align:left;transition:border-color 160ms ease,background-color 160ms ease,transform 140ms var(--ease-out)}
 .chip:active{transform:scale(.97)}
-.chip .k{display:block;font-family:var(--f-mono);font-size:.72rem;color:var(--ink-3)}
+.chip .k{display:block;font-family:var(--f-mono);font-size:.75rem;color:var(--ink-3)}
 .chip .r{display:block;font-family:var(--f-mono);font-weight:700;font-size:1.15rem}
 .chip .w{display:block;font-size:.8rem;color:var(--ink-2)}
 .chip[aria-pressed="true"]{border-color:var(--signal);background:var(--signal-wash)}
@@ -242,10 +242,10 @@ input[type=range]{accent-color:var(--signal)}
 .car.srv .body{fill:var(--signal);stroke:#FFD3BC;stroke-dasharray:none}
 .car .glass{fill:#4A4D54}
 .car.srv .glass{fill:#8A2E08}
-.car span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:.72rem;font-weight:700;color:#E8E3D7;padding-right:8px}
+.car span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:.75rem;font-weight:700;color:#E8E3D7;padding-right:8px}
 .car.srv span{color:#fff}
 .overflow{position:absolute;left:12px;font-family:var(--f-mono);font-size:.85rem;font-weight:700;background:var(--paper);color:var(--ink);border-radius:999px;padding:4px 12px;transition:opacity 200ms ease}
-.entry{position:absolute;left:12px;bottom:10px;font-family:var(--f-mono);font-size:.72rem;color:#A8A397}
+.entry{position:absolute;left:12px;bottom:10px;font-family:var(--f-mono);font-size:.75rem;color:#A8A397}
 .side{display:flex;flex-direction:column;gap:14px}
 .clock{background:var(--ink);color:var(--paper);border-radius:14px;padding:14px 18px}
 .clock .lbl{color:#A8A397}
@@ -306,7 +306,7 @@ pre.code .nm{color:#8FD9AE}
 
 /* ===== replicas ===== */
 .seeds{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
-.seeds label{display:flex;flex-direction:column;font-family:var(--f-mono);font-size:.72rem;color:var(--ink-3);gap:2px}
+.seeds label{display:flex;flex-direction:column;font-family:var(--f-mono);font-size:.75rem;color:var(--ink-3);gap:2px}
 .seeds input{width:96px;border:1.5px solid var(--rule);border-radius:8px;background:var(--paper);padding:6px 8px;font-family:var(--f-mono);font-size:.95rem;transition:border-color 160ms ease,opacity 200ms ease}
 .seeds input:focus{border-color:var(--ink);outline:none}
 .seeds label.off input{opacity:.45;border-style:dashed}
@@ -393,7 +393,7 @@ details.q[open] .chev{transform:rotate(180deg)}
 .view.on .cars .x{animation:carIn 340ms var(--ease-out) both;animation-delay:calc(var(--i) * 60ms + 250ms)}
 @keyframes carIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
 .hour-row .n{font-family:var(--f-mono);font-weight:700;font-size:1.6rem;text-align:right;line-height:1}
-.hour-row .n small{display:block;font-size:.72rem;font-weight:400;color:var(--ink-3);margin-top:4px}
+.hour-row .n small{display:block;font-size:.75rem;font-weight:400;color:var(--ink-3);margin-top:4px}
 .hour-row.left{background:var(--signal-wash);margin:0 -14px;padding:14px;border-radius:12px;border-top:0}
 .hour-row.left .n{color:var(--signal-ink)}
 @media (max-width:760px){.hour-row{grid-template-columns:minmax(0,1fr) auto}.hour-row .cars{grid-column:1/-1;order:3}}
@@ -422,7 +422,7 @@ details.q[open] .chev{transform:rotate(180deg)}
   .tab .t-l{font-size:.95rem}
   main{padding-inline:10px}
   .sheet{padding-inline:16px}
-  .ticket-head{font-size:.72rem;margin-bottom:18px}
+  .ticket-head{font-size:.75rem;margin-bottom:18px}
   .lede{font-size:1.04rem}
   h3.st{margin-top:40px}
   .simple{grid-template-columns:minmax(0,1fr);gap:4px;padding:16px}
@@ -1533,8 +1533,8 @@ function ciChart(){
     s+=`<line x1="${x(r.c.inf)}" x2="${x(r.c.sup)}" y1="${y}" y2="${y}" stroke="${col}" stroke-width="6" stroke-linecap="round" opacity="${cur?1:.55}" data-tip="n = ${r.n}<br>IC 95 %: [${f2(r.c.inf)}, ${f2(r.c.sup)}]<br>h = ${f2(r.c.h)} · ε<sub>r</sub> = ${pct(r.c.errorRel)}"/>`;
     s+=`<line x1="${x(r.c.media)}" x2="${x(r.c.media)}" y1="${y-14}" y2="${y+14}" stroke="var(--ink)" stroke-width="2"/>`;
     r.vals.forEach((v,j)=>{s+=`<circle cx="${x(v)}" cy="${y-26}" r="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.6" data-tip="Réplica ${j+1} (semilla ${S.seeds[j]})<br>W̄q = ${f2(v)} min"/>`;});
-    s+=narrow?`<text x="${m.l}" y="${y+30}" style="font-weight:700;fill:var(--ink)">h = ${f2(r.c.h)} · ε<tspan font-size="9" dy="2">r</tspan><tspan dy="-2"> = ${pct(r.c.errorRel)}</tspan></text>`
-      :`<text x="${W-m.r+16}" y="${y-2}" style="font-weight:700;fill:var(--ink)">h = ${f2(r.c.h)}</text><text x="${W-m.r+16}" y="${y+16}">ε<tspan font-size="9" dy="2">r</tspan><tspan dy="-2"> = ${pct(r.c.errorRel)}</tspan></text>`;
+    s+=narrow?`<text x="${m.l}" y="${y+30}" style="font-weight:700;fill:var(--ink)">h = ${f2(r.c.h)} · ε<tspan font-size="10" dy="2">r</tspan><tspan dy="-2"> = ${pct(r.c.errorRel)}</tspan></text>`
+      :`<text x="${W-m.r+16}" y="${y-2}" style="font-weight:700;fill:var(--ink)">h = ${f2(r.c.h)}</text><text x="${W-m.r+16}" y="${y+16}">ε<tspan font-size="10" dy="2">r</tspan><tspan dy="-2"> = ${pct(r.c.errorRel)}</tspan></text>`;
   });
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('height',H);svg.innerHTML=s;bindTips(svg);
   const a=rowsN[0].c,b=rowsN[1].c;

@@ -1667,8 +1667,9 @@ $('#rp-reset').addEventListener('click',()=>{S.seeds=[...DEFAULT_SEEDS];refreshA
 $('#rp-rand').addEventListener('click',()=>{S.seeds=S.seeds.map(()=>1+Math.floor(Math.random()*999999));refreshAll();});
 
 /* ---------- MÓDULO 4 ---------- */
-let SH=[];
-function q(n,title,body){const sh=SH[n-1];return `<details class="q"${n===1?' open':''}><summary><span class="qn">${n}</span><span class="qt">${title}</span><svg class="chev"><use href="#i-chev"/></svg></summary><div class="qa">${sh?`<p class="short">${sh}</p><span class="lbl more">Explicación completa</span>`:''}${body}</div></details>`;}
+let SH=[], QP='', OPEN_Q=new Set();
+// Las preguntas empiezan cerradas; si el usuario abrió alguna, sigue abierta al recalcular
+function q(n,title,body){const sh=SH[n-1],k=QP+n;return `<details class="q" data-k="${k}"${OPEN_Q.has(k)?' open':''}><summary><span class="qn">${n}</span><span class="qt">${title}</span><svg class="chev"><use href="#i-chev"/></svg></summary><div class="qa">${sh?`<p class="short">${sh}</p><span class="lbl more">Explicación completa</span>`:''}${body}</div></details>`;}
 const ev=(v,txt)=>`<button class="ev" data-go="${v}">${txt} <svg width="16" height="16"><use href="#i-arrow"/></svg></button>`;
 const hn=x=>`<span class="hl-num">${x}</span>`, hb=x=>`<span class="hl-blue">${x}</span>`;
 function renderQ(){
@@ -1701,7 +1702,8 @@ function renderQ(){
     `Habilitar una segunda estación: la espera promedio baja de ${f2(c.media)} a ${f2(two.media)} minutos.`
   ];
 
-  SH=shortTec;
+  OPEN_Q=new Set($$('.qs details[open]').map(d=>d.dataset.k));
+  SH=shortTec;QP='tec';
   $('#q-tec').innerHTML=[
     q(1,'¿Cuáles son los primeros 5 números aleatorios y cómo se transforman al menos 2 de ellos en T<sub>ll</sub> y T<sub>s</sub>?',
       `<p>Réplica 1, semilla ${hn(S.seeds[0])}. El generador Mulberry32 entrega R ∈ [0, 1) y se consumen en orden ${term('tll','T<sub>ll</sub>')}, ${term('ts','T<sub>s</sub>')} por cliente:</p>
@@ -1722,7 +1724,7 @@ function renderQ(){
       <p>h = t·S/√n. Duplicar n divide √n entre √2 y además baja t de 2.776 a 2.262, así que, si S se mantiene, h se reduce a ≈ ${(2.262/2.776/Math.SQRT2*100).toFixed(0)} % de su valor. En nuestros datos pasó de ${f2(c5.h)} a ${f2(c10.h)} min (S cambió de ${f2(c5.S)} a ${f2(c10.S)}). Más réplicas dan <b>más precisión</b>, pero no cambian el valor que se estima ni corrigen un modelo mal planteado.</p>${ev('rep','Probar el botón Duplicar réplicas')}`)
   ].join('');
 
-  SH=shortCri;
+  SH=shortCri;QP='cri';
   $('#q-cri').innerHTML=[
     q(1,'Cuando la cola crece, ¿cómo distinguir un error de programación de una demanda superior a la capacidad (ρ &gt; 1)?',
       `<p>Se contrasta la simulación con lo que la teoría predice. Si coinciden, el crecimiento se debe al sistema y no a un error:</p>
@@ -1750,7 +1752,7 @@ function renderQ(){
       <p>Para decidir se miran varios indicadores juntos: media, P90 o P95, máximo y porcentaje de clientes que superan un umbral aceptable (por ejemplo 10 min). En nuestros escenarios, con 2 surtidores bajan a la vez la media (${f2(c.media)} → ${f2(two.media)}) y el máximo promedio (${f2(max1)} → ${f2(max2)}), así que esa mejora no tiene ese dilema. Agilizar el servicio también baja ambos (máx. ${f2(maxF)}). El éxito se define antes de probar, según la meta de la gerencia.</p>`)
   ].join('');
 
-  SH=shortEsc;
+  SH=shortEsc;QP='esc';
   $('#q-esc').innerHTML=[
     q(1,'¿Qué evidencias analíticas y de simulación muestran que la demanda supera la capacidad?',
       `<div class="figs"><div class="fig alert"><span class="v">${term('rho','ρ')} = 1.5625</span><span class="d">${term('lambda','λ')} = 0.3906 &gt; ${term('mu','μ')} = 0.25</span></div><div class="fig alert"><span class="v">${pct(avg(base,'utilizacion'))}</span><span class="d">utilización del surtidor</span></div><div class="fig alert"><span class="v">${simQ.toFixed(1)}</span><span class="d">vehículos en cola al final</span></div></div>

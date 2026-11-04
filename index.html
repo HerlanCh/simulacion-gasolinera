@@ -196,7 +196,7 @@ input[type=range]{accent-color:var(--signal)}
 .chip .w{display:block;font-size:.8rem;color:var(--ink-2)}
 .chip[aria-pressed="true"]{border-color:var(--signal);background:var(--signal-wash)}
 @media (hover:hover) and (pointer:fine){.chip:hover{border-color:var(--ink-3)}}
-.cdf{position:relative;margin:34px 0 30px}
+.cdf{position:relative;margin:34px 0 30px;overflow-x:clip}
 .cdf .track{display:flex;height:56px;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden}
 .cdf .seg-c{position:relative;display:flex;align-items:center;justify-content:center;border-right:1.5px dashed var(--ink-3);font-family:var(--f-mono);font-weight:700;font-size:1.3rem;color:var(--ink-3);transition:background-color 200ms ease,color 200ms ease}
 .cdf .seg-c:last-child{border-right:0}
@@ -313,7 +313,7 @@ pre.code .nm{color:#8FD9AE}
 .seeds label.off input{opacity:.45;border-style:dashed}
 .formula{display:grid;grid-template-columns:minmax(150px,auto) 1fr auto;gap:0;border-top:1.5px solid var(--ink);margin:14px 0}
 .formula > div:not(.frow),.formula .frow > div{padding:10px 12px;border-bottom:1px dashed var(--rule);display:flex;align-items:center}
-.formula .n{font-family:var(--f-display);font-stretch:90%;font-weight:700}
+.formula .n,.formula > .n,.formula .frow > .n{display:block;align-self:center;font-family:var(--f-display);font-stretch:90%;font-weight:700}
 .formula .e,.formula .frow > .e{display:block;align-self:center;font-family:var(--f-mono);font-size:.92rem;line-height:1.8;color:var(--ink-2);overflow-wrap:anywhere}
 .formula .r{font-family:var(--f-mono);font-weight:700;font-size:1.15rem;justify-content:flex-end;white-space:nowrap}
 .formula .r.alert{color:var(--signal-ink)}
@@ -552,7 +552,7 @@ details.q[open] .chev{transform:rotate(180deg)}
 <section class="view" id="v-inicio" aria-labelledby="h-inicio">
   <div class="ticket-head"><span><b>Escenario 2</b> · Gasolinera</span><span>1 servidor · 1 cola · FIFO</span><span>Semilla réplica 1: <b id="i-seed">—</b></span></div>
   <h2 class="vt" id="h-inicio">Llegan más autos de los que el surtidor puede atender</h2>
-  <p class="lede">En promedio llega un auto cada <b class="num">2.56</b> minutos, pero cargar combustible a cada uno toma <b class="num">4.00</b> minutos. Es como una caja de supermercado donde la gente llega más rápido de lo que la cajera puede cobrar: la fila solo puede crecer.</p>
+  <p class="lede">Llega un auto cada <b class="num">2.56</b> min, pero atenderlo toma <b class="num">4.00</b> min: la fila solo puede crecer.</p>
 
   <h3 class="st">Una hora en la gasolinera</h3>
   <div class="hour" aria-label="En una hora llegan 23.4 autos, el surtidor atiende 15 y se quedan esperando 8.4">
@@ -560,7 +560,7 @@ details.q[open] .chev{transform:rotate(180deg)}
     <div class="hour-row"><div class="hl">El surtidor atiende<span>cada carga dura 4 min</span></div><div class="cars" id="h-srv"></div><div class="n">15<small>autos</small></div></div>
     <div class="hour-row left"><div class="hl">Se quedan esperando<span>cada hora, y se van sumando</span></div><div class="cars" id="h-left"></div><div class="n">+8.4<small>autos</small></div></div>
   </div>
-  <p class="figcap">Cada dibujo es un auto. Los contornos punteados son los autos que el surtidor no alcanza a atender: pasan a la fila. La relación entre lo que llega y lo que se atiende se llama <span class="term" tabindex="0" data-term="rho">ρ</span> = 23.4 / 15 = 1.56; si es mayor que 1, la fila nunca se vacía.</p>
+  <p class="figcap">Punteados: autos que el surtidor no alcanza a atender. <span class="term" tabindex="0" data-term="rho">ρ</span> = 23.4 / 15 = 1.56 &gt; 1: la fila nunca se vacía.</p>
 
   <h3 class="st">La respuesta</h3>
   <div class="answer">
@@ -586,17 +586,7 @@ details.q[open] .chev{transform:rotate(180deg)}
     <div><b>≤ 10 %</b><span><span class="term" tabindex="0" data-term="er">error relativo</span> máximo deseado</span></div>
   </div>
 
-  <h3 class="st">Cómo lo resolvimos, en 4 pasos</h3>
-  <ol class="route">
-    <li><button data-go="datos"><span class="rn">Paso 1 · Módulo 1</span><span class="rt">Medir la realidad <svg class="ra" aria-hidden="true"><use href="#i-arrow"/></svg></span><span class="rd">Con 50 autos observados vemos cada cuánto llegan y cuánto tardan en cargar, y comprobamos que siguen un patrón conocido.</span></button></li>
-    <li><button data-go="sim"><span class="rn">Paso 2 · Módulo 2</span><span class="rt">Simular 100 autos <svg class="ra" aria-hidden="true"><use href="#i-arrow"/></svg></span><span class="rd">La computadora inventa autos con números al azar que respetan esos patrones, y anota cuándo llega, espera y se va cada uno.</span></button></li>
-    <li><button data-go="rep"><span class="rn">Paso 3 · Módulo 3</span><span class="rt">Repetir para estar seguros <svg class="ra" aria-hidden="true"><use href="#i-arrow"/></svg></span><span class="rd">Repetimos la simulación 5 y 10 veces con distinto azar y calculamos un rango confiable para la espera promedio.</span></button></li>
-    <li><button data-go="preg"><span class="rn">Paso 4 · Módulo 4</span><span class="rt">Responder y recomendar <svg class="ra" aria-hidden="true"><use href="#i-arrow"/></svg></span><span class="rd">Contestamos las preguntas del trabajo con las cifras obtenidas y recomendamos qué hacer.</span></button></li>
-  </ol>
-  <p class="note kbd-hint">Atajos: teclas <span class="kbd">0</span>–<span class="kbd">4</span> cambian de módulo; en el simulador <span class="kbd">Espacio</span> reproduce o pausa y <span class="kbd">→</span> avanza un evento.</p>
-
-  <h3 class="st">Palabras técnicas</h3>
-  <p class="note">En toda la app, las palabras con <span class="term" tabindex="0" data-term="rho">subrayado de puntos</span> tienen una explicación corta: pasa el cursor encima o tócalas. Aquí están todas juntas.</p>
+  <p class="note" style="margin-top:36px">Las palabras con <span class="term" tabindex="0" data-term="rho">subrayado de puntos</span> tienen una explicación: pasa el cursor o tócalas.</p>
   <details class="gloss-box" id="gloss-box">
     <summary><span class="gl-t">Abrir el glosario</span><span class="gl-n" id="gloss-n"></span><svg class="chev"><use href="#i-chev"/></svg></summary>
     <div class="gloss-in">
@@ -606,7 +596,6 @@ details.q[open] .chev{transform:rotate(180deg)}
     </div>
   </details>
 
-  <div class="barcode" aria-hidden="true"><svg id="barcode" width="260" height="46"></svg><span id="barcode-txt"></span></div>
   <div class="foot"><span>Fin del planteamiento</span><button data-go="datos">Módulo 1: Datos y χ² <svg><use href="#i-arrow"/></svg></button></div>
 </section>
 
@@ -614,15 +603,13 @@ details.q[open] .chev{transform:rotate(180deg)}
 <section class="view" id="v-datos" aria-labelledby="h-datos">
   <div class="ticket-head"><span><b>Módulo 1</b> · Análisis de datos</span><span>N = 50 observaciones por variable</span></div>
   <h2 class="vt" id="h-datos">De las frecuencias observadas a los números aleatorios</h2>
-  <p class="lede">Primero resumimos los datos, luego comprobamos con χ² si siguen una distribución teórica, y al final mostramos cómo cada número uniforme R se convierte en un tiempo.</p>
+  <p class="lede">Datos observados, prueba χ² y cómo un número al azar se convierte en un tiempo.</p>
   <div class="simple"><span class="ic"><svg><use href="#i-bulb"/></svg></span><div>
-    <span class="lead">En palabras simples</span>
-    <p>Antes de simular hay que conocer la realidad. Alguien anotó 50 autos: cada cuánto llegaba uno nuevo y cuánto tardaba cada carga.</p>
-    <p>Con esas anotaciones armamos una especie de <b>ruleta</b> para cada tiempo: los valores que se repitieron más ocupan más espacio. Después la computadora “gira” esa ruleta para inventar autos que se comportan como los reales.</p>
+    <p>Con 50 autos observados armamos una “ruleta” para cada tiempo; la computadora la gira para inventar autos realistas.</p>
   </div></div>
 
   <h3 class="st">Tablas de frecuencias e intervalos de asignación</h3>
-  <p class="note">Cada fila es un valor posible. <span class="term" tabindex="0" data-term="O">O<sub>i</sub></span> es cuántas veces se observó; <span class="term" tabindex="0" data-term="frel">f<sub>i</sub></span> = O<sub>i</sub>/50 es su probabilidad; <span class="term" tabindex="0" data-term="fi">F<sub>i</sub></span> es la probabilidad acumulada. El intervalo [F<sub>i−1</sub>, F<sub>i</sub>) es su tramo en la ruleta: los números al azar R que caen ahí producen ese valor.</p>
+  <p class="note">El intervalo [F<sub>i−1</sub>, F<sub>i</sub>) es el tramo de cada valor en la ruleta.</p>
   <div class="grid2">
     <div><h4 class="ss">A · Tiempo entre llegadas T<sub>ll</sub> (min)</h4><div class="tw" id="t-tll"></div></div>
     <div><h4 class="ss">B · Tiempo de servicio T<sub>s</sub> (min)</h4><div class="tw" id="t-ts"></div></div>
@@ -630,26 +617,17 @@ details.q[open] .chev{transform:rotate(180deg)}
   <div class="figs" id="m1-figs"></div>
   <div class="rho">
     <div class="eq">λ = 1/2.56 = 0.3906<br>μ = 1/4.00 = 0.2500<br>ρ = λ/μ = <b>1.5625</b></div>
-    <p><strong>ρ &gt; 1: llegan más autos de los que se pueden atender.</strong> λ es cuántos autos llegan por minuto (0.39) y μ cuántos puede atender el surtidor (0.25). Como llegan más de los que salen, cada minuto la fila crece en promedio λ − μ = <span class="num">0.1406</span> autos, y cada nuevo cliente espera más que el anterior.</p>
+    <p><strong>ρ &gt; 1:</strong> llegan 0.39 autos por minuto y se atienden 0.25, así que la fila crece <span class="num">0.14</span> autos por minuto.</p>
   </div>
 
   <h3 class="st">Prueba de bondad de ajuste χ²</h3>
-  <p class="note"><b>La pregunta:</b> ¿los tiempos observados siguen un patrón matemático conocido? Las barras naranjas son lo que pasó (<span class="term" tabindex="0" data-term="O">O<sub>i</sub></span>) y las azules lo que diría la fórmula (<span class="term" tabindex="0" data-term="E">E<sub>i</sub></span>). Si se parecen, el número <span class="term" tabindex="0" data-term="chi">χ²</span> sale pequeño y aceptamos la fórmula. Las categorías con E<sub>i</sub> &lt; 5 se juntan con su vecina, porque con tan pocos casos la prueba no es confiable.</p>
-  <div class="legend"><span><i style="background:var(--signal)"></i>Observado O<sub>i</sub></span><span><i style="background:var(--blue)"></i>Esperado E<sub>i</sub></span></div>
+  <p class="note">¿Los datos siguen una fórmula conocida? Si <span class="term" tabindex="0" data-term="chi">χ²</span> es menor que el valor crítico, sí. Las categorías con E<sub>i</sub> &lt; 5 se agrupan.</p>
   <div class="grid2" id="chi-blocks"></div>
 
-  <h4 class="ss">¿Por qué simulamos con la distribución empírica discreta?</h4>
-  <div class="prose">
-    <p>Ambas pruebas aceptan H<sub>0</sub>, así que las distribuciones teóricas son razonables. Aun así el simulador usa la <b>distribución empírica</b> mediante transformada inversa, por tres razones:</p>
-    <ul>
-      <li><b>Sin truncamiento.</b> La Poisson desplazada asigna probabilidad a valores mayores que 5 min (<span class="num" id="p-tail">—</span>) que nunca se observaron. Usarla obligaría a truncar o a generar tiempos irreales.</li>
-      <li><b>Fidelidad exacta.</b> La empírica reproduce exactamente las medias observadas (2.56 y 4.00), por lo que ρ = 1.5625 se respeta sin aproximaciones.</li>
-      <li><b>Trazabilidad.</b> Cada R cae en un intervalo de la tabla de arriba, y eso permite verificar a mano cualquier cliente, como exige la rúbrica.</li>
-    </ul>
-  </div>
+  <p class="note"><b>¿Por qué simulamos con la distribución empírica?</b> No inventa tiempos nunca vistos (la Poisson daría <span class="num" id="p-tail">—</span>), respeta exactamente las medias observadas y permite verificar cada cliente a mano.</p>
 
   <h3 class="st">Verificador de transformada inversa</h3>
-  <p class="note">Es la ruleta de la que hablamos (<span class="term" tabindex="0" data-term="ti">transformada inversa</span>): la barra de 0 a 1 está repartida según la probabilidad de cada valor. La computadora saca un número al azar <span class="term" tabindex="0" data-term="R">R</span>, mira en qué tramo cae y ese tramo dice el tiempo. Abajo están los 5 primeros números de la Réplica 1 (<span class="term" tabindex="0" data-term="semilla">semilla</span> <b class="num" id="ti-seed">—</b>); se usan en orden: primero el tiempo entre llegadas y luego el de servicio de cada cliente. Toca uno.</p>
+  <p class="note">Los 5 primeros números <span class="term" tabindex="0" data-term="R">R</span> de la Réplica 1 (<span class="term" tabindex="0" data-term="semilla">semilla</span> <b class="num" id="ti-seed">—</b>). Toca uno para ver en qué tramo de la ruleta cae.</p>
   <div class="chips" id="ti-chips"></div>
   <div class="bar"><div class="grp"><span class="lbl">O prueba tu propio R</span><input type="range" id="ti-slider" min="0" max="0.9999" step="0.0001" value="0.5" style="width:220px" aria-label="Valor de R"><span class="num" id="ti-sval">0.5000</span></div>
     <div class="seg" id="ti-dist"><button data-d="tll" aria-pressed="true">T<sub>ll</sub></button><button data-d="ts" aria-pressed="false">T<sub>s</sub></button></div></div>
@@ -668,11 +646,9 @@ details.q[open] .chev{transform:rotate(180deg)}
 <section class="view" id="v-sim" aria-labelledby="h-sim">
   <div class="ticket-head"><span><b>Módulo 2</b> · Simulador DES</span><span>1 cola FIFO → surtidor</span></div>
   <h2 class="vt" id="h-sim">Mira cómo crece la cola, evento por evento</h2>
-  <p class="lede">Presiona reproducir y mira llegar los 100 autos. El reloj salta de un suceso al siguiente: una llegada, el inicio de una carga o una salida.</p>
+  <p class="lede">Presiona reproducir. El reloj salta de un suceso al siguiente: llegada, inicio de carga o salida.</p>
   <div class="simple"><span class="ic"><svg><use href="#i-bulb"/></svg></span><div>
-    <span class="lead">En palabras simples</span>
-    <p>La computadora “juega” a ser la gasolinera. Cada vez que pasa algo (llega un auto, empieza a cargar o se va) lo anota y adelanta el reloj hasta el siguiente suceso. Por eso se llama <span class="term" tabindex="0" data-term="des">simulación de eventos discretos</span>.</p>
-    <p>Fíjate en el contador <b>en cola ahora</b>: casi nunca baja, porque los autos llegan más rápido de lo que se van.</p>
+    <p>Fíjate en <b>en cola ahora</b>: casi nunca baja, porque llegan más autos de los que salen.</p>
   </div></div>
 
   <div class="bar">
@@ -730,16 +706,16 @@ details.q[open] .chev{transform:rotate(180deg)}
       <div class="grp"><span class="lbl">Réplica</span><select class="sel" id="tr-rep" aria-label="Réplica de la traza"></select></div>
       <div class="grp"><span class="lbl">Desde el cliente</span><input type="range" id="tr-i" min="1" max="98" value="1" style="width:200px" aria-label="Cliente inicial"><b class="num" id="tr-iv">1</b></div>
     </div>
-    <p class="note">Aquí hacemos a mano lo mismo que hace la computadora, para comprobar que no se equivoca. Cada comprobante responde 4 preguntas sobre un auto usando las ecuaciones del modelo. Los resultados deben coincidir con la tabla completa.</p>
+    <p class="note">Tres clientes calculados a mano con las 4 ecuaciones del modelo; coinciden con la tabla completa.</p>
     <div class="receipts" id="receipts"></div>
   </div>
   <div class="pane" data-pane="tabla">
     <div class="bar"><div class="grp"><span class="lbl">Réplica</span><select class="sel" id="tb-rep" aria-label="Réplica de la tabla"></select></div><div class="grp"><span class="lbl">Surtidores</span><div class="seg" id="tb-c"><button data-c="1" aria-pressed="true">1</button><button data-c="2" aria-pressed="false">2</button></div></div></div>
-    <p class="note">Las filas resaltadas son los clientes de la traza manual. "Cola al llegar" cuenta los vehículos que ya esperaban cuando llegó ese cliente.</p>
+    <p class="note">Resaltados: los clientes de la traza manual.</p>
     <div class="tw" style="max-height:560px;overflow:auto" id="full-table"></div>
   </div>
   <div class="pane" data-pane="codigo">
-    <p class="note">Este es el motor de la simulación, escrito con nombres en español para que cualquiera pueda seguirlo. Puedes verlo en Python o en JavaScript: los dos dan exactamente los mismos resultados. Los comentarios en gris explican cada paso; los pasos 2 a 6 de <b>simular</b> son las mismas 4 preguntas de la traza manual.</p>
+    <p class="note">El motor en Python o en JavaScript; ambos dan los mismos resultados.</p>
     <div class="bar"><div class="grp"><span class="lbl">Lenguaje</span><div class="seg" id="code-lang"><button data-l="py" aria-pressed="true">Python</button><button data-l="js" aria-pressed="false">JavaScript</button></div></div></div>
     <p class="note" id="code-lang-note"></p>
     <pre class="code" id="code"></pre>
@@ -751,11 +727,9 @@ details.q[open] .chev{transform:rotate(180deg)}
 <section class="view" id="v-rep" aria-labelledby="h-rep">
   <div class="ticket-head"><span><b>Módulo 3</b> · Réplicas e inferencia</span><span>Mulberry32 · semillas deterministas</span></div>
   <h2 class="vt" id="h-rep">Una corrida no basta: repetimos y medimos la incertidumbre</h2>
-  <p class="lede">Cada réplica usa una semilla distinta y produce su propio <span class="term" tabindex="0" data-term="wqj">W̄<sub>q,j</sub></span>. Con esos valores construimos un intervalo de confianza al 95 % para la espera media.</p>
+  <p class="lede">Cada réplica usa otra semilla y da su propio <span class="term" tabindex="0" data-term="wqj">W̄<sub>q,j</sub></span>; con ellos calculamos el intervalo de confianza al 95 %.</p>
   <div class="simple"><span class="ic"><svg><use href="#i-bulb"/></svg></span><div>
-    <span class="lead">En palabras simples</span>
-    <p>Una sola simulación puede salir “con suerte” o “sin suerte”, igual que lanzar una moneda una sola vez. Por eso la repetimos varias veces, cada una con un azar distinto (eso es la <span class="term" tabindex="0" data-term="semilla">semilla</span>), y promediamos.</p>
-    <p>El <span class="term" tabindex="0" data-term="ic">intervalo de confianza</span> responde: ¿entre qué valores está, casi con seguridad, la espera promedio real? Mientras más angosto, más precisa es la respuesta.</p>
+    <p>Una sola corrida puede salir “con suerte”, como lanzar una moneda una vez; por eso repetimos y promediamos.</p>
   </div></div>
 
   <h3 class="st">Panel de control</h3>
@@ -777,15 +751,14 @@ details.q[open] .chev{transform:rotate(180deg)}
   <div id="rp-verdict"></div>
 
   <h4 class="ss">Efecto de duplicar las réplicas en el intervalo</h4>
-  <p class="note">Cada punto es el <span class="term" tabindex="0" data-term="wqj">W̄<sub>q</sub></span> de una réplica; la barra es el <span class="term" tabindex="0" data-term="ic">IC</span> al 95 %. Con más réplicas, <span class="term" tabindex="0" data-term="h">h</span> se reduce aproximadamente en proporción a 1/√n (y además baja el valor t).</p>
+  <p class="note">Más réplicas, intervalo más angosto: <span class="term" tabindex="0" data-term="h">h</span> ∝ t / √n.</p>
   <svg class="chart" id="ci-chart" height="220" role="img" aria-label="Comparación de intervalos de confianza con 5 y 10 réplicas"></svg>
   <p class="figcap" id="ci-cap"></p>
 
   <h3 class="st">Simulador de sensibilidad: ¿qué pasa si…?</h3>
-  <p class="note">Las mismas semillas, aplicadas a tres configuraciones. Así la comparación es justa: la diferencia se debe al cambio en el sistema, no al azar (números aleatorios comunes).</p>
+  <p class="note">Las mismas semillas en tres configuraciones, para una comparación justa.</p>
   <div class="tw" id="sc-table"></div>
   <svg class="chart" id="sc-chart" height="170" role="img" aria-label="Espera media por escenario"></svg>
-  <p class="figcap">Espera media en cola por escenario con su IC 95 %. Barra naranja: escenario seleccionado arriba.</p>
   <p class="plain" id="sc-plain"></p>
   <div class="foot"><span>Fin del módulo 3</span><button data-go="preg">Módulo 4: Preguntas <svg><use href="#i-arrow"/></svg></button></div>
 </section>
@@ -794,7 +767,7 @@ details.q[open] .chev{transform:rotate(180deg)}
 <section class="view" id="v-preg" aria-labelledby="h-preg">
   <div class="ticket-head"><span><b>Módulo 4</b> · Preguntas y escenario</span><span>respuestas con cifras en vivo</span></div>
   <h2 class="vt" id="h-preg">Lo que la simulación nos permite afirmar</h2>
-  <p class="lede">Cada respuesta usa los resultados actuales del simulador (semillas y número de réplicas del Módulo 3). Si cambias las semillas, las cifras de aquí también cambian.</p>
+  <p class="lede">Respuestas cortas, con las cifras actuales del simulador.</p>
   <div class="subtabs" role="tablist" id="q-tabs">
     <button role="tab" data-p="tec" aria-selected="true">5 preguntas técnicas</button>
     <button role="tab" data-p="cri" aria-selected="false">5 de pensamiento crítico</button>
@@ -1286,7 +1259,6 @@ function renderM1(){
       <h4 class="ss">${t}: ${c.desc.name}</h4>
       <div class="hyp"><b>${term('h0','H₀')}</b><span>${c.desc.h0}</span><b>${term('h1','H₁')}</b><span>${sym} no sigue esa distribución</span></div>
       <p class="note" style="margin:2px 0 8px">Parámetro estimado de los datos: <span class="num">${c.desc.est}</span>, por eso ${term('m','m')} = 1.</p>
-      <svg class="chart" id="chi-ch-${k}" height="170" role="img" aria-label="Observado contra esperado"></svg>
       <div class="tw"><table class="rt"><thead><tr><th>Categoría</th><th>${term('O','O<sub>i</sub>')}</th><th>${term('E','E<sub>i</sub>')}</th><th>(O−E)²/E</th></tr></thead><tbody>${
         c.groups.map(g=>`<tr class="${g.merged?'grp':''}"><td>${g.labels.join(' + ')}${g.merged?` <span class="bracket">agrupada</span>`:''}</td><td>${g.O}</td><td>${g.E.toFixed(3)}</td><td>${g.chi.toFixed(4)}</td></tr>`).join('')
       }</tbody><tfoot><tr><td>χ² calculado</td><td>50</td><td>50.000</td><td>${c.chi.toFixed(4)}</td></tr></tfoot></table></div>
@@ -1302,6 +1274,7 @@ function renderM1(){
   bindTips($('#chi-blocks'));
 }
 function chiChart(sel,c){
+  if(!$(sel))return;
   const svg=$(sel), W=svg.clientWidth||460, H=170, m={l:34,r:8,t:14,b:26};
   const max=Math.max(...c.cats.flatMap(x=>[x.O,x.E])), yMax=Math.ceil(max/5)*5;
   const iw=W-m.l-m.r, ih=H-m.t-m.b, gw=iw/c.cats.length, bw=Math.min(26,gw/2-6);
@@ -1669,7 +1642,7 @@ $('#rp-rand').addEventListener('click',()=>{S.seeds=S.seeds.map(()=>1+Math.floor
 /* ---------- MÓDULO 4 ---------- */
 let SH=[], QP='', OPEN_Q=new Set();
 // Las preguntas empiezan cerradas; si el usuario abrió alguna, sigue abierta al recalcular
-function q(n,title,body){const sh=SH[n-1],k=QP+n;return `<details class="q" data-k="${k}"${OPEN_Q.has(k)?' open':''}><summary><span class="qn">${n}</span><span class="qt">${title}</span><svg class="chev"><use href="#i-chev"/></svg></summary><div class="qa">${sh?`<p class="short">${sh}</p><span class="lbl more">Explicación completa</span>`:''}${body}</div></details>`;}
+function q(n,title,body){const sh=SH[n-1],k=QP+n;return `<details class="q" data-k="${k}"${OPEN_Q.has(k)?' open':''}><summary><span class="qn">${n}</span><span class="qt">${title}</span><svg class="chev"><use href="#i-chev"/></svg></summary><div class="qa"><p class="short">${sh}</p></div></details>`;}
 const ev=(v,txt)=>`<button class="ev" data-go="${v}">${txt} <svg width="16" height="16"><use href="#i-arrow"/></svg></button>`;
 const hn=x=>`<span class="hl-num">${x}</span>`, hb=x=>`<span class="hl-blue">${x}</span>`;
 function renderQ(){
@@ -1780,10 +1753,6 @@ function renderInicio(){
   $('#i-w2').innerHTML=`${f2(two.media)}<small>min</small>`;
   $('#i-drop').textContent=`−${(100*(1-two.media/c.media)).toFixed(0)} %`;
   $('#i-verdict-sub').innerHTML=`Promedio de ${c.n} réplicas de 100 autos. Con 1 surtidor, el ${term('ic','intervalo de confianza')} al 95 % es [${f2(c.inf)}, ${f2(c.sup)}] min. Si cambias las semillas o el número de réplicas en el Módulo 3, estas cifras se actualizan.`;
-  const digits=String(S.seeds[0]).padStart(8,'0'); let x=0,s='';
-  for(const ch of (digits+digits.split('').reverse().join(''))){const d=+ch;const w1=1+d%3,w2=1+(d>>1)%2;s+=`<rect x="${x}" y="0" width="${w1*2}" height="46" fill="var(--ink)"/>`;x+=w1*2+w2*2+1;}
-  const bc=$('#barcode');bc.setAttribute('viewBox',`0 0 ${x} 46`);bc.innerHTML=s;
-  $('#barcode-txt').textContent=`SEMILLA ${S.seeds[0]} · ${c.n} RÉPLICAS · ρ 1.5625`;
 }
 
 /* ---------- global ---------- */

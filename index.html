@@ -502,10 +502,10 @@ details.q[open] .chev{transform:rotate(180deg)}
 
 <nav class="tabs" role="tablist" aria-label="Módulos">
   <button class="tab" role="tab" data-v="inicio"><span class="t-n">00</span><span class="t-l">Planteamiento</span><span class="t-p">de qué se trata</span></button>
-  <button class="tab" role="tab" data-v="datos"><span class="t-n">Módulo 1</span><span class="t-l">Datos, χ² y transformada</span><span class="t-p">8 pts</span></button>
-  <button class="tab" role="tab" data-v="sim"><span class="t-n">Módulo 2</span><span class="t-l">Simulador en vivo</span><span class="t-p">10 pts</span></button>
-  <button class="tab" role="tab" data-v="rep"><span class="t-n">Módulo 3</span><span class="t-l">Réplicas e inferencia</span><span class="t-p">6 pts</span></button>
-  <button class="tab" role="tab" data-v="preg"><span class="t-n">Módulo 4</span><span class="t-l">Preguntas</span><span class="t-p">6 pts</span></button>
+  <button class="tab" role="tab" data-v="datos"><span class="t-n">Módulo 1</span><span class="t-l">Datos, χ² y transformada</span><span class="t-p">los datos reales</span></button>
+  <button class="tab" role="tab" data-v="sim"><span class="t-n">Módulo 2</span><span class="t-l">Simulador en vivo</span><span class="t-p">la animación</span></button>
+  <button class="tab" role="tab" data-v="rep"><span class="t-n">Módulo 3</span><span class="t-l">Réplicas e inferencia</span><span class="t-p">qué tan seguros</span></button>
+  <button class="tab" role="tab" data-v="preg"><span class="t-n">Módulo 4</span><span class="t-l">Preguntas</span><span class="t-p">las respuestas</span></button>
 </nav>
 
 <main>
@@ -540,10 +540,10 @@ details.q[open] .chev{transform:rotate(180deg)}
 
   <h3 class="st">Cómo lo resolvimos, en 4 pasos</h3>
   <ol class="route">
-    <li><button data-go="datos"><span class="rn">Paso 1 · Módulo 1 · 8 pts</span><span class="rt">Medir la realidad</span><span class="rd">Con 50 autos observados vemos cada cuánto llegan y cuánto tardan en cargar, y comprobamos que siguen un patrón conocido.</span></button></li>
-    <li><button data-go="sim"><span class="rn">Paso 2 · Módulo 2 · 10 pts</span><span class="rt">Simular 100 autos</span><span class="rd">La computadora inventa autos con números al azar que respetan esos patrones, y anota cuándo llega, espera y se va cada uno.</span></button></li>
-    <li><button data-go="rep"><span class="rn">Paso 3 · Módulo 3 · 6 pts</span><span class="rt">Repetir para estar seguros</span><span class="rd">Repetimos la simulación 5 y 10 veces con distinto azar y calculamos un rango confiable para la espera promedio.</span></button></li>
-    <li><button data-go="preg"><span class="rn">Paso 4 · Módulo 4 · 6 pts</span><span class="rt">Responder y recomendar</span><span class="rd">Contestamos las preguntas del trabajo con las cifras obtenidas y recomendamos qué hacer.</span></button></li>
+    <li><button data-go="datos"><span class="rn">Paso 1 · Módulo 1</span><span class="rt">Medir la realidad</span><span class="rd">Con 50 autos observados vemos cada cuánto llegan y cuánto tardan en cargar, y comprobamos que siguen un patrón conocido.</span></button></li>
+    <li><button data-go="sim"><span class="rn">Paso 2 · Módulo 2</span><span class="rt">Simular 100 autos</span><span class="rd">La computadora inventa autos con números al azar que respetan esos patrones, y anota cuándo llega, espera y se va cada uno.</span></button></li>
+    <li><button data-go="rep"><span class="rn">Paso 3 · Módulo 3</span><span class="rt">Repetir para estar seguros</span><span class="rd">Repetimos la simulación 5 y 10 veces con distinto azar y calculamos un rango confiable para la espera promedio.</span></button></li>
+    <li><button data-go="preg"><span class="rn">Paso 4 · Módulo 4</span><span class="rt">Responder y recomendar</span><span class="rd">Contestamos las preguntas del trabajo con las cifras obtenidas y recomendamos qué hacer.</span></button></li>
   </ol>
   <p class="note">Atajos: teclas <span class="kbd">0</span>–<span class="kbd">4</span> cambian de módulo; en el simulador <span class="kbd">Espacio</span> reproduce o pausa y <span class="kbd">→</span> avanza un evento.</p>
 
@@ -557,7 +557,7 @@ details.q[open] .chev{transform:rotate(180deg)}
 
 <!-- ================= MÓDULO 1 ================= -->
 <section class="view" id="v-datos" aria-labelledby="h-datos">
-  <div class="ticket-head"><span><b>Módulo 1</b> · Análisis de datos</span><span>N = 50 observaciones por variable</span><span>8 pts</span></div>
+  <div class="ticket-head"><span><b>Módulo 1</b> · Análisis de datos</span><span>N = 50 observaciones por variable</span></div>
   <h2 class="vt" id="h-datos">De las frecuencias observadas a los números aleatorios</h2>
   <p class="lede">Primero resumimos los datos, luego comprobamos con χ² si siguen una distribución teórica, y al final mostramos cómo cada número uniforme R se convierte en un tiempo.</p>
   <div class="simple"><span class="ic"><svg><use href="#i-bulb"/></svg></span><div>
@@ -611,7 +611,7 @@ details.q[open] .chev{transform:rotate(180deg)}
 
 <!-- ================= MÓDULO 2 ================= -->
 <section class="view" id="v-sim" aria-labelledby="h-sim">
-  <div class="ticket-head"><span><b>Módulo 2</b> · Simulador DES</span><span>1 cola FIFO → surtidor</span><span>10 pts</span></div>
+  <div class="ticket-head"><span><b>Módulo 2</b> · Simulador DES</span><span>1 cola FIFO → surtidor</span></div>
   <h2 class="vt" id="h-sim">Mira cómo crece la cola, evento por evento</h2>
   <p class="lede">Presiona reproducir y mira llegar los 100 autos. El reloj salta de un suceso al siguiente: una llegada, el inicio de una carga o una salida.</p>
   <div class="simple"><span class="ic"><svg><use href="#i-bulb"/></svg></span><div>
@@ -694,7 +694,7 @@ details.q[open] .chev{transform:rotate(180deg)}
 
 <!-- ================= MÓDULO 3 ================= -->
 <section class="view" id="v-rep" aria-labelledby="h-rep">
-  <div class="ticket-head"><span><b>Módulo 3</b> · Réplicas e inferencia</span><span>Mulberry32 · semillas deterministas</span><span>6 pts</span></div>
+  <div class="ticket-head"><span><b>Módulo 3</b> · Réplicas e inferencia</span><span>Mulberry32 · semillas deterministas</span></div>
   <h2 class="vt" id="h-rep">Una corrida no basta: repetimos y medimos la incertidumbre</h2>
   <p class="lede">Cada réplica usa una semilla distinta y produce su propio W̄<sub>q,j</sub>. Con esos valores construimos un intervalo de confianza al 95 % para la espera media.</p>
   <div class="simple"><span class="ic"><svg><use href="#i-bulb"/></svg></span><div>
@@ -737,7 +737,7 @@ details.q[open] .chev{transform:rotate(180deg)}
 
 <!-- ================= MÓDULO 4 ================= -->
 <section class="view" id="v-preg" aria-labelledby="h-preg">
-  <div class="ticket-head"><span><b>Módulo 4</b> · Preguntas y escenario</span><span>respuestas con cifras en vivo</span><span>6 pts</span></div>
+  <div class="ticket-head"><span><b>Módulo 4</b> · Preguntas y escenario</span><span>respuestas con cifras en vivo</span></div>
   <h2 class="vt" id="h-preg">Lo que la simulación nos permite afirmar</h2>
   <p class="lede">Cada respuesta usa los resultados actuales del simulador (semillas y número de réplicas del Módulo 3). Si cambias las semillas, las cifras de aquí también cambian.</p>
   <div class="subtabs" role="tablist" id="q-tabs">

@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Static HTML/CSS/JS in a single `index.html` (user choice). No build step; opens by double-click. Delivered as a local file only (no publishing).
+Static HTML/CSS/JS in a single `index.html` (user choice). No build step; opens by double-click. Published on GitHub (HerlanCh/simulacion-gasolinera) with GitHub Pages serving `main`; also opens locally.
 
 ## Users
 
@@ -16,7 +16,7 @@ University students presenting a discrete-event simulation (DES) project live in
 
 ## Product Purpose
 
-Interactive web app that solves "Escenario 2 – Gasolinera": a single-server FIFO queue simulated for 100 vehicles × 5 (or 10) replications. It must make every rubric deliverable visible, easy to understand and verifiable: data analysis + χ² + inverse transform (8 pts), live DES simulator + manual trace (10 pts), replications + inference (6 pts), technical / critical / scenario questions (6 pts).
+Interactive web app that solves "Escenario 2 – Gasolinera": a single-server FIFO queue simulated for 100 vehicles × 5 (or 10) replications. It must make every rubric deliverable visible, easy to understand and verifiable: data analysis + χ² + inverse transform, live DES simulator + manual trace, replications + inference, technical / critical / scenario questions.
 
 ## Positioning
 
@@ -32,6 +32,7 @@ Projected in a classroom (large screen, distance reading), driven by the present
 - 1 server, FIFO, 100 customers/replica, start empty at t = 0, 95% confidence, 10% max relative error, main indicator mean wait in queue Wq.
 - ρ = λ/μ = 4.00/2.56 = 1.5625 > 1 — the system is unstable; the queue grows by design.
 - Views map 1:1 to the rubric modules.
+- Never show rubric point scores (e.g. "10 pts") anywhere in the UI (user decision, 2026-11-03).
 
 ## Evidence on Hand
 
